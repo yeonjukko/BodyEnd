@@ -26,6 +26,7 @@
                 android:layout_height="match_parent"
                 android:paddingLeft="12dp"
                 android:paddingTop="5dp"
+                android:paddingRight="12dp"
                 android:paddingBottom="12dp">
 
                 <TextView
@@ -35,10 +36,14 @@
                     android:textSize="18dp" />
 
                 <EditText
+                    android:id="@+id/et_goal_date"
                     android:layout_marginLeft="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@android:color/white" />
+                    android:background="@android:color/white"
+                     android:clickable="false"
+                    />
+
 
             </LinearLayout>
 
@@ -58,6 +63,13 @@
                     android:text="@string/target_2_words"
                     android:textSize="18dp" />
 
+                <EditText
+                    android:id="@+id/et_stimulus_word"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:background="@android:color/white" />
+
             </LinearLayout>
 
             <View
@@ -70,6 +82,7 @@
                 android:layout_height="match_parent"
                 android:paddingLeft="12dp"
                 android:paddingTop="12dp"
+                android:paddingRight="12dp"
                 android:paddingBottom="5dp">
 
                 <TextView
@@ -79,14 +92,19 @@
                     android:textSize="18dp" />
 
                 <EditText
+                    android:id="@+id/et_stimulus_picture"
+                    android:focusable="false"
                     android:layout_marginLeft="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="number"
                     android:background="@android:color/white" />
 
 
             </LinearLayout>
+            <ImageView
+                android:id="@+id/image_stimulus_picture"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
 
 
@@ -100,6 +118,7 @@
         android:layout_height="match_parent"
         android:layout_weight="10">
         <Button
+            android:id="@+id/bt_back"
             android:layout_gravity="left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -117,11 +136,12 @@
             android:textColor="@color/Icons"
             android:background="@null"/>
         <Button
+            android:id="@+id/bt_finish"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_gravity="right"
-            android:text="다음"
+            android:text="완료"
             android:textSize="15dp"
             android:textColor="@color/Icons"
             android:background="@null"/>

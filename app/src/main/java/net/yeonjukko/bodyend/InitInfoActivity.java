@@ -1,10 +1,10 @@
 package net.yeonjukko.bodyend;
 
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -12,16 +12,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import net.yeonjukko.bodyend.libs.CheckableButton;
-
-import java.util.HashMap;
+import net.yeonjukko.bodyend.model.UserInfoModel;
 
 public class InitInfoActivity extends AppCompatActivity {
 
-    final static HashMap<String, Object> tmp = new HashMap<>();
-    int sex = 0;  //0: female, 1:male, 2:unChecked
-    final static int FLAG_SEX_FEMALE = 0;
-    final static int FLAG_SEX_MALE = 1;
-    final static int FLAG_SEX_UNCHECKED = 2;
+    public static UserInfoModel userInfoModel;
+    int sex = FLAG_SEX_UNCHECKED;  //0: female, 1:male, 2:unChecked
+    public final static int FLAG_SEX_FEMALE = 0;
+    public final static int FLAG_SEX_MALE = 1;
+    public final static int FLAG_SEX_UNCHECKED = 2;
 
 
     @Override
@@ -29,10 +28,14 @@ public class InitInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_init_info);
 
+        if (userInfoModel == null) {
+            userInfoModel = new UserInfoModel();
+        }
+
         final EditText etName = (EditText) findViewById(R.id.et_name);
         final EditText etHeight = (EditText) findViewById(R.id.et_height);
         final EditText etCurrWeight = (EditText) findViewById(R.id.et_curr_weight);
-        final EditText etTarget = (EditText) findViewById(R.id.et_target_weight);
+        final EditText etGoalWeight = (EditText) findViewById(R.id.et_target_weight);
 
         Button btNext = (Button) findViewById(R.id.bt_next);
         TextView tvCm = (TextView) findViewById(R.id.tv_cm);
@@ -62,7 +65,7 @@ public class InitInfoActivity extends AppCompatActivity {
         tvKg2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                etTarget.requestFocus();
+                etGoalWeight.requestFocus();
                 imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
 
             }
@@ -75,7 +78,6 @@ public class InitInfoActivity extends AppCompatActivity {
         final CheckableButton btFemale = (CheckableButton) findViewById(R.id.bt_female);
         final CheckableButton btMale = (CheckableButton) findViewById(R.id.bt_male);
         btFemale.setChecked(true);
-
 
         btFemale.setOnCheckedChangeWidgetListener(new CheckableButton.OnCheckedChangeListener() {
             @Override
@@ -118,28 +120,74 @@ public class InitInfoActivity extends AppCompatActivity {
         btNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (etName.getText().toString().equals(""))
+                if (etName.getText().toString().equals("")) {
                     etName.setError("이름을 입력하세요");
-                if (sex == FLAG_SEX_UNCHECKED)
+                    return;
+                }
+                if (sex == FLAG_SEX_UNCHECKED) {
                     etSex.setError("성별을 정확히 입력하세요");
-                if (etHeight.getText().toString().equals(""))
+                    return;
+                }
+                if (etHeight.getText().toString().equals("") || etHeight.getText().toString().startsWith(".")) {
                     etHeight.setError("키를 입력하세요");
-                if (etCurrWeight.getText().toString().equals(""))
+                    return;
+                }
+                if (etCurrWeight.getText().toString().equals("") || etCurrWeight.getText().toString().startsWith(".")) {
                     etCurrWeight.setError("현재 몸무게를 입력하세요");
-                if (etTarget.getText().toString().equals(""))
-                    etTarget.setError("목표 몸무게를 입력하세요");
+                    return;
+                }
+                if (etGoalWeight.getText().toString().equals("") || etGoalWeight.getText().toString().startsWith(".")) {
+                    etGoalWeight.setError("목표 몸무게를 입력하세요");
+                    return;
+                }
 
 
-                tmp.put("USER_NAME", etName);
-                tmp.put("USER_SEX", sex);
-                tmp.put("USER_HEIGHT", etHeight);
-                tmp.put("USER_CURR_WEIGHT", etCurrWeight);
-                tmp.put("USER_GOAL_WEIGHT", etTarget);
+                userInfoModel.setUserName(etName.getText().toString());
+                userInfoModel.setUserSex(sex);
+                userInfoModel.setUserHeight(Float.parseFloat(etHeight.getText().toString()));
+                userInfoModel.setUserCurrWeight(Float.parseFloat(etCurrWeight.getText().toString()));
+                userInfoModel.setUserGoalWeight(Float.parseFloat(etGoalWeight.getText().toString()));
 
+                Intent intent = new Intent(InitInfoActivity.this, InitTargetActivity.class);
+                startActivity(intent);
+                finish();
 
             }
 
         });
+        //End of Next Button Click-->
+
+        // if coming back to InitTarget Variable Setting
+
+        if (userInfoModel.getUserName() == null)
+            etName.setText("");
+        else
+            etName.setText(userInfoModel.getUserName());
+
+        sex = userInfoModel.getUserSex();
+
+        if (sex == FLAG_SEX_FEMALE) {
+            btFemale.setChecked(true);
+        } else if (sex == FLAG_SEX_MALE) {
+            btMale.setChecked(true);
+        }
+
+        if (userInfoModel.getUserHeight() == 0)
+            etHeight.setText("");
+        else {
+            etHeight.setText(userInfoModel.getUserHeight() + "");
+            Log.d("TEST", userInfoModel.getUserHeight() + "HEIGHT");
+        }
+
+        if (userInfoModel.getUserCurrWeight() == 0)
+            etCurrWeight.setText("");
+        else
+            etCurrWeight.setText(userInfoModel.getUserCurrWeight() + "");
+
+        if (userInfoModel.getUserGoalWeight() == 0)
+            etGoalWeight.setText("");
+        else
+            etGoalWeight.setText(userInfoModel.getUserGoalWeight() + "");
 
 
     }
