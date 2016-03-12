@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="net.yeonjukko.bodyend">
+
+    <application
+        android:name=".BodyEndApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/BodyEndAppTheme">
+        <activity android:name=".StimulusActivity"></activity>
+        <activity
+            android:name=".InitInfoActivity"
+            android:label="@string/activity_info" />
+        <activity
+            android:name=".TestActvity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".InitTargetActivity" android:label="@string/activity_target"></activity>
+    </application>
+
+</manifest>

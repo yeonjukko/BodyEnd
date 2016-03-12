@@ -1,0 +1,148 @@
+package net.yeonjukko.bodyend;
+
+import android.content.Context;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import net.yeonjukko.bodyend.libs.CheckableButton;
+
+import java.util.HashMap;
+
+public class InitInfoActivity extends AppCompatActivity {
+
+    final static HashMap<String, Object> tmp = new HashMap<>();
+    int sex = 0;  //0: female, 1:male, 2:unChecked
+    final static int FLAG_SEX_FEMALE = 0;
+    final static int FLAG_SEX_MALE = 1;
+    final static int FLAG_SEX_UNCHECKED = 2;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_init_info);
+
+        final EditText etName = (EditText) findViewById(R.id.et_name);
+        final EditText etHeight = (EditText) findViewById(R.id.et_height);
+        final EditText etCurrWeight = (EditText) findViewById(R.id.et_curr_weight);
+        final EditText etTarget = (EditText) findViewById(R.id.et_target_weight);
+
+        Button btNext = (Button) findViewById(R.id.bt_next);
+        TextView tvCm = (TextView) findViewById(R.id.tv_cm);
+        TextView tvKg1 = (TextView) findViewById(R.id.tv_kg1);
+        TextView tvKg2 = (TextView) findViewById(R.id.tv_kg2);
+        final EditText etSex = (EditText) findViewById(R.id.et_sex);
+
+        //<-- Start of keyboard focus
+        final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
+
+        tvCm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                etHeight.requestFocus();
+                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+            }
+        });
+
+        tvKg1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                etCurrWeight.requestFocus();
+                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+            }
+        });
+        tvKg2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                etTarget.requestFocus();
+                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+
+            }
+        });
+
+        // End of keyboard focus-->
+
+
+        //<-- Start of Checkable Button toggle
+        final CheckableButton btFemale = (CheckableButton) findViewById(R.id.bt_female);
+        final CheckableButton btMale = (CheckableButton) findViewById(R.id.bt_male);
+        btFemale.setChecked(true);
+
+
+        btFemale.setOnCheckedChangeWidgetListener(new CheckableButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CheckableButton buttonView, boolean isChecked) {
+                if (btMale.isChecked()) {
+                    btMale.setChecked(!isChecked);
+                }
+                if (btMale.isChecked() == btFemale.isChecked()) {
+                    sex = FLAG_SEX_UNCHECKED;
+                } else {
+                    sex = FLAG_SEX_FEMALE;
+                }
+                Log.d("TEST", "sex:" + sex);
+
+            }
+        });
+
+        btMale.setOnCheckedChangeWidgetListener(new CheckableButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CheckableButton buttonView, boolean isChecked) {
+                if (btFemale.isChecked()) {
+                    btFemale.setChecked(!isChecked);
+                }
+
+                if (btMale.isChecked() == btFemale.isChecked()) {
+                    sex = FLAG_SEX_UNCHECKED;
+                } else {
+                    sex = FLAG_SEX_MALE;
+                }
+                Log.d("TEST", "sex:" + sex);
+
+
+            }
+        });
+
+        // End of Checkable Button toggle-->
+
+
+        //<-- Start of Next Button Click
+        btNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (etName.getText().toString().equals(""))
+                    etName.setError("이름을 입력하세요");
+                if (sex == FLAG_SEX_UNCHECKED)
+                    etSex.setError("성별을 정확히 입력하세요");
+                if (etHeight.getText().toString().equals(""))
+                    etHeight.setError("키를 입력하세요");
+                if (etCurrWeight.getText().toString().equals(""))
+                    etCurrWeight.setError("현재 몸무게를 입력하세요");
+                if (etTarget.getText().toString().equals(""))
+                    etTarget.setError("목표 몸무게를 입력하세요");
+
+
+                tmp.put("USER_NAME", etName);
+                tmp.put("USER_SEX", sex);
+                tmp.put("USER_HEIGHT", etHeight);
+                tmp.put("USER_CURR_WEIGHT", etCurrWeight);
+                tmp.put("USER_GOAL_WEIGHT", etTarget);
+
+
+            }
+
+        });
+
+
+    }
+
+
+}
