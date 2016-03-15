@@ -1,5 +1,7 @@
 package net.yeonjukko.bodyend.model;
 
+import android.util.Log;
+
 import net.yeonjukko.bodyend.InitInfoActivity;
 
 /**
@@ -18,9 +20,7 @@ public class UserInfoModel {
 
     public UserInfoModel() {
         userSex = InitInfoActivity.FLAG_SEX_FEMALE;
-
     }
-
 
     public String getUserName() {
         return userName;
@@ -84,5 +84,6 @@ public class UserInfoModel {
 
     public void setStimulusPicture(String stimulusPicture) {
         this.stimulusPicture = stimulusPicture;
+
     }
 }

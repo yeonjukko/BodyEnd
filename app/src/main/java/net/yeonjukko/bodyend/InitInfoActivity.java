@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -21,12 +20,15 @@ public class InitInfoActivity extends AppCompatActivity {
     public final static int FLAG_SEX_FEMALE = 0;
     public final static int FLAG_SEX_MALE = 1;
     public final static int FLAG_SEX_UNCHECKED = 2;
+    public static Context mContext;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_init_info);
+
 
         if (userInfoModel == null) {
             userInfoModel = new UserInfoModel();
@@ -90,7 +92,6 @@ public class InitInfoActivity extends AppCompatActivity {
                 } else {
                     sex = FLAG_SEX_FEMALE;
                 }
-                Log.d("TEST", "sex:" + sex);
 
             }
         });
@@ -107,7 +108,6 @@ public class InitInfoActivity extends AppCompatActivity {
                 } else {
                     sex = FLAG_SEX_MALE;
                 }
-                Log.d("TEST", "sex:" + sex);
 
 
             }
@@ -176,7 +176,6 @@ public class InitInfoActivity extends AppCompatActivity {
             etHeight.setText("");
         else {
             etHeight.setText(userInfoModel.getUserHeight() + "");
-            Log.d("TEST", userInfoModel.getUserHeight() + "HEIGHT");
         }
 
         if (userInfoModel.getUserCurrWeight() == 0)
@@ -188,6 +187,10 @@ public class InitInfoActivity extends AppCompatActivity {
             etGoalWeight.setText("");
         else
             etGoalWeight.setText(userInfoModel.getUserGoalWeight() + "");
+
+//다른 액티비티에서 호출할때
+        mContext = this;
+
 
 
     }

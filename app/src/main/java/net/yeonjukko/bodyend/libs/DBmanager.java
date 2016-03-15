@@ -1,10 +1,13 @@
 package net.yeonjukko.bodyend.libs;
 
 import android.content.Context;
-import android.database.SQLException;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Environment;
 import android.util.Log;
+
+import net.yeonjukko.bodyend.model.UserInfoModel;
 
 /**
  * Created by yeonjukko on 16. 3. 9..
@@ -59,18 +62,19 @@ public class DBmanager {
         this.context = context;
         this.mDbHelper = new DatabaseHelper(context);
         mDb = mDbHelper.getWritableDatabase();
+
+
     }
 
     // helper
     public static class DatabaseHelper extends SQLiteOpenHelper {
         public DatabaseHelper(Context context) {
-            super(context, DATABASE_NAME, null, DATABASE_VERSION);
+            super(context, Environment.getExternalStorageDirectory().getPath()+"/" +DATABASE_NAME, null, DATABASE_VERSION);
         }
 
         @Override
         public void onCreate(SQLiteDatabase db) {
             //데이터베이스 최초 생성될때 실행 디비가 생성될때 실행된다
-            Log.d("TEST", "onCreate DATABSE_CREATE");
             db.execSQL(DATABASE_CREATE_1);
             db.execSQL(DATABASE_CREATE_2);
             db.execSQL(DATABASE_CREATE_3);
@@ -78,21 +82,70 @@ public class DBmanager {
             db.execSQL(DATABASE_CREATE_5);
             db.execSQL(DATABASE_CREATE_6);
             db.execSQL(DATABASE_CREATE_7);
-
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
         }
+
     }
 
-    //InitInfoAcitivty 쿼리
+
+    public void insertUserInfoDB(UserInfoModel model) {
+        String INSERT_BODY_INFO = "INSERT INTO " + DATABASE_TABLE_1 + " VALUES" +
+                "(" + "'" + model.getUserName() + "'" + "," + model.getUserSex() + "," + model.getUserHeight()
+                + "," + model.getUserCurrWeight() + "," + model.getUserGoalWeight() + "," + model.getGoalDate()
+                + "," + "'" + model.getStimulusWord() + "'" + "," + "'" + model.getStimulusPicture() + "'" + ")";
+
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        db.execSQL(INSERT_BODY_INFO);
+        PrintData();
+        db.close();
+    }
+
+    public UserInfoModel selectUserInfoDB() {
+        String SELECT_BODY_INFO = "SELECT * FROM " + DATABASE_TABLE_1;
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        Cursor result = db.rawQuery(SELECT_BODY_INFO, null);
+
+        UserInfoModel userInfoModel = new UserInfoModel();
+        // result(Cursor 객체)가 비어 있으면 false 리턴
+        if(result.moveToFirst()){
+            userInfoModel.setUserName(result.getString(0));
+            userInfoModel.setUserSex(result.getInt(1));
+            userInfoModel.setUserHeight(result.getFloat(2));
+            userInfoModel.setUserCurrWeight(result.getFloat(3));
+            userInfoModel.setUserGoalWeight(result.getFloat(4));
+            userInfoModel.setGoalDate(result.getLong(5));
+            userInfoModel.setStimulusWord(result.getString(6));
+            userInfoModel.setStimulusPicture(result.getString(7));
+
+        }
+        result.close();
+
+        return userInfoModel;
+
+    }
+
+    public String PrintData() {
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        String str = "";
+
+        Cursor cursor = db.rawQuery("select * from "+DATABASE_TABLE_1, null);
+        while(cursor.moveToNext()) {
+            str += " userName:  "
+                    + cursor.getString(0)
+                    + "\n";
+        }
+
+        return str;
+    }
 
 
 
-//    public void InsertUserInfoDB(String userName, Integer sex, Float height, Float currWeight, Float goalWeight, Integer goalDate, ){
-//
-//    }
 
 }

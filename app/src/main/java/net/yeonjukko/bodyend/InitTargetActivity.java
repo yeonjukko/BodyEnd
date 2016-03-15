@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.yalantis.ucrop.UCrop;
 
+import net.yeonjukko.bodyend.libs.DBmanager;
 import net.yeonjukko.bodyend.model.UserInfoModel;
 
 import java.io.File;
@@ -28,7 +29,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-public class InitTargetActivity extends AppCompatActivity {
+public class InitTargetActivity extends InitInfoActivity {
 
     private DatePickerDialog dialog;
     private Calendar calendar;
@@ -38,12 +39,17 @@ public class InitTargetActivity extends AppCompatActivity {
     private EditText etStimulusImage;
     private static final String SAMPLE_CROPPED_IMAGE_NAME = "BodyEnd";
     private static final int PICK_PHOTO_FOR_AVATAR = 100;
+    public UserInfoModel userInfoModel;
+    private DBmanager dbManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_init_target);
-        final UserInfoModel userInfoModel = new UserInfoModel();
+
+        dbManager = new DBmanager(getContext());
+        userInfoModel = new UserInfoModel();
 
         final EditText etGoalDate = (EditText) findViewById(R.id.et_goal_date);
         etStimulusImage = (EditText) findViewById(R.id.et_stimulus_picture);
@@ -120,7 +126,6 @@ public class InitTargetActivity extends AppCompatActivity {
                     return;
                 }
                 if (etStimulusWord.getText().toString().equals("")) {
-                    Log.d("TEST", "DKFJDKJSKFD");
                     etStimulusWord.setError("목표 한마디 입력하세요");
                     return;
                 }
@@ -129,11 +134,23 @@ public class InitTargetActivity extends AppCompatActivity {
                     return;
                 }
 
+                //모델에 저장
+                userInfoModel.setUserName(((InitInfoActivity) InitInfoActivity.mContext).userInfoModel.getUserName());
+                userInfoModel.setUserSex(((InitInfoActivity) InitInfoActivity.mContext).userInfoModel.getUserSex());
+                userInfoModel.setUserHeight(((InitInfoActivity) InitInfoActivity.mContext).userInfoModel.getUserHeight());
+                userInfoModel.setUserCurrWeight(((InitInfoActivity) InitInfoActivity.mContext).userInfoModel.getUserCurrWeight());
+                userInfoModel.setUserGoalWeight(((InitInfoActivity) InitInfoActivity.mContext).userInfoModel.getUserGoalWeight());
                 userInfoModel.setGoalDate(calendar.getTimeInMillis());
                 userInfoModel.setStimulusWord(etStimulusWord.getText().toString());
                 userInfoModel.setStimulusPicture(mDestinationUri.toString());
 
-                Intent intent = new Intent(getContext(),StimulusActivity.class);
+
+                //db에 저장
+                dbManager.insertUserInfoDB(userInfoModel);
+                Log.d("mox", "target"+dbManager.PrintData());
+                dbManager.selectUserInfoDB();
+
+                Intent intent = new Intent(getContext(), StimulusActivity.class);
                 startActivity(intent);
                 finish();
             }
@@ -155,9 +172,9 @@ public class InitTargetActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
-            final Uri resultUri = UCrop.getOutput(data);
+            mDestinationUri = UCrop.getOutput(data);
             try {
-                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), resultUri);
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mDestinationUri);
                 imageStimulus.setImageBitmap(bitmap);
                 etStimulusImage.setError(null);
 

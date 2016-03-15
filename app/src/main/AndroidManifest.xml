@@ -12,7 +12,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/BodyEndAppTheme">
-        <activity android:name=".StimulusActivity"></activity>
+        <activity android:name=".libs.BackgroundConverter"/>
+        <activity android:name=".StimulusActivity" android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
         <activity
             android:name=".InitInfoActivity"
             android:label="@string/activity_info" />
