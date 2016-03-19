@@ -12,7 +12,16 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/Primary</item>
         <item name="android:textColorPrimary">@color/Primary_text</item>
-        <item name="colorPrimaryDark">@color/Primary_dark</item>
+        <item name="colorPrimaryDark">@color/Background</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="colorAccent">@color/Accent</item>
+    </style>
+
+    <style name="MyNoActionBar" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">@color/Primary</item>
+        <item name="colorPrimaryDark">@color/Background</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColorPrimary">@color/Primary_text</item>
         <item name="colorAccent">@color/Accent</item>
     </style>
 </resources>

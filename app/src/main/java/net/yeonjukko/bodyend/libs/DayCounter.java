@@ -20,10 +20,8 @@ public class DayCounter {
             //( 1일의 값(86400000 = 24시간 * 60분 * 60초 * 1000(1초값) ) )
 
             long tday = today.getTimeInMillis()/86400000;
-            long count = tday - day; // 오늘 날짜에서 dday 날짜를 빼주게 됩니다.
+            long count = day - tday; // 오늘 날짜에서 dday 날짜를 빼주게 됩니다.
 
-            int result = (int)count+1;
-            Log.d("mox_",result+"day left");
             return (int) count+1; // 날짜는 하루 + 시켜줘야합니다.
         }
         catch (Exception e)

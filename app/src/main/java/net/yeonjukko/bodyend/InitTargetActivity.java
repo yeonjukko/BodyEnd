@@ -39,7 +39,6 @@ public class InitTargetActivity extends InitInfoActivity {
     private EditText etStimulusImage;
     private static final String SAMPLE_CROPPED_IMAGE_NAME = "BodyEnd";
     private static final int PICK_PHOTO_FOR_AVATAR = 100;
-    public UserInfoModel userInfoModel;
     private DBmanager dbManager;
 
 
@@ -49,7 +48,6 @@ public class InitTargetActivity extends InitInfoActivity {
         setContentView(R.layout.activity_init_target);
 
         dbManager = new DBmanager(getContext());
-        userInfoModel = new UserInfoModel();
 
         final EditText etGoalDate = (EditText) findViewById(R.id.et_goal_date);
         etStimulusImage = (EditText) findViewById(R.id.et_stimulus_picture);
@@ -135,11 +133,11 @@ public class InitTargetActivity extends InitInfoActivity {
                 }
 
                 //모델에 저장
-                userInfoModel.setUserName(((InitInfoActivity) InitInfoActivity.mContext).userInfoModel.getUserName());
-                userInfoModel.setUserSex(((InitInfoActivity) InitInfoActivity.mContext).userInfoModel.getUserSex());
-                userInfoModel.setUserHeight(((InitInfoActivity) InitInfoActivity.mContext).userInfoModel.getUserHeight());
-                userInfoModel.setUserCurrWeight(((InitInfoActivity) InitInfoActivity.mContext).userInfoModel.getUserCurrWeight());
-                userInfoModel.setUserGoalWeight(((InitInfoActivity) InitInfoActivity.mContext).userInfoModel.getUserGoalWeight());
+                userInfoModel.setUserName(userInfoModel.getUserName());
+                userInfoModel.setUserSex(userInfoModel.getUserSex());
+                userInfoModel.setUserHeight(userInfoModel.getUserHeight());
+                userInfoModel.setUserCurrWeight(userInfoModel.getUserCurrWeight());
+                userInfoModel.setUserGoalWeight(userInfoModel.getUserGoalWeight());
                 userInfoModel.setGoalDate(calendar.getTimeInMillis());
                 userInfoModel.setStimulusWord(etStimulusWord.getText().toString());
                 userInfoModel.setStimulusPicture(mDestinationUri.toString());

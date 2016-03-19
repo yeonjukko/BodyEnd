@@ -17,6 +17,7 @@ public class UserInfoModel {
     private long goalDate;
     private String stimulusWord;
     private String stimulusPicture;
+    private int exerciseAlarmStatus;
 
     public UserInfoModel() {
         userSex = InitInfoActivity.FLAG_SEX_FEMALE;
@@ -85,5 +86,13 @@ public class UserInfoModel {
     public void setStimulusPicture(String stimulusPicture) {
         this.stimulusPicture = stimulusPicture;
 
+    }
+
+    public int getExerciseAlarmStatus() {
+        return exerciseAlarmStatus;
+    }
+
+    public void setExerciseAlarmStatus(int exerciseAlarmStatus) {
+        this.exerciseAlarmStatus = exerciseAlarmStatus;
     }
 }
