@@ -21,7 +21,15 @@
         <item name="colorPrimary">@color/Primary</item>
         <item name="colorPrimaryDark">@color/Background</item>
         <item name="android:textColor">@android:color/white</item>
-        <item name="android:textColorPrimary">@color/Primary_text</item>
         <item name="colorAccent">@color/Accent</item>
+    </style>
+    <style name="MySettingTheme" parent="Theme.AppCompat.Light">
+        <item name="colorPrimary">@color/Primary</item>
+        <item name="android:textColorPrimary">@color/Primary_text</item>
+        <item name="colorPrimaryDark">@color/Background</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/Primary_text</item>
+
+
     </style>
 </resources>

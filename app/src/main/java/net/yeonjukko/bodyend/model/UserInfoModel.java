@@ -1,8 +1,6 @@
 package net.yeonjukko.bodyend.model;
 
-import android.util.Log;
-
-import net.yeonjukko.bodyend.InitInfoActivity;
+import net.yeonjukko.bodyend.activity.InitInfoActivity;
 
 /**
  * Created by yeonjukko on 16. 3. 12..
@@ -17,7 +15,6 @@ public class UserInfoModel {
     private long goalDate;
     private String stimulusWord;
     private String stimulusPicture;
-    private int exerciseAlarmStatus;
 
     public UserInfoModel() {
         userSex = InitInfoActivity.FLAG_SEX_FEMALE;
@@ -88,11 +85,4 @@ public class UserInfoModel {
 
     }
 
-    public int getExerciseAlarmStatus() {
-        return exerciseAlarmStatus;
-    }
-
-    public void setExerciseAlarmStatus(int exerciseAlarmStatus) {
-        this.exerciseAlarmStatus = exerciseAlarmStatus;
-    }
 }

@@ -7,8 +7,8 @@ public class UserRecordModel {
     private int recordDate;
     private String pictureRecord;
     private float weightRecord;
-    private float waterRecord;
-    private float waterVolume;
+    private int waterRecord;
+    private int waterVolume;
     private String mealBreakfast;
     private String mealLunch;
     private String mealDinner;
@@ -42,19 +42,19 @@ public class UserRecordModel {
         this.weightRecord = weightRecord;
     }
 
-    public float getWaterRecord() {
+    public int getWaterRecord() {
         return waterRecord;
     }
 
-    public void setWaterRecord(float waterRecord) {
+    public void setWaterRecord(int waterRecord) {
         this.waterRecord = waterRecord;
     }
 
-    public float getWaterVolume() {
+    public int getWaterVolume() {
         return waterVolume;
     }
 
-    public void setWaterVolume(float waterVolume) {
+    public void setWaterVolume(int waterVolume) {
         this.waterVolume = waterVolume;
     }
 

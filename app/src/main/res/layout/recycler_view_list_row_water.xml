@@ -1,41 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="20dp">
+    android:layout_marginTop="20dp"
+    android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/button"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:gravity="center">
-
-        <View
-            android:layout_width="12dp"
-            android:layout_height="12dp"
-            android:background="@drawable/triangle" />
-    </RelativeLayout>
-
-    <TextView
-        android:id="@+id/textView"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@id/button"
-        android:gravity="center"
-        android:padding="8dp"
-        android:textColor="@android:color/white"
-        android:textSize="12sp" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:gravity="center"
+                android:padding="8dp"
+                android:textColor="@android:color/white"
+                android:textSize="12sp" />
+
+            <ImageButton
+                android:id="@+id/bt_water_setting"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
+                android:background="@color/Primary"
+                android:src="@drawable/icon_setting_white" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|right"
+            android:layout_marginRight="15dp">
+
+            <View
+
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:background="@drawable/triangle" />
+        </RelativeLayout>
+
+
+    </FrameLayout>
+
 
     <com.github.aakira.expandablelayout.ExpandableRelativeLayout
 
         android:id="@+id/layout_water"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textView"
         android:background="@drawable/layout_round_bottom"
         app:ael_duration="400"
         app:ael_expanded="false"
@@ -46,59 +68,46 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <LinearLayout
+
+            <GridLayout
+                android:id="@+id/layout_water_grid"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:columnCount="10"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:rowCount="2"
+                android:useDefaultMargins="true">
 
-                <LinearLayout
-                    android:id="@+id/layout_water_count_1"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:orientation="horizontal"
-                    android:padding="10dp">
+            </GridLayout>
 
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/layout_water_count_2"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:orientation="horizontal"
-                    android:padding="10dp">
-
-                </LinearLayout>
-
-
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:orientation="vertical"
+                android:layout_height="match_parent"
                 android:layout_weight="8"
-                android:layout_height="match_parent">
+                android:orientation="vertical">
 
                 <Button
                     android:id="@+id/bt_water_plus"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/button_roundcorner"
                     android:layout_weight="1"
+                    android:background="@drawable/button_roundcorner"
                     android:text="+" />
 
                 <Button
                     android:id="@+id/bt_water_minus"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/button_roundcorner_bottom"
                     android:layout_weight="1"
+                    android:background="@drawable/button_roundcorner_bottom_right"
                     android:text="-" />
             </LinearLayout>
         </LinearLayout>
 
     </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
 
-</RelativeLayout>
+</LinearLayout>

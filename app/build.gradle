@@ -22,8 +22,11 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.2.0'
     compile 'com.yalantis:ucrop:1.3.+'
     compile 'com.github.aakira:expandable-layout:1.4.3@aar'
+    compile project(':ToggleButtonLib')
+    compile project(':ToggleExpandLib')
+    compile 'com.appyvet:materialrangebar:1.3'
     compile 'com.android.support:recyclerview-v7:24.0.0-alpha1'
+    compile 'com.android.support:appcompat-v7:24.0.0-alpha1'
 }

@@ -10,6 +10,7 @@ import android.util.Log;
 
 import net.yeonjukko.bodyend.model.UserInfoModel;
 import net.yeonjukko.bodyend.model.UserRecordModel;
+import net.yeonjukko.bodyend.model.WaterAlarmInfoModel;
 
 /**
  * Created by yeonjukko on 16. 3. 9..
@@ -35,12 +36,12 @@ public class DBmanager {
     //생성테이블
     private static final String DATABASE_CREATE_1 = "CREATE TABLE " + DATABASE_TABLE_1 +
             " (USER_NAME TEXT, USER_SEX INTEGER, USER_HEIGHT FLOAT, USER_CURR_WEIGHT FLOAT, USER_GOAL_WEIGHT FLOAT," +
-            " GOAL_DATE LONG, STIMULUS_WORD TEXT, STIMULUS_PICTURE TEXT, EXERCISE_ALARM_STATUS INTEGER)";
+            " GOAL_DATE LONG, STIMULUS_WORD TEXT, STIMULUS_PICTURE TEXT)";
     //EXERCISE_ALARM_STATUS 0:OFF 1:ON
 
     private static final String DATABASE_CREATE_2 = "CREATE TABLE " + DATABASE_TABLE_2 + "" +
-            " (RECORD_DATE INTEGER PRIMARY KEY,  PICTURE_RECORD TEXT, WEIGHT_RECORD FLOAT ," +
-            " WATER_RECORD FLOAT, WATER_VOLUME FLOAT, MEAL_BREAKFAST TEXT, MEAL_LUNCH TEXT, MEAL_DINNER TEXT, MEAL_REFRESHMENTS TEXT)";
+            " (RECORD_DATE INTEGER PRIMARY KEY,  PICTURE_RECORD TEXT, WEIGHT_RECORD INTEGER ," +
+            " WATER_RECORD INTEGER, WATER_VOLUME FLOAT, MEAL_BREAKFAST TEXT, MEAL_LUNCH TEXT, MEAL_DINNER TEXT, MEAL_REFRESHMENTS TEXT)";
 
     private static final String DATABASE_CREATE_3 = "CREATE TABLE " + DATABASE_TABLE_3 +
             " (RECORD_DATE INTEGER, SPOT_ID)";
@@ -96,11 +97,66 @@ public class DBmanager {
 
     }
 
-    public void updateWaterRecord(float drinkWater){
-        String UPDATE_WATER_RECORD = "UPDATE "+DATABASE_TABLE_2+" SET WATER_RECORD="+drinkWater;
+    public void updateCurrWeight(float weight) {
+        String UPDATE_CURR_WEIGHT_RECORD = "UPDATE " + DATABASE_TABLE_1 + " SET USER_CURR_WEIGHT=" + weight;
+        String UPDATE_TODAY_WEIGHT_RECORD = "UPDATE " + DATABASE_TABLE_2 + " SET WEIGHT_RECORD=" + weight;
+
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        db.execSQL(UPDATE_CURR_WEIGHT_RECORD);
+        db.execSQL(UPDATE_TODAY_WEIGHT_RECORD);
+        Log.d("mox", selectUserRecordDB(20160321).getWeightRecord() + "db");
+        Log.d("mox", selectUserInfoDB().getUserCurrWeight()+"db");
+
+
+        db.close();
+    }
+
+    public void updateWaterAlarmTime(int start, int stop) {
+        String UPDATE_WATER_TIME = "UPDATE " + DATABASE_TABLE_5 + " SET ALARM_TIMEZONE_START=" + start + ", ALARM_TIMEZONE_STOP=" + stop;
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        db.execSQL(UPDATE_WATER_TIME);
+        db.close();
+    }
+
+    public void updateWaterAlarmPeriod(int period) {
+        String UPDATE_WATER_PERIOD = "UPDATE " + DATABASE_TABLE_5 + " SET WATER_ALARM_PERIOD=" + period;
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        db.execSQL(UPDATE_WATER_PERIOD);
+        db.close();
+    }
+
+    /**
+     * status 1: on 0:off
+     */
+    public void updateWaterAlarmStatus(int status) {
+        String UPDATE_WATER_STATUS = "UPDATE " + DATABASE_TABLE_5 + " SET WATER_ALARM_STATUS=" + status;
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        db.execSQL(UPDATE_WATER_STATUS);
+        PrintData();
+        db.close();
+    }
+
+    public void updateWaterRecord(int drinkWater) {
+        String UPDATE_WATER_RECORD = "UPDATE " + DATABASE_TABLE_2 + " SET WATER_RECORD=" + drinkWater;
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(UPDATE_WATER_RECORD);
+        PrintData();
+        db.close();
+    }
+
+    public void insertWaterAlarmInfoDB(WaterAlarmInfoModel model) {
+        String INSERT_WATER_ALARM_INFO = "INSERT INTO " + DATABASE_TABLE_5 + " VALUES" +
+                "(" + model.getWaterAlarmStatus() + "," + model.getWaterAlarmPeriod() + "," + model.getAlarmTimezoneStart()
+                + "," + model.getAlarmTimezoneStop() + ")";
+
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        db.execSQL(INSERT_WATER_ALARM_INFO);
         PrintData();
         db.close();
     }
@@ -110,12 +166,11 @@ public class DBmanager {
         String INSERT_BODY_INFO = "INSERT INTO " + DATABASE_TABLE_1 + " VALUES" +
                 "(" + "'" + model.getUserName() + "'" + "," + model.getUserSex() + "," + model.getUserHeight()
                 + "," + model.getUserCurrWeight() + "," + model.getUserGoalWeight() + "," + model.getGoalDate()
-                + "," + "'" + model.getStimulusWord() + "'" + "," + "'" + model.getStimulusPicture() + "'" + "," + model.getExerciseAlarmStatus() + ")";
+                + "," + "'" + model.getStimulusWord() + "'" + "," + "'" + model.getStimulusPicture() + "'" + ")";
 
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        //db.execSQL("delete from " + DATABASE_TABLE_1);
-
+        db.execSQL("delete from " + DATABASE_TABLE_1);
         db.execSQL(INSERT_BODY_INFO);
         PrintData();
         db.close();
@@ -126,7 +181,7 @@ public class DBmanager {
         String INSERT_RECORD_INFO = "INSERT INTO " + DATABASE_TABLE_2 + " VALUES" +
                 "(" + model.getRecordDate() + "," + "'" + model.getPictureRecord() + "'" + "," + model.getWeightRecord()
                 + "," + model.getWaterRecord() + "," + model.getWaterVolume() + "," + "'" + model.getMealBreakfast() + "'"
-                + "," + "'" + model.getMealLunch() + "'" + "," + "'" + model.getMealDinner() + "'" + "," +  "'" + model.getMealRefreshments() + "'" + ")";
+                + "," + "'" + model.getMealLunch() + "'" + "," + "'" + model.getMealDinner() + "'" + "," + "'" + model.getMealRefreshments() + "'" + ")";
 
         this.mDbHelper = new DatabaseHelper(context);
 
@@ -135,7 +190,7 @@ public class DBmanager {
         try {
             db.execSQL(INSERT_RECORD_INFO);
 
-        }catch (SQLiteConstraintException e){
+        } catch (SQLiteConstraintException e) {
             e.printStackTrace();
         }
 
@@ -148,7 +203,7 @@ public class DBmanager {
     public UserInfoModel selectUserInfoDB() {
         String SELECT_BODY_INFO = "SELECT * FROM " + DATABASE_TABLE_1;
         this.mDbHelper = new DatabaseHelper(context);
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
         Cursor result = db.rawQuery(SELECT_BODY_INFO, null);
 
         UserInfoModel userInfoModel = new UserInfoModel();
@@ -168,9 +223,9 @@ public class DBmanager {
     }
 
     public UserRecordModel selectUserRecordDB(int date) {
-        String SELECT_RECORD_INFO = "SELECT * FROM " + DATABASE_TABLE_2+" WHERE RECORD_DATE="+date;
+        String SELECT_RECORD_INFO = "SELECT * FROM " + DATABASE_TABLE_2 + " WHERE RECORD_DATE=" + date;
         this.mDbHelper = new DatabaseHelper(context);
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
         Cursor result = db.rawQuery(SELECT_RECORD_INFO, null);
 
         UserRecordModel userRecordModel = new UserRecordModel();
@@ -178,8 +233,8 @@ public class DBmanager {
             userRecordModel.setRecordDate(result.getInt(0));
             userRecordModel.setPictureRecord(result.getString(1));
             userRecordModel.setWeightRecord(result.getFloat(2));
-            userRecordModel.setWaterRecord(result.getFloat(3));
-            userRecordModel.setWaterVolume(result.getFloat(4));
+            userRecordModel.setWaterRecord(result.getInt(3));
+            userRecordModel.setWaterVolume(result.getInt(4));
             userRecordModel.setMealBreakfast(result.getString(5));
             userRecordModel.setMealLunch(result.getString(6));
             userRecordModel.setMealDinner(result.getString(7));
@@ -189,15 +244,32 @@ public class DBmanager {
         return userRecordModel;
     }
 
+    public WaterAlarmInfoModel selectWaterAlarmInfoDB() {
+        String SELECT_WATER_ALARM_INFO = "SELECT * FROM " + DATABASE_TABLE_5;
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        Cursor result = db.rawQuery(SELECT_WATER_ALARM_INFO, null);
+
+        WaterAlarmInfoModel waterAlarmInfoModel = new WaterAlarmInfoModel();
+        if (result.moveToFirst()) {
+            waterAlarmInfoModel.setWaterAlarmStatus(result.getInt(0));
+            waterAlarmInfoModel.setWaterAlarmPeriod(result.getInt(1));
+            waterAlarmInfoModel.setAlarmTimezoneStart(result.getInt(2));
+            waterAlarmInfoModel.setAlarmTimezoneStop(result.getInt(3));
+        }
+        result.close();
+        return waterAlarmInfoModel;
+    }
+
     public String PrintData() {
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
         String str = "";
 
-        Cursor cursor = db.rawQuery("select * from " + DATABASE_TABLE_1, null);
+        Cursor cursor = db.rawQuery("select * from " + DATABASE_TABLE_5, null);
         while (cursor.moveToNext()) {
-            str += " userName:  "
-                    + cursor.getString(0)
+            str += " DB:  "
+                    + cursor
                     + "\n";
         }
 

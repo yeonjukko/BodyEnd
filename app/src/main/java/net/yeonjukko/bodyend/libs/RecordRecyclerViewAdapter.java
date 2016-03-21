@@ -7,8 +7,8 @@ package net.yeonjukko.bodyend.libs;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.SparseBooleanArray;
@@ -16,6 +16,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -28,7 +30,10 @@ import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
 import com.github.aakira.expandablelayout.Utils;
 
 import net.yeonjukko.bodyend.R;
-import net.yeonjukko.bodyend.RecordActivity;
+import net.yeonjukko.bodyend.activity.RecordActivity;
+import net.yeonjukko.bodyend.activity.settings.WaterSettingActivity;
+import net.yeonjukko.bodyend.model.UserInfoModel;
+import net.yeonjukko.bodyend.model.UserRecordModel;
 
 import java.util.List;
 
@@ -75,13 +80,13 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                     .inflate(R.layout.recycler_view_list_row_exercise, parent, false));
         } else if (viewType == VIEW_TYPE_WEIGHT) {
             return new ViewHolderWeight(LayoutInflater.from(context)
-                    .inflate(R.layout.recycler_view_list_row_water, parent, false));
+                    .inflate(R.layout.recycler_view_list_row_weight, parent, false));
         } else if (viewType == VIEW_TYPE_MEAL) {
             return new ViewHolderMeal(LayoutInflater.from(context)
-                    .inflate(R.layout.recycler_view_list_row_water, parent, false));
+                    .inflate(R.layout.recycler_view_list_row_meal, parent, false));
         } else if (viewType == VIEW_TYPE_PICTURE) {
             return new ViewHolderPicture(LayoutInflater.from(context)
-                    .inflate(R.layout.recycler_view_list_row_water, parent, false));
+                    .inflate(R.layout.recycler_view_list_row_picture, parent, false));
         }
 
         throw new IndexOutOfBoundsException("viewHolderTypeError: 내부 에러가 발생하였습니다. ");
@@ -146,178 +151,184 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             holderWater.buttonLayout.setRotation(expandState.get(position) ? 180f : 0f);
 
             //<--물 ui 설정
-            float user_weight = dBmanager.selectUserInfoDB().getUserCurrWeight();
             final float waterVolume = dBmanager.selectUserRecordDB(((RecordActivity) context).getToday()).getWaterVolume();
-            final int water_cup_count = (int) waterVolume;
-            final int water_left_count = (int) ((waterVolume - water_cup_count) * 10);
+            int water_cup_count = (int) waterVolume;
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
             params.height = 80;
             params.width = 80;
             ImageView fullWater;
-            ImageView fullWater2;
-            ImageView leftWater;
 
             //<--물 기록 UI 설정 부분
 
-            //<--물컵아이콘설정 1. 10잔이하일때 2. 10잔 초과 20장 미만일때 3. 20잔 이상 시
-
-            if (water_cup_count <= 10) {
-                for (int i = 0; i < water_cup_count; i++) {
-                    //waterLayout1 물의 잔
-                    fullWater = new ImageView(context);
-                    fullWater.setBackgroundResource(R.drawable.icon_bottle_gray_10);
-                    fullWater.setLayoutParams(params);
-                    holderWater.water1Layout1.addView(fullWater);
-                    holderWater.water1Layout2.setVisibility(View.GONE);
-                }
-
-                //10잔일때 waterLayout2 잔여량
-
-                if (water_left_count > 0) {
-                    if (water_cup_count == 10) {
-                        holderWater.water1Layout2.setVisibility(View.VISIBLE);
-                        leftWater = new ImageView(context);
-                        leftWater.setBackgroundResource(calWaterIcon(water_left_count));
-                        leftWater.setLayoutParams(params);
-                        holderWater.water1Layout2.addView(leftWater);
-                    }
-                    leftWater = new ImageView(context);
-                    leftWater.setBackgroundResource(calWaterIcon(water_left_count));
-                    leftWater.setLayoutParams(params);
-                    holderWater.water1Layout1.addView(leftWater);
-                }
-
-
-            } else if (water_cup_count + 1 < 20) {
-                //waterLayout1 10잔 full
-                for (int i = 0; i < water_cup_count; i++) {
-                    fullWater = new ImageView(context);
-                    fullWater.setBackgroundResource(R.drawable.icon_bottle_gray_10);
-                    fullWater.setLayoutParams(params);
-                    holderWater.water1Layout1.addView(fullWater);
-                }
-                //waterLayout2 물의잔
-                for (int i = 0; i < water_cup_count - 10; i++) {
-                    fullWater = new ImageView(context);
-                    fullWater.setBackgroundResource(R.drawable.icon_bottle_gray_10);
-                    fullWater.setLayoutParams(params);
-                    holderWater.water1Layout2.addView(fullWater);
-                }
-                //waterLayout2 잔여량
-                if (water_cup_count == 20 && water_left_count > 0) {
-                    holderWater.water1Layout2.setVisibility(View.VISIBLE);
-                    leftWater = new ImageView(context);
-                    leftWater.setBackgroundResource(calWaterIcon(water_left_count));
-                    leftWater.setLayoutParams(params);
-                    holderWater.water1Layout2.addView(leftWater);
-                }
-
-
-            } else if (water_cup_count + 1 >= 20) {
-                for (int i = 0; i < 10; i++) {
-                    fullWater = new ImageView(context);
-                    fullWater2 = new ImageView(context);
-                    fullWater.setBackgroundResource(R.drawable.icon_bottle_gray_10);
-                    fullWater.setLayoutParams(params);
-                    fullWater2.setBackgroundResource(R.drawable.icon_bottle_gray_10);
-                    fullWater2.setLayoutParams(params);
-                    holderWater.water1Layout1.addView(fullWater);
-                    holderWater.water1Layout2.addView(fullWater2);
-
-                }
+            if (waterVolume >= 20) water_cup_count = 20;
+            for (int i = 0; i < water_cup_count; i++) {
+                fullWater = new ImageView(context);
+                fullWater.setBackgroundResource(R.drawable.icon_bottle_gray_10);
+                fullWater.setLayoutParams(params);
+                holderWater.gridWaterLayout.addView(fullWater);
             }
 
             //<--마신 잔 수 나타내기
-
-            float waterRecord = dBmanager.selectUserRecordDB(((RecordActivity) context).getToday()).getWaterRecord();
-            if (waterRecord == waterVolume) {
-                holderWater.water1Layout1.set
+            final int waterRecord = dBmanager.selectUserRecordDB(((RecordActivity) context).getToday()).getWaterRecord();
+            for (int i = 0; i < waterRecord; i++) {
+                holderWater.gridWaterLayout.getChildAt(i).setBackgroundResource(R.drawable.icon_bottle_checked);
+                holderWater.gridWaterLayout.getChildAt(i).setTag("checked");
             }
-
 
             holderWater.btWaterPlus.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    float waterRecord = dBmanager.selectUserRecordDB(((RecordActivity) context).getToday()).getWaterRecord();
+                    int waterRecord = dBmanager.selectUserRecordDB(((RecordActivity) context).getToday()).getWaterRecord();
                     if (waterRecord >= waterVolume) {
                         Toast.makeText(context, "이미 목표를 완료하였습니다.", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    Log.d("mox", "record:" + waterRecord);
-                    if (water_cup_count < 10) {
-                        for (int i = 0; i < 10; i++) {
-                            if (holderWater.water1Layout1.getChildAt(i).getTag() != "checked") {
-                                holderWater.water1Layout1.getChildAt(i).setBackgroundResource(R.drawable.icon_bottle_checked);
-                                holderWater.water1Layout1.getChildAt(i).setTag("checked");
-                                waterRecord = i + 1;
-                                break;
-                            }
-                        }
-                    } else if (water_cup_count == 10) {
-                        if (water_left_count > 0) {
-                            holderWater.water1Layout2.getChildAt(0).setBackgroundResource(R.drawable.icon_bottle_checked);
-                            holderWater.water1Layout1.getChildAt(0).setTag("checked");
-                            waterRecord = waterVolume;
-                            Toast.makeText(context, "목표를 완료하였습니다!.", Toast.LENGTH_SHORT).show();
-                        } else {
-                            waterRecord = 10;
-                            Toast.makeText(context, "이미 목표를 완료하였습니다.", Toast.LENGTH_SHORT).show();
-                        }
 
-                    } else if (water_cup_count < 20)
+                    holderWater.gridWaterLayout.getChildAt(waterRecord).setBackgroundResource(R.drawable.icon_bottle_checked);
+                    holderWater.gridWaterLayout.getChildAt(waterRecord).setTag("checked");
+                    waterRecord++;
 
-                    {
-                        for (int i = 0; i < 10; i++) {
-                            if (holderWater.water1Layout2.getChildAt(i).getTag() != "checked") {
-                                holderWater.water1Layout2.getChildAt(i).setBackgroundResource(R.drawable.icon_bottle_checked);
-                                break;
-                            }
-                        }
-
-                    } else if (water_cup_count >= 20)
-
-                    {
-                        Toast.makeText(context, "오늘 목표를 완료하였습니다.", Toast.LENGTH_SHORT).show();
-
-                    }
-
-                    holderWater.water1Layout1.invalidate();
-                    holderWater.water1Layout2.invalidate();
                     dBmanager.updateWaterRecord(waterRecord);
+                    holderWater.gridWaterLayout.invalidate();
+                }
+            });
+
+            holderWater.btWaterMinus.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int waterRecord = dBmanager.selectUserRecordDB(((RecordActivity) context).getToday()).getWaterRecord();
+                    if (waterRecord == 0) {
+                        Toast.makeText(context, "물 좀 드새오!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    holderWater.gridWaterLayout.getChildAt(waterRecord - 1).setBackgroundResource(R.drawable.icon_bottle_gray_10);
+                    holderWater.gridWaterLayout.getChildAt(waterRecord - 1).setTag(null);
+                    waterRecord--;
+
+                    dBmanager.updateWaterRecord(waterRecord);
+                    holderWater.gridWaterLayout.invalidate();
+                }
+            });
+
+            holderWater.btWaterSetting.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, WaterSettingActivity.class);
+                    context.startActivity(intent);
                 }
             });
 
 
+        } else if (position == 2) {
+            final ViewHolderWeight holderWeight = (ViewHolderWeight) holder;
+            holderWeight.textView.setText(item.description);
+            holderWeight.textView.setTextSize(19);
+            holderWeight.textView.setTextColor(context.getResources().getColor(android.R.color.white));
+            holderWeight.textView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+            holderWeight.itemView.setBackground(resource.getDrawable(R.drawable.layout_round_all));
+            holderWeight.expandableLayout.setBackground(resource.getDrawable(R.drawable.layout_round_bottom));
+            holderWeight.expandableLayout.setInterpolator(item.interpolator);
+            holderWeight.expandableLayout.setExpanded(expandState.get(position));
+            holderWeight.expandableLayout.setListener(new ExpandableLayoutListenerAdapter() {
+                @Override
+                public void onPreOpen() {
+                    createRotateAnimator(holderWeight.buttonLayout, 0f, 180f).start();
+                    holderWeight.itemView.setBackground(resource.getDrawable(R.drawable.layout_round_all));
+                    holderWeight.expandableLayout.setBackground(resource.getDrawable(R.drawable.layout_round_bottom));
+                    expandState.put(position, true);
+                }
+
+                @Override
+                public void onPreClose() {
+                    createRotateAnimator(holderWeight.buttonLayout, 180f, 0f).start();
+                    holderWeight.itemView.setBackground(resource.getDrawable(R.drawable.layout_round_all));
+                    expandState.put(position, false);
+                }
+            });
+            holderWeight.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onClickButton(holderWeight.expandableLayout);
+                }
+            });
+
+            holderWeight.buttonLayout.setRotation(expandState.get(position) ? 180f : 0f);
+            holderWeight.tvWeight.setText((dBmanager.selectUserInfoDB().getUserCurrWeight()) + "kg");
+            holderWeight.tvWeight.setTextColor(resource.getColor(R.color.Primary_text));
+            holderWeight.btWeightPlus.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    float weight = dBmanager.selectUserInfoDB().getUserCurrWeight() + 0.1f;
+                    Log.d("mox", weight + "");
+                    String strNumber = String.format("%.1f", weight);
+                    dBmanager.updateCurrWeight(Float.parseFloat(strNumber));
+                    holderWeight.tvWeight.setText(strNumber + "kg");
+                    holderWeight.expandableLayout.invalidate();
+                }
+            });
+            holderWeight.btWeightMinus.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    float weight = (float) (dBmanager.selectUserInfoDB().getUserCurrWeight() - 0.1);
+                    String strNumber = String.format("%.1f", weight);
+                    dBmanager.updateCurrWeight(Float.parseFloat(strNumber));
+                    holderWeight.tvWeight.setText(strNumber + "kg");
+                    holderWeight.expandableLayout.invalidate();
+                }
+            });
+
+
+        } else if (position == 3) {
+            final ViewHolderMeal holderMeal = (ViewHolderMeal) holder;
+            holderMeal.textView.setText(item.description);
+            holderMeal.textView.setTextSize(19);
+            holderMeal.textView.setTextColor(context.getResources().getColor(android.R.color.white));
+            holderMeal.textView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+            holderMeal.itemView.setBackground(resource.getDrawable(R.drawable.layout_round_all));
+            holderMeal.expandableLayout.setBackground(resource.getDrawable(R.drawable.layout_round_bottom));
+            holderMeal.expandableLayout.setInterpolator(item.interpolator);
+            holderMeal.expandableLayout.setExpanded(expandState.get(position));
+            holderMeal.expandableLayout.setListener(new ExpandableLayoutListenerAdapter() {
+                @Override
+                public void onPreOpen() {
+                    createRotateAnimator(holderMeal.buttonLayout, 0f, 180f).start();
+                    holderMeal.itemView.setBackground(resource.getDrawable(R.drawable.layout_round_all));
+                    holderMeal.expandableLayout.setBackground(resource.getDrawable(R.drawable.layout_round_bottom));
+                    expandState.put(position, true);
+                }
+
+                @Override
+                public void onPreClose() {
+                    createRotateAnimator(holderMeal.buttonLayout, 180f, 0f).start();
+                    holderMeal.itemView.setBackground(resource.getDrawable(R.drawable.layout_round_all));
+                    expandState.put(position, false);
+                }
+            });
+            holderMeal.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onClickButton(holderMeal.expandableLayout);
+                    holderMeal.itemView.setClickable(false);
+                }
+            });
+
+            holderMeal.buttonLayout.setRotation(expandState.get(position) ? 180f : 0f);
+            holderMeal.tvBreakfast.setTextColor(resource.getColor(R.color.Primary_text));
+            holderMeal.tvLunch.setTextColor(resource.getColor(R.color.Primary_text));
+            holderMeal.tvDinner.setTextColor(resource.getColor(R.color.Primary_text));
+            holderMeal.tvRefreshment.setTextColor(resource.getColor(R.color.Primary_text));
+            holderMeal.etBreakfast.setTextColor(resource.getColor(R.color.Primary_text));
+            holderMeal.etLunch.setTextColor(resource.getColor(R.color.Primary_text));
+            holderMeal.etDinner.setTextColor(resource.getColor(R.color.Primary_text));
+            holderMeal.etRefreshment.setTextColor(resource.getColor(R.color.Primary_text));
+
+
         }
 
     }
 
-    private int calWaterIcon(int water_left_count) {
-
-        switch (water_left_count) {
-            case 1:
-                return R.drawable.icon_bottle_gray_1;
-            case 2:
-                return R.drawable.icon_bottle_gray_2;
-            case 3:
-                return R.drawable.icon_bottle_gray_3;
-            case 4:
-                return R.drawable.icon_bottle_gray_4;
-            case 5:
-                return R.drawable.icon_bottle_gray_5;
-            case 6:
-                return R.drawable.icon_bottle_gray_6;
-            case 7:
-                return R.drawable.icon_bottle_gray_7;
-            case 8:
-                return R.drawable.icon_bottle_gray_8;
-            case 9:
-                return R.drawable.icon_bottle_gray_9;
-
-        }
-        throw new IndexOutOfBoundsException();
-    }
 
     private void onClickButton(final ExpandableLayout expandableLayout) {
         expandableLayout.toggle();
@@ -332,8 +343,8 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         public TextView textView;
         public RelativeLayout buttonLayout;
         public ExpandableRelativeLayout expandableLayout;
-        public LinearLayout water1Layout1;
-        public LinearLayout water1Layout2;
+        public GridLayout gridWaterLayout;
+        public ImageView btWaterSetting;
         public Button btWaterPlus;
         public Button btWaterMinus;
 
@@ -343,10 +354,10 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             textView = (TextView) v.findViewById(R.id.textView);
             buttonLayout = (RelativeLayout) v.findViewById(R.id.button);
             expandableLayout = (ExpandableRelativeLayout) v.findViewById(R.id.layout_water);
-            water1Layout1 = (LinearLayout) v.findViewById(R.id.layout_water_count_1);
-            water1Layout2 = (LinearLayout) v.findViewById(R.id.layout_water_count_2);
+            gridWaterLayout = (GridLayout) v.findViewById(R.id.layout_water_grid);
             btWaterPlus = (Button) v.findViewById(R.id.bt_water_plus);
             btWaterMinus = (Button) v.findViewById(R.id.bt_water_minus);
+            btWaterSetting = (ImageView) v.findViewById(R.id.bt_water_setting);
 
         }
     }
@@ -368,12 +379,19 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         public TextView textView;
         public RelativeLayout buttonLayout;
         public ExpandableRelativeLayout expandableLayout;
+        public TextView tvWeight;
+        public Button btWeightPlus;
+        public Button btWeightMinus;
 
         public ViewHolderWeight(View v) {
             super(v);
             textView = (TextView) v.findViewById(R.id.textView);
-            buttonLayout = (RelativeLayout) v.findViewById(R.id.button);
+            buttonLayout = (RelativeLayout) v.findViewById(R.id.button2);
             expandableLayout = (ExpandableRelativeLayout) v.findViewById(R.id.layout_weight);
+            tvWeight = (TextView) v.findViewById(R.id.tv_weight);
+            btWeightPlus = (Button) v.findViewById(R.id.bt_weight_plus);
+            btWeightMinus = (Button) v.findViewById(R.id.bt_weight_minus);
+
         }
     }
 
@@ -381,12 +399,28 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         public TextView textView;
         public RelativeLayout buttonLayout;
         public ExpandableRelativeLayout expandableLayout;
+        public TextView tvBreakfast;
+        public TextView tvLunch;
+        public TextView tvDinner;
+        public TextView tvRefreshment;
+        public EditText etBreakfast;
+        public EditText etLunch;
+        public EditText etDinner;
+        public EditText etRefreshment;
 
         public ViewHolderMeal(View v) {
             super(v);
             textView = (TextView) v.findViewById(R.id.textView);
-            buttonLayout = (RelativeLayout) v.findViewById(R.id.button);
+            buttonLayout = (RelativeLayout) v.findViewById(R.id.button3);
             expandableLayout = (ExpandableRelativeLayout) v.findViewById(R.id.layout_meal);
+            tvBreakfast = (TextView) v.findViewById(R.id.tv_breakfast);
+            tvLunch = (TextView) v.findViewById(R.id.tv_lunch);
+            tvDinner = (TextView) v.findViewById(R.id.tv_dinner);
+            tvRefreshment = (TextView) v.findViewById(R.id.tv_refreshment);
+            etBreakfast = (EditText)v.findViewById(R.id.et_breakfast);
+            etLunch = (EditText) v.findViewById(R.id.et_lunch);
+            etDinner = (EditText) v.findViewById(R.id.et_dinner);
+            etRefreshment = (EditText) v.findViewById(R.id.et_refreshment);
         }
     }
 
