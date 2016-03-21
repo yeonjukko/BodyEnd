@@ -324,6 +324,12 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             holderMeal.etDinner.setTextColor(resource.getColor(R.color.Primary_text));
             holderMeal.etRefreshment.setTextColor(resource.getColor(R.color.Primary_text));
 
+            holderMeal.etBreakfast.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                }
+            });
+
 
         }
 
