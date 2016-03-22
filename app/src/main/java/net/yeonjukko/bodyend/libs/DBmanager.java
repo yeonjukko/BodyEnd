@@ -12,6 +12,8 @@ import net.yeonjukko.bodyend.model.UserInfoModel;
 import net.yeonjukko.bodyend.model.UserRecordModel;
 import net.yeonjukko.bodyend.model.WaterAlarmInfoModel;
 
+import java.util.ArrayList;
+
 /**
  * Created by yeonjukko on 16. 3. 9..
  */
@@ -289,6 +291,31 @@ public class DBmanager {
         Log.d("mox", userRecordModel.toString());
         result.close();
         return userRecordModel;
+    }
+
+    public ArrayList<UserRecordModel> selectUserRecordDB() {
+        String SELECT_RECORD_INFO_ALL = "SELECT * FROM " + DATABASE_TABLE_2;
+
+        ArrayList<UserRecordModel> mUserRecordModels = new ArrayList<>();
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        Cursor result = db.rawQuery(SELECT_RECORD_INFO_ALL, null);
+
+        if (result.moveToFirst()) {
+            UserRecordModel userRecordModel = new UserRecordModel();
+            userRecordModel.setRecordDate(result.getInt(0));
+            userRecordModel.setPictureRecord(result.getString(1));
+            userRecordModel.setWeightRecord(result.getFloat(2));
+            userRecordModel.setWaterRecord(result.getInt(3));
+            userRecordModel.setWaterVolume(result.getInt(4));
+            userRecordModel.setMealBreakfast(result.getString(5));
+            userRecordModel.setMealLunch(result.getString(6));
+            userRecordModel.setMealDinner(result.getString(7));
+            userRecordModel.setMealRefreshments(result.getString(8));
+            mUserRecordModels.add(userRecordModel);
+        }
+        result.close();
+        return mUserRecordModels;
     }
 
     public WaterAlarmInfoModel selectWaterAlarmInfoDB() {
