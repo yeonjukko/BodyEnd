@@ -10,6 +10,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -32,10 +34,12 @@ import com.github.aakira.expandablelayout.Utils;
 import net.yeonjukko.bodyend.R;
 import net.yeonjukko.bodyend.activity.RecordActivity;
 import net.yeonjukko.bodyend.activity.settings.WaterSettingActivity;
-import net.yeonjukko.bodyend.model.UserInfoModel;
 import net.yeonjukko.bodyend.model.UserRecordModel;
 
 import java.util.List;
+
+import static net.yeonjukko.bodyend.R.drawable.layout_round_all;
+import static net.yeonjukko.bodyend.R.drawable.layout_round_bottom;
 
 
 public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -61,7 +65,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             expandState.append(1, true);
             expandState.append(2, true);
             expandState.append(3, false);
-            expandState.append(4, false);
+            expandState.append(4, true);
 
         }
     }
@@ -113,7 +117,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         final RecordItemModel item = data.get(position);
         final Resources resource = context.getResources();
-
+        UserRecordModel userRecordModel = dBmanager.selectUserRecordDB(((RecordActivity) context).getToday());
         if (position == 0) {
             // holderWater 설정
             final ViewHolderWater holderWater = (ViewHolderWater) holder;
@@ -121,7 +125,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             holderWater.textView.setTextSize(19);
             holderWater.textView.setTextColor(context.getResources().getColor(android.R.color.white));
             holderWater.textView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-            holderWater.itemView.setBackground(resource.getDrawable(R.drawable.layout_round_all));
+            holderWater.itemView.setBackground(resource.getDrawable(layout_round_all));
             holderWater.expandableLayout.setBackground(resource.getDrawable(R.drawable.layout_round_bottom));
             holderWater.expandableLayout.setInterpolator(item.interpolator);
             holderWater.expandableLayout.setExpanded(expandState.get(position));
@@ -129,7 +133,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 @Override
                 public void onPreOpen() {
                     createRotateAnimator(holderWater.buttonLayout, 0f, 180f).start();
-                    holderWater.itemView.setBackground(resource.getDrawable(R.drawable.layout_round_all));
+                    holderWater.itemView.setBackground(resource.getDrawable(layout_round_all));
                     holderWater.expandableLayout.setBackground(resource.getDrawable(R.drawable.layout_round_bottom));
                     expandState.put(position, true);
                 }
@@ -137,7 +141,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 @Override
                 public void onPreClose() {
                     createRotateAnimator(holderWater.buttonLayout, 180f, 0f).start();
-                    holderWater.itemView.setBackground(resource.getDrawable(R.drawable.layout_round_all));
+                    holderWater.itemView.setBackground(resource.getDrawable(layout_round_all));
                     expandState.put(position, false);
                 }
             });
@@ -151,7 +155,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             holderWater.buttonLayout.setRotation(expandState.get(position) ? 180f : 0f);
 
             //<--물 ui 설정
-            final float waterVolume = dBmanager.selectUserRecordDB(((RecordActivity) context).getToday()).getWaterVolume();
+            final float waterVolume = userRecordModel.getWaterVolume();
             int water_cup_count = (int) waterVolume;
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
@@ -189,7 +193,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                     holderWater.gridWaterLayout.getChildAt(waterRecord).setTag("checked");
                     waterRecord++;
 
-                    dBmanager.updateWaterRecord(waterRecord);
+                    dBmanager.updateWaterRecord(waterRecord, ((RecordActivity) context).getToday());
                     holderWater.gridWaterLayout.invalidate();
                 }
             });
@@ -206,7 +210,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                     holderWater.gridWaterLayout.getChildAt(waterRecord - 1).setTag(null);
                     waterRecord--;
 
-                    dBmanager.updateWaterRecord(waterRecord);
+                    dBmanager.updateWaterRecord(waterRecord, ((RecordActivity) context).getToday());
                     holderWater.gridWaterLayout.invalidate();
                 }
             });
@@ -220,13 +224,51 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             });
 
 
+        } else if (position == 1) {
+            final ViewHolderExercise holderExercise = (ViewHolderExercise) holder;
+            holderExercise.textView.setText(item.description);
+            holderExercise.textView.setTextSize(19);
+            holderExercise.textView.setTextColor(context.getResources().getColor(android.R.color.white));
+            holderExercise.textView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+            holderExercise.itemView.setBackground(resource.getDrawable(layout_round_all));
+            holderExercise.expandableLayout.setBackground(resource.getDrawable(R.drawable.layout_round_bottom));
+            holderExercise.expandableLayout.setInterpolator(item.interpolator);
+            holderExercise.expandableLayout.setExpanded(expandState.get(position));
+            holderExercise.expandableLayout.setListener(new ExpandableLayoutListenerAdapter() {
+                @Override
+                public void onPreOpen() {
+                    createRotateAnimator(holderExercise.buttonLayout, 0f, 180f).start();
+                    holderExercise.itemView.setBackground(resource.getDrawable(layout_round_all));
+                    holderExercise.expandableLayout.setBackground(resource.getDrawable(R.drawable.layout_round_bottom));
+                    expandState.put(position, true);
+                }
+
+                @Override
+                public void onPreClose() {
+                    createRotateAnimator(holderExercise.buttonLayout, 180f, 0f).start();
+                    holderExercise.itemView.setBackground(resource.getDrawable(layout_round_all));
+                    expandState.put(position, false);
+                }
+            });
+            holderExercise.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onClickButton(holderExercise.expandableLayout);
+                }
+            });
+            holderExercise.buttonLayout.setRotation(expandState.get(position) ? 180f : 0f);
+
+/*요기*/
+
+
+
         } else if (position == 2) {
             final ViewHolderWeight holderWeight = (ViewHolderWeight) holder;
             holderWeight.textView.setText(item.description);
             holderWeight.textView.setTextSize(19);
             holderWeight.textView.setTextColor(context.getResources().getColor(android.R.color.white));
             holderWeight.textView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-            holderWeight.itemView.setBackground(resource.getDrawable(R.drawable.layout_round_all));
+            holderWeight.itemView.setBackground(resource.getDrawable(layout_round_all));
             holderWeight.expandableLayout.setBackground(resource.getDrawable(R.drawable.layout_round_bottom));
             holderWeight.expandableLayout.setInterpolator(item.interpolator);
             holderWeight.expandableLayout.setExpanded(expandState.get(position));
@@ -234,7 +276,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 @Override
                 public void onPreOpen() {
                     createRotateAnimator(holderWeight.buttonLayout, 0f, 180f).start();
-                    holderWeight.itemView.setBackground(resource.getDrawable(R.drawable.layout_round_all));
+                    holderWeight.itemView.setBackground(resource.getDrawable(layout_round_all));
                     holderWeight.expandableLayout.setBackground(resource.getDrawable(R.drawable.layout_round_bottom));
                     expandState.put(position, true);
                 }
@@ -242,7 +284,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 @Override
                 public void onPreClose() {
                     createRotateAnimator(holderWeight.buttonLayout, 180f, 0f).start();
-                    holderWeight.itemView.setBackground(resource.getDrawable(R.drawable.layout_round_all));
+                    holderWeight.itemView.setBackground(resource.getDrawable(layout_round_all));
                     expandState.put(position, false);
                 }
             });
@@ -252,7 +294,6 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                     onClickButton(holderWeight.expandableLayout);
                 }
             });
-
             holderWeight.buttonLayout.setRotation(expandState.get(position) ? 180f : 0f);
             holderWeight.tvWeight.setText((dBmanager.selectUserInfoDB().getUserCurrWeight()) + "kg");
             holderWeight.tvWeight.setTextColor(resource.getColor(R.color.Primary_text));
@@ -263,7 +304,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                     float weight = dBmanager.selectUserInfoDB().getUserCurrWeight() + 0.1f;
                     Log.d("mox", weight + "");
                     String strNumber = String.format("%.1f", weight);
-                    dBmanager.updateCurrWeight(Float.parseFloat(strNumber));
+                    dBmanager.updateCurrWeight(Float.parseFloat(strNumber), ((RecordActivity) context).getToday());
                     holderWeight.tvWeight.setText(strNumber + "kg");
                     holderWeight.expandableLayout.invalidate();
                 }
@@ -273,7 +314,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 public void onClick(View v) {
                     float weight = (float) (dBmanager.selectUserInfoDB().getUserCurrWeight() - 0.1);
                     String strNumber = String.format("%.1f", weight);
-                    dBmanager.updateCurrWeight(Float.parseFloat(strNumber));
+                    dBmanager.updateCurrWeight(Float.parseFloat(strNumber), ((RecordActivity) context).getToday());
                     holderWeight.tvWeight.setText(strNumber + "kg");
                     holderWeight.expandableLayout.invalidate();
                 }
@@ -286,15 +327,15 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             holderMeal.textView.setTextSize(19);
             holderMeal.textView.setTextColor(context.getResources().getColor(android.R.color.white));
             holderMeal.textView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-            holderMeal.itemView.setBackground(resource.getDrawable(R.drawable.layout_round_all));
-            holderMeal.expandableLayout.setBackground(resource.getDrawable(R.drawable.layout_round_bottom));
+            holderMeal.itemView.setBackground(resource.getDrawable(layout_round_all));
+            holderMeal.expandableLayout.setBackground(resource.getDrawable(layout_round_bottom));
             holderMeal.expandableLayout.setInterpolator(item.interpolator);
             holderMeal.expandableLayout.setExpanded(expandState.get(position));
             holderMeal.expandableLayout.setListener(new ExpandableLayoutListenerAdapter() {
                 @Override
                 public void onPreOpen() {
                     createRotateAnimator(holderMeal.buttonLayout, 0f, 180f).start();
-                    holderMeal.itemView.setBackground(resource.getDrawable(R.drawable.layout_round_all));
+                    holderMeal.itemView.setBackground(resource.getDrawable(layout_round_all));
                     holderMeal.expandableLayout.setBackground(resource.getDrawable(R.drawable.layout_round_bottom));
                     expandState.put(position, true);
                 }
@@ -302,7 +343,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 @Override
                 public void onPreClose() {
                     createRotateAnimator(holderMeal.buttonLayout, 180f, 0f).start();
-                    holderMeal.itemView.setBackground(resource.getDrawable(R.drawable.layout_round_all));
+                    holderMeal.itemView.setBackground(resource.getDrawable(layout_round_all));
                     expandState.put(position, false);
                 }
             });
@@ -323,14 +364,114 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             holderMeal.etLunch.setTextColor(resource.getColor(R.color.Primary_text));
             holderMeal.etDinner.setTextColor(resource.getColor(R.color.Primary_text));
             holderMeal.etRefreshment.setTextColor(resource.getColor(R.color.Primary_text));
+            holderMeal.etBreakfast.setText(userRecordModel.getMealBreakfast());
+            holderMeal.etLunch.setText(userRecordModel.getMealLunch());
+            holderMeal.etDinner.setText(userRecordModel.getMealDinner());
+            holderMeal.etRefreshment.setText(userRecordModel.getMealRefreshments());
 
-            holderMeal.etBreakfast.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            holderMeal.etBreakfast.addTextChangedListener(new TextWatcher() {
                 @Override
-                public void onFocusChange(View v, boolean hasFocus) {
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    dBmanager.updateBreakfast(s.toString(), ((RecordActivity) context).getToday());
+                }
+            });
+            holderMeal.etLunch.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    dBmanager.updateLunch(s.toString(), ((RecordActivity) context).getToday());
+                }
+            });
+            holderMeal.etDinner.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    dBmanager.updateDinner(s.toString(), ((RecordActivity) context).getToday());
+                }
+            });
+            holderMeal.etRefreshment.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    dBmanager.updateRefreshment(s.toString(), ((RecordActivity) context).getToday());
                 }
             });
 
 
+        } else if (position == 4) {
+            final ViewHolderPicture holderPicture = (ViewHolderPicture) holder;
+            holderPicture.textView.setText(item.description);
+            holderPicture.textView.setTextSize(19);
+            holderPicture.textView.setTextColor(context.getResources().getColor(android.R.color.white));
+            holderPicture.textView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+            holderPicture.itemView.setBackground(resource.getDrawable(layout_round_all));
+            holderPicture.expandableLayout.setBackground(resource.getDrawable(R.drawable.layout_round_bottom));
+            holderPicture.expandableLayout.setInterpolator(item.interpolator);
+            holderPicture.expandableLayout.setExpanded(expandState.get(position));
+            holderPicture.expandableLayout.setListener(new ExpandableLayoutListenerAdapter() {
+                @Override
+                public void onPreOpen() {
+                    createRotateAnimator(holderPicture.buttonLayout, 0f, 180f).start();
+                    holderPicture.itemView.setBackground(resource.getDrawable(layout_round_all));
+                    holderPicture.expandableLayout.setBackground(resource.getDrawable(R.drawable.layout_round_bottom));
+                    expandState.put(position, true);
+                }
+
+                @Override
+                public void onPreClose() {
+                    createRotateAnimator(holderPicture.buttonLayout, 180f, 0f).start();
+                    holderPicture.itemView.setBackground(resource.getDrawable(layout_round_all));
+                    expandState.put(position, false);
+                }
+            });
+            holderPicture.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onClickButton(holderPicture.expandableLayout);
+                }
+            });
+            holderPicture.buttonLayout.setRotation(expandState.get(position) ? 180f : 0f);
+
+            if (!userRecordModel.getPictureRecord().equals("")) {
+                holderPicture.tvMessage.setVisibility(View.GONE);
+            }
         }
 
     }
@@ -376,7 +517,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         public ViewHolderExercise(View v) {
             super(v);
             textView = (TextView) v.findViewById(R.id.textView);
-            buttonLayout = (RelativeLayout) v.findViewById(R.id.button);
+            buttonLayout = (RelativeLayout) v.findViewById(R.id.button1);
             expandableLayout = (ExpandableRelativeLayout) v.findViewById(R.id.layout_exercise);
         }
     }
@@ -423,7 +564,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             tvLunch = (TextView) v.findViewById(R.id.tv_lunch);
             tvDinner = (TextView) v.findViewById(R.id.tv_dinner);
             tvRefreshment = (TextView) v.findViewById(R.id.tv_refreshment);
-            etBreakfast = (EditText)v.findViewById(R.id.et_breakfast);
+            etBreakfast = (EditText) v.findViewById(R.id.et_breakfast);
             etLunch = (EditText) v.findViewById(R.id.et_lunch);
             etDinner = (EditText) v.findViewById(R.id.et_dinner);
             etRefreshment = (EditText) v.findViewById(R.id.et_refreshment);
@@ -434,12 +575,17 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         public TextView textView;
         public RelativeLayout buttonLayout;
         public ExpandableRelativeLayout expandableLayout;
+        public LinearLayout messageLayout;
+        public TextView tvMessage;
+        public ImageView imageTodayPic;
 
         public ViewHolderPicture(View v) {
             super(v);
             textView = (TextView) v.findViewById(R.id.textView);
-            buttonLayout = (RelativeLayout) v.findViewById(R.id.button);
+            buttonLayout = (RelativeLayout) v.findViewById(R.id.button4);
             expandableLayout = (ExpandableRelativeLayout) v.findViewById(R.id.layout_picture);
+            messageLayout = (LinearLayout) v.findViewById(R.id.layout_message);
+            imageTodayPic = (ImageView) v.findViewById(R.id.image_today_picture);
         }
 
     }

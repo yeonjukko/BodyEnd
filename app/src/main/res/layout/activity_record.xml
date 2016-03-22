@@ -35,7 +35,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="36dp"
             android:gravity="center"
-            android:text="2015/3/16"
             android:textSize="20sp" />
 
         <TextView
@@ -47,7 +46,6 @@
             android:layout_below="@+id/tv_curr_date"
             android:gravity="center"
             android:alpha="255"
-            android:text="수요일"
             android:textSize="30sp"
             android:textStyle="bold" />
     </RelativeLayout>
