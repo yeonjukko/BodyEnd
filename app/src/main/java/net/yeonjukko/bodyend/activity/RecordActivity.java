@@ -27,6 +27,7 @@ import java.util.List;
 
 public class RecordActivity extends AppCompatActivity {
     public DBmanager dBmanager;
+    public int showDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +36,18 @@ public class RecordActivity extends AppCompatActivity {
         dBmanager = new DBmanager(this);
 
         //record 테이블 초기화 및 날짜 설정 메소드
+
+        //정각에만 실행
         insertUserRecord();
-        setLayout(getToday());
+        showDate = getToday();
+
+        //CalendarActivity에서 넘어올 때
+        Intent intent = getIntent();
+        if (intent.getIntExtra("showDate", getToday()) != getToday()) {
+            showDate = intent.getIntExtra("showDate", getToday());
+        }
+
+        setLayout(showDate);
 
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -70,7 +81,7 @@ public class RecordActivity extends AppCompatActivity {
                 R.color.Icons,
                 Utils.createInterpolator(Utils.ACCELERATE_DECELERATE_INTERPOLATOR)));
 
-        RecordRecyclerViewAdapter adapter = new RecordRecyclerViewAdapter(data);
+        RecordRecyclerViewAdapter adapter = new RecordRecyclerViewAdapter(data,showDate);
         recyclerView.setAdapter(adapter);
 
 
@@ -85,6 +96,8 @@ public class RecordActivity extends AppCompatActivity {
         String month = mDate.substring(4, 6);
         String date2 = mDate.substring(6, 8);
         tvCurrDate.setText(year + "/" + month + "/" + date2);
+        tvCurrDate.setTextColor(getResources().getColor(android.R.color.white));
+        tvCurrDay.setTextColor(getResources().getColor(android.R.color.white));
         Calendar date3 = Calendar.getInstance();
         date3.set(Integer.parseInt(year), Integer.parseInt(month) - 1, Integer.parseInt(date2));
 

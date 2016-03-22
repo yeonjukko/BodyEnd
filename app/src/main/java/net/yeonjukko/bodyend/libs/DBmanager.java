@@ -96,8 +96,9 @@ public class DBmanager {
         }
 
     }
-    public void updateBreakfast(String breakfast,int date) {
-        String UPDATE_MEAL_BREAKFAST = "UPDATE " + DATABASE_TABLE_2 + " SET MEAL_BREAKFAST=" +"'"+breakfast +"'"+ " WHERE RECORD_DATE=" + date;
+
+    public void updateBreakfast(String breakfast, int date) {
+        String UPDATE_MEAL_BREAKFAST = "UPDATE " + DATABASE_TABLE_2 + " SET MEAL_BREAKFAST=" + "'" + breakfast + "'" + " WHERE RECORD_DATE=" + date;
 
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
@@ -105,16 +106,18 @@ public class DBmanager {
         Log.d("mox", selectUserRecordDB(20160322).getMealBreakfast() + "db");
         db.close();
     }
-    public void updateLunch(String lunch,int date) {
-        String UPDATE_MEAL_LUNCH = "UPDATE " + DATABASE_TABLE_2 + " SET MEAL_LUNCH="+ "'"+lunch +"'"+ " WHERE RECORD_DATE=" + date;
+
+    public void updateLunch(String lunch, int date) {
+        String UPDATE_MEAL_LUNCH = "UPDATE " + DATABASE_TABLE_2 + " SET MEAL_LUNCH=" + "'" + lunch + "'" + " WHERE RECORD_DATE=" + date;
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(UPDATE_MEAL_LUNCH);
         Log.d("mox", selectUserRecordDB(20160322).getMealLunch() + "db");
         db.close();
     }
-    public void updateDinner(String dinner,int date) {
-        String UPDATE_MEAL_DINNER = "UPDATE " + DATABASE_TABLE_2 + " SET MEAL_DINNER="+"'"+dinner +"'"+ " WHERE RECORD_DATE=" + date;
+
+    public void updateDinner(String dinner, int date) {
+        String UPDATE_MEAL_DINNER = "UPDATE " + DATABASE_TABLE_2 + " SET MEAL_DINNER=" + "'" + dinner + "'" + " WHERE RECORD_DATE=" + date;
 
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
@@ -123,8 +126,9 @@ public class DBmanager {
 
         db.close();
     }
-    public void updateRefreshment(String refreshment,int date) {
-        String UPDATE_MEAL_REFRESHMENT = "UPDATE " + DATABASE_TABLE_2 + " SET MEAL_REFRESHMENTS=" +"'"+refreshment +"'"+ " WHERE RECORD_DATE=" + date;
+
+    public void updateRefreshment(String refreshment, int date) {
+        String UPDATE_MEAL_REFRESHMENT = "UPDATE " + DATABASE_TABLE_2 + " SET MEAL_REFRESHMENTS=" + "'" + refreshment + "'" + " WHERE RECORD_DATE=" + date;
 
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
@@ -134,16 +138,14 @@ public class DBmanager {
         db.close();
     }
 
-    public void updateCurrWeight(float weight,int date) {
+    public void updateCurrWeight(float weight, int date) {
         String UPDATE_CURR_WEIGHT_RECORD = "UPDATE " + DATABASE_TABLE_1 + " SET USER_CURR_WEIGHT=" + weight;
-        String UPDATE_TODAY_WEIGHT_RECORD = "UPDATE " + DATABASE_TABLE_2 + " SET WEIGHT_RECORD=" + weight+ " WHERE RECORD_DATE=" + date;
+        String UPDATE_TODAY_WEIGHT_RECORD = "UPDATE " + DATABASE_TABLE_2 + " SET WEIGHT_RECORD=" + weight + " WHERE RECORD_DATE=" + date;
 
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(UPDATE_CURR_WEIGHT_RECORD);
         db.execSQL(UPDATE_TODAY_WEIGHT_RECORD);
-        Log.d("mox", selectUserRecordDB(20160321).getWeightRecord() + "db");
-        Log.d("mox", selectUserInfoDB().getUserCurrWeight() + "db");
         db.close();
     }
 
@@ -175,8 +177,8 @@ public class DBmanager {
         db.close();
     }
 
-    public void updateWaterRecord(int drinkWater,int date) {
-        String UPDATE_WATER_RECORD = "UPDATE " + DATABASE_TABLE_2 + " SET WATER_RECORD=" + drinkWater+ " WHERE RECORD_DATE=" + date;
+    public void updateWaterRecord(int drinkWater, int date) {
+        String UPDATE_WATER_RECORD = "UPDATE " + DATABASE_TABLE_2 + " SET WATER_RECORD=" + drinkWater + " WHERE RECORD_DATE=" + date;
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(UPDATE_WATER_RECORD);
@@ -221,10 +223,9 @@ public class DBmanager {
         this.mDbHelper = new DatabaseHelper(context);
 
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        db.execSQL("delete from " + DATABASE_TABLE_2);
+        //db.execSQL("delete from " + DATABASE_TABLE_2);
         try {
             db.execSQL(INSERT_RECORD_INFO);
-
         } catch (SQLiteConstraintException e) {
             e.printStackTrace();
         }
@@ -275,6 +276,8 @@ public class DBmanager {
             userRecordModel.setMealDinner(result.getString(7));
             userRecordModel.setMealRefreshments(result.getString(8));
         }
+        Log.d("mox", userRecordModel.getRecordDate() + "");
+        Log.d("mox", userRecordModel.toString());
         result.close();
         return userRecordModel;
     }
