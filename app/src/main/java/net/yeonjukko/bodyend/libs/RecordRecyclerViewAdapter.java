@@ -9,6 +9,9 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -32,6 +36,7 @@ import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
 import com.github.aakira.expandablelayout.Utils;
 
 import net.yeonjukko.bodyend.R;
+import net.yeonjukko.bodyend.activity.CameraActivity;
 import net.yeonjukko.bodyend.activity.RecordActivity;
 import net.yeonjukko.bodyend.activity.settings.WaterSettingActivity;
 import net.yeonjukko.bodyend.model.UserRecordModel;
@@ -53,6 +58,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     private int VIEW_TYPE_MEAL = 103;
     private int VIEW_TYPE_PICTURE = 104;
     private int VIEW_TYPE_ERROR = 105;
+    public static final int REQUEST_CAMERA_CODE = 486;
     private int showDate;
 
     DBmanager dBmanager;
@@ -165,7 +171,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             ImageView fullWater;
 
             //<--물 기록 UI 설정 부분
-
+            holderWater.gridWaterLayout.removeAllViews();
             if (waterVolume >= 20) water_cup_count = 20;
             for (int i = 0; i < water_cup_count; i++) {
                 fullWater = new ImageView(context);
@@ -478,9 +484,21 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             });
             holderPicture.buttonLayout.setRotation(expandState.get(position) ? 180f : 0f);
 
+            holderPicture.btCamera.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, CameraActivity.class);
+                    ((RecordActivity)context).startActivityForResult(intent,REQUEST_CAMERA_CODE);
+
+                }
+            });
+
             if (!userRecordModel.getPictureRecord().equals("")) {
-                holderPicture.tvMessage.setVisibility(View.GONE);
+                Bitmap bitmap = BitmapFactory.decodeFile(userRecordModel.getPictureRecord());
+                holderPicture.imageTodayPic.setImageBitmap(bitmap);
             }
+
+
         }
 
     }
@@ -585,8 +603,8 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         public RelativeLayout buttonLayout;
         public ExpandableRelativeLayout expandableLayout;
         public LinearLayout messageLayout;
-        public TextView tvMessage;
         public ImageView imageTodayPic;
+        public ImageButton btCamera;
 
         public ViewHolderPicture(View v) {
             super(v);
@@ -595,6 +613,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             expandableLayout = (ExpandableRelativeLayout) v.findViewById(R.id.layout_picture);
             messageLayout = (LinearLayout) v.findViewById(R.id.layout_message);
             imageTodayPic = (ImageView) v.findViewById(R.id.image_today_picture);
+            btCamera = (ImageButton)v.findViewById(R.id.bt_camera);
         }
 
     }

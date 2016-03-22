@@ -2,6 +2,9 @@ package net.yeonjukko.bodyend.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
@@ -116,8 +119,13 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
                     public void onPictureTaken(byte[] data, Camera camera) {
                         File save = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "BodyEnd_" + System.currentTimeMillis());
                         try {
+                            Bitmap bitmapOrg = BitmapFactory.decodeByteArray(data, 0, data.length);
+
                             BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(save));
-                            out.write(data);
+                            Matrix matrix = new Matrix();
+                            matrix.postRotate(90);
+                            Bitmap rotate = Bitmap.createBitmap(bitmapOrg, 0, 0, bitmapOrg.getWidth(), bitmapOrg.getHeight(), matrix, true);
+                            rotate.compress(Bitmap.CompressFormat.JPEG, 100, out);
                             out.close();
 
                             Intent intent = new Intent();

@@ -28,6 +28,7 @@ import java.util.List;
 public class RecordActivity extends AppCompatActivity {
     public DBmanager dBmanager;
     public int showDate;
+    RecordRecyclerViewAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +82,7 @@ public class RecordActivity extends AppCompatActivity {
                 R.color.Icons,
                 Utils.createInterpolator(Utils.ACCELERATE_DECELERATE_INTERPOLATOR)));
 
-        RecordRecyclerViewAdapter adapter = new RecordRecyclerViewAdapter(data,showDate);
+        adapter = new RecordRecyclerViewAdapter(data, showDate);
         recyclerView.setAdapter(adapter);
 
 
@@ -162,7 +163,18 @@ public class RecordActivity extends AppCompatActivity {
             strDate = date + "";
 
 
-        String today = year + "" + strMonth + "" + strDate;
+        String today = year +strMonth +strDate;
         return Integer.parseInt(today);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == RecordRecyclerViewAdapter.REQUEST_CAMERA_CODE) {
+            String imagePath = data.getStringExtra(CameraActivity.FLAG_FILE_PATH);
+            Log.d("image1", imagePath);
+            dBmanager.updatePictureRecord(imagePath, showDate);
+            adapter.notifyDataSetChanged();
+        }
     }
 }

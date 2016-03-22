@@ -96,6 +96,15 @@ public class DBmanager {
         }
 
     }
+    public void updatePictureRecord(String imgPath, int date) {
+        String UPDATE_IMAGE = "UPDATE " + DATABASE_TABLE_2 + " SET PICTURE_RECORD=" + "'" + imgPath + "'" + " WHERE RECORD_DATE=" + date;
+
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        db.execSQL(UPDATE_IMAGE);
+        Log.d("mox", selectUserRecordDB(20160322).getPictureRecord() + "db");
+        db.close();
+    }
 
     public void updateBreakfast(String breakfast, int date) {
         String UPDATE_MEAL_BREAKFAST = "UPDATE " + DATABASE_TABLE_2 + " SET MEAL_BREAKFAST=" + "'" + breakfast + "'" + " WHERE RECORD_DATE=" + date;
