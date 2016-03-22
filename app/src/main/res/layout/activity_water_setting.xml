@@ -1,0 +1,196 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:toggle="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/Background"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:id="@+id/layout_water_volume"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:background="@android:color/white"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginStart="15dp"
+            android:layout_weight="1"
+            android:text="@string/water_goal_volume" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:layout_marginRight="15dp"
+            android:gravity="center_vertical|right">
+
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@drawable/icon_bottle_10" />
+
+            <TextView
+                android:id="@+id/tv_water_goal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="잔" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/Divider" />
+
+    <com.fenjuly.mylibrary.DropDownLayout
+        android:id="@+id/dropDownLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.fenjuly.mylibrary.ToggleExpandLayout
+            android:id="@+id/toogleLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp">
+
+            <LinearLayout
+                android:id="@+id/id2"
+                android:layout_width="match_parent"
+                android:layout_height="75dp"
+                android:background="#ffffff"
+                android:elevation="2dp"
+                android:outlineProvider="bounds">
+
+                <TextView
+                    android:id="@+id/first_menu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:layout_marginStart="15dp"
+                    android:layout_weight="1"
+                    android:text="@string/water_alarm_time" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="right"
+                    android:layout_marginEnd="16dp"
+                    android:layout_weight="2"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_start_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+
+                    <TextView
+                        android:id="@+id/tv_stop_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/id3"
+                android:layout_width="match_parent"
+                android:layout_height="75dp"
+                android:background="#ffffff"
+                android:elevation="3dp"
+                android:orientation="horizontal"
+                android:outlineProvider="bounds">
+
+                <TextView
+                    android:id="@+id/second_menu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:layout_marginLeft="15dp"
+                    android:layout_weight="7"
+                    android:text="@string/water_alarm_period" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:gravity="right"
+                    android:layout_marginRight="20dp"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/tv_alarm_period"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="15" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="분 마다" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/id4"
+                android:layout_width="match_parent"
+                android:layout_height="75dp"
+                android:background="#ffffff"
+                android:elevation="4dp"
+                android:outlineProvider="bounds">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/menu"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="left|center_vertical"
+                        android:layout_marginLeft="15dp"
+                        android:text="@string/water_alarm_setting" />
+
+
+                    <com.zcw.togglebutton.ToggleButton
+                        android:id="@+id/switch_button"
+                        android:layout_width="54dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="right|center_vertical"
+                        android:layout_marginRight="10dp"
+                        android:padding="16dp"
+                        toggle:borderWidth="0.45dp"
+                        toggle:offBorderColor="#ddd"
+                        toggle:offColor="#ffffff"
+                        toggle:onColor="#3CF07A"
+                        toggle:spotColor="#ffffff" />
+                </FrameLayout>
+
+            </LinearLayout>
+
+        </com.fenjuly.mylibrary.ToggleExpandLayout>
+
+
+    </com.fenjuly.mylibrary.DropDownLayout>
+
+</LinearLayout>

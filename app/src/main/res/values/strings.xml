@@ -14,5 +14,26 @@
     <string name="target_2_words">목표 한마디 : </string>
     <string name="target_3_picture">다이어트 자극 사진 : </string>
 
+    <string name="stimulus_word">목표 :</string>
+    <string name="stimulus_dday">D -</string>
+
+    <string name="record_water">물 기록</string>
+    <string name="record_exercise">운동 기록</string>
+    <string name="record_weight">체중 기록</string>
+    <string name="record_meal">식사 기록</string>
+    <string name="record_picture">사진 기록</string>
+
+    <string name="record_water_setting">물 기록 설정</string>
+    <string name="record_exercise_setting">운동 기록 설정</string>
+    <string name="record_weight_setting">체중 기록 설정</string>
+    <string name="record_meal_setting">식사 기록 설정</string>
+    <string name="record_picture_setting">사진 기록 설정</string>
+
+    <string name="water_goal_volume">하루 물 섭취 권장량</string>
+    <string name="water_alarm_setting">물 알람 설정</string>
+    <string name="water_alarm_period">알람 주기</string>
+    <string name="water_alarm_time">알람 시간대</string>
+
+
 
 </resources>
