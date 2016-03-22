@@ -25,6 +25,7 @@
 
         <item name="colorAccent">@color/Accent</item>
     </style>
+
     <style name="MySettingTheme" parent="Theme.AppCompat.Light">
         <item name="colorPrimary">@color/Primary</item>
         <item name="android:textColorPrimary">@color/Primary_text</item>
@@ -32,6 +33,19 @@
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/Primary_text</item>
 
+    </style>
 
+    <style name="BodyEndCaldroid" parent="CaldroidDefault">
+        <item name="styleCaldroidGridView">@style/BodyEndGridView</item>
+    </style>
+
+
+    <style name="BodyEndGridView" parent="@style/CaldroidDefaultDarkCalendarViewLayout">
+        <item name="android:background">@android:color/white</item>
+        <item name="android:paddingLeft">0.5dp</item>
+        <item name="android:paddingRight">0.5dp</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:layout_margin">0dp</item>
     </style>
 </resources>
