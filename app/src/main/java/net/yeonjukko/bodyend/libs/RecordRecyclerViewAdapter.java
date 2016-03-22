@@ -53,13 +53,14 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     private int VIEW_TYPE_MEAL = 103;
     private int VIEW_TYPE_PICTURE = 104;
     private int VIEW_TYPE_ERROR = 105;
-
+    private int showDate;
 
     DBmanager dBmanager;
     LayoutInflater inflater;
 
-    public RecordRecyclerViewAdapter(final List<RecordItemModel> data) {
+    public RecordRecyclerViewAdapter(final List<RecordItemModel> data, int showDate) {
         this.data = data;
+        this.showDate = showDate;
         for (int i = 0; i < data.size(); i++) {
             expandState.append(0, true);
             expandState.append(1, true);
@@ -117,7 +118,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         final RecordItemModel item = data.get(position);
         final Resources resource = context.getResources();
-        UserRecordModel userRecordModel = dBmanager.selectUserRecordDB(((RecordActivity) context).getToday());
+        UserRecordModel userRecordModel = dBmanager.selectUserRecordDB(showDate);
         if (position == 0) {
             // holderWater 설정
             final ViewHolderWater holderWater = (ViewHolderWater) holder;
@@ -174,7 +175,8 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             }
 
             //<--마신 잔 수 나타내기
-            final int waterRecord = dBmanager.selectUserRecordDB(((RecordActivity) context).getToday()).getWaterRecord();
+            int waterRecord = dBmanager.selectUserRecordDB(showDate).getWaterRecord();
+            Log.d("mox",dBmanager.selectUserRecordDB(showDate).getWaterRecord()+"waterRecord");
             for (int i = 0; i < waterRecord; i++) {
                 holderWater.gridWaterLayout.getChildAt(i).setBackgroundResource(R.drawable.icon_bottle_checked);
                 holderWater.gridWaterLayout.getChildAt(i).setTag("checked");
@@ -183,7 +185,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             holderWater.btWaterPlus.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int waterRecord = dBmanager.selectUserRecordDB(((RecordActivity) context).getToday()).getWaterRecord();
+                    int waterRecord = dBmanager.selectUserRecordDB(showDate).getWaterRecord();
                     if (waterRecord >= waterVolume) {
                         Toast.makeText(context, "이미 목표를 완료하였습니다.", Toast.LENGTH_SHORT).show();
                         return;
@@ -192,8 +194,8 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                     holderWater.gridWaterLayout.getChildAt(waterRecord).setBackgroundResource(R.drawable.icon_bottle_checked);
                     holderWater.gridWaterLayout.getChildAt(waterRecord).setTag("checked");
                     waterRecord++;
-
-                    dBmanager.updateWaterRecord(waterRecord, ((RecordActivity) context).getToday());
+                    dBmanager.updateWaterRecord(waterRecord, showDate);
+                    //dBmanager.updateWaterRecord(waterRecord, ((RecordActivity) context).getToday());
                     holderWater.gridWaterLayout.invalidate();
                 }
             });
@@ -201,7 +203,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             holderWater.btWaterMinus.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int waterRecord = dBmanager.selectUserRecordDB(((RecordActivity) context).getToday()).getWaterRecord();
+                    int waterRecord = dBmanager.selectUserRecordDB(showDate).getWaterRecord();
                     if (waterRecord == 0) {
                         Toast.makeText(context, "물 좀 드새오!", Toast.LENGTH_SHORT).show();
                         return;
@@ -209,8 +211,9 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                     holderWater.gridWaterLayout.getChildAt(waterRecord - 1).setBackgroundResource(R.drawable.icon_bottle_gray_10);
                     holderWater.gridWaterLayout.getChildAt(waterRecord - 1).setTag(null);
                     waterRecord--;
+                    dBmanager.updateWaterRecord(waterRecord, showDate);
 
-                    dBmanager.updateWaterRecord(waterRecord, ((RecordActivity) context).getToday());
+                    //dBmanager.updateWaterRecord(waterRecord, ((RecordActivity) context).getToday());
                     holderWater.gridWaterLayout.invalidate();
                 }
             });
@@ -304,7 +307,8 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                     float weight = dBmanager.selectUserInfoDB().getUserCurrWeight() + 0.1f;
                     Log.d("mox", weight + "");
                     String strNumber = String.format("%.1f", weight);
-                    dBmanager.updateCurrWeight(Float.parseFloat(strNumber), ((RecordActivity) context).getToday());
+                    dBmanager.updateCurrWeight(Float.parseFloat(strNumber), showDate);
+                    //dBmanager.updateCurrWeight(Float.parseFloat(strNumber), ((RecordActivity) context).getToday());
                     holderWeight.tvWeight.setText(strNumber + "kg");
                     holderWeight.expandableLayout.invalidate();
                 }
@@ -314,7 +318,8 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 public void onClick(View v) {
                     float weight = (float) (dBmanager.selectUserInfoDB().getUserCurrWeight() - 0.1);
                     String strNumber = String.format("%.1f", weight);
-                    dBmanager.updateCurrWeight(Float.parseFloat(strNumber), ((RecordActivity) context).getToday());
+                    dBmanager.updateCurrWeight(Float.parseFloat(strNumber), showDate);
+                    //dBmanager.updateCurrWeight(Float.parseFloat(strNumber), ((RecordActivity) context).getToday());
                     holderWeight.tvWeight.setText(strNumber + "kg");
                     holderWeight.expandableLayout.invalidate();
                 }
@@ -382,7 +387,8 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    dBmanager.updateBreakfast(s.toString(), ((RecordActivity) context).getToday());
+                    dBmanager.updateBreakfast(s.toString(),showDate);
+                    //dBmanager.updateBreakfast(s.toString(), ((RecordActivity) context).getToday());
                 }
             });
             holderMeal.etLunch.addTextChangedListener(new TextWatcher() {
@@ -398,7 +404,8 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    dBmanager.updateLunch(s.toString(), ((RecordActivity) context).getToday());
+                    dBmanager.updateLunch(s.toString(), showDate);
+                    //dBmanager.updateLunch(s.toString(), ((RecordActivity) context).getToday());
                 }
             });
             holderMeal.etDinner.addTextChangedListener(new TextWatcher() {
@@ -414,7 +421,8 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    dBmanager.updateDinner(s.toString(), ((RecordActivity) context).getToday());
+                    dBmanager.updateDinner(s.toString(), showDate);
+                    //dBmanager.updateDinner(s.toString(), ((RecordActivity) context).getToday());
                 }
             });
             holderMeal.etRefreshment.addTextChangedListener(new TextWatcher() {
@@ -430,7 +438,8 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    dBmanager.updateRefreshment(s.toString(), ((RecordActivity) context).getToday());
+                    //dBmanager.updateRefreshment(s.toString(), ((RecordActivity) context).getToday());
+                    dBmanager.updateRefreshment(s.toString(), ((RecordActivity) context).showDate);
                 }
             });
 

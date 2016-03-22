@@ -1,5 +1,7 @@
 package net.yeonjukko.bodyend.model;
 
+import java.util.HashMap;
+
 /**
  * Created by yeonjukko on 16. 3. 17..
  */
@@ -13,9 +15,6 @@ public class UserRecordModel {
     private String mealLunch;
     private String mealDinner;
     private String mealRefreshments;
-
-
-
 
 
     public int getRecordDate() {
@@ -88,5 +87,20 @@ public class UserRecordModel {
 
     public void setMealRefreshments(String mealRefreshments) {
         this.mealRefreshments = mealRefreshments;
+    }
+
+    @Override
+    public String toString() {
+        HashMap<String, Object> tmp = new HashMap<>();
+        tmp.put("recordDate", recordDate);
+        tmp.put("pictureRecord", pictureRecord);
+        tmp.put("weightRecord", weightRecord);
+        tmp.put("waterRecord", waterRecord);
+        tmp.put("waterVolume", waterVolume);
+        tmp.put("mealBreakfast", mealBreakfast);
+        tmp.put("mealLunch", mealLunch);
+        tmp.put("mealDinner", mealDinner);
+        tmp.put("mealRefreshments", mealRefreshments);
+        return tmp.toString();
     }
 }
