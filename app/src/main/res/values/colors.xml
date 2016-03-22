@@ -5,11 +5,13 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="Primary">#FF8CA4</color>
+
     <color name="Primary_dark">#0097A7</color>
     <color name="Primary_light">#B2EBF2</color>
     <color name="Accent">#FF8CA4</color>
+
     <color name="Background">#56D9D0</color>
-    <color name="Primary_text">#212121</color>
+    <color name="Primary_text">#000000</color>
     <color name="Secondary_text">#727272</color>
     <color name="Icons">#FFFFFF</color>
     <color name="Divider">#A0A0A0</color>
