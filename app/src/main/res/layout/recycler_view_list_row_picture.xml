@@ -46,33 +46,35 @@
         android:id="@+id/layout_picture"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/layout_round_bottom"
+        android:background="@drawable/layout_default"
         app:ael_duration="400"
         app:ael_expanded="false"
         app:ael_orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/layout_message"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginStart="8dp"
-            android:background="@drawable/bgr_picture"
-            android:gravity="center">
-
-            <ImageButton
-                android:id="@+id/bt_camera"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:background="@null"
-                android:src="@drawable/icon_camera" />
-        </LinearLayout>
-
         <ImageView
+            android:visibility="gone"
             android:id="@+id/image_today_picture"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:adjustViewBounds="true"
+            android:padding="20dp"
+            android:scaleType="fitXY"/>
 
     </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
+
+    <ImageButton
+        android:id="@+id/bt_camera"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_alignBottom="@id/layout_picture"
+        android:background="@drawable/bgr_picture"
+        android:src="@drawable/icon_camera" />
+    <ImageButton
+        android:id="@+id/test"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_alignBottom="@id/bt_camera"
+        android:src="@drawable/icon_camera" />
 
 </LinearLayout>

@@ -1,11 +1,14 @@
 package net.yeonjukko.bodyend.activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import com.github.aakira.expandablelayout.Utils;
@@ -163,7 +166,7 @@ public class RecordActivity extends AppCompatActivity {
             strDate = date + "";
 
 
-        String today = year +strMonth +strDate;
+        String today = year + strMonth + strDate;
         return Integer.parseInt(today);
     }
 
@@ -172,9 +175,19 @@ public class RecordActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == RecordRecyclerViewAdapter.REQUEST_CAMERA_CODE) {
             String imagePath = data.getStringExtra(CameraActivity.FLAG_FILE_PATH);
-            Log.d("image1", imagePath);
             dBmanager.updatePictureRecord(imagePath, showDate);
-            adapter.notifyDataSetChanged();
+//            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+//            ((RecordRecyclerViewAdapter.ViewHolderPicture)RecordRecyclerViewAdapter.holderTest).imageTodayPic.setImageBitmap(bitmap);
+//            ((RecordRecyclerViewAdapter.ViewHolderPicture)RecordRecyclerViewAdapter.holderTest).imageTodayPic.setVisibility(View.VISIBLE);
+//           Log.d("mox2",((RecordRecyclerViewAdapter.ViewHolderPicture)RecordRecyclerViewAdapter.holderTest).imageTodayPic.getVisibility()+"visible");
+//                   ((RecordRecyclerViewAdapter.ViewHolderPicture) RecordRecyclerViewAdapter.holderTest).expandableLayout.invalidate();
+
+            this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.notifyDataSetChanged();
+                }
+            });
         }
     }
 }

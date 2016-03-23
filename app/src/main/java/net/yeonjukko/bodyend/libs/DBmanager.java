@@ -104,7 +104,16 @@ public class DBmanager {
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(UPDATE_IMAGE);
-        Log.d("mox", selectUserRecordDB(20160322).getPictureRecord() + "db");
+        Log.d("mox", selectUserRecordDB(20160323).getPictureRecord() + "db");
+        db.close();
+    }
+    public void updatePictureRecordTest(int date) {
+        String UPDATE_IMAGE = "UPDATE " + DATABASE_TABLE_2 + " SET PICTURE_RECORD=" + "''" + " WHERE RECORD_DATE=" + date;
+
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        db.execSQL(UPDATE_IMAGE);
+        Log.d("mox", selectUserRecordDB(20160323).getPictureRecord() + "db");
         db.close();
     }
 
