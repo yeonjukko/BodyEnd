@@ -6,11 +6,17 @@ package net.yeonjukko.bodyend.libs;
 
 
 import android.animation.ObjectAnimator;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
+import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -21,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
@@ -34,21 +41,27 @@ import com.github.aakira.expandablelayout.ExpandableLayout;
 import com.github.aakira.expandablelayout.ExpandableLayoutListenerAdapter;
 import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
 import com.github.aakira.expandablelayout.Utils;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
 
 import net.yeonjukko.bodyend.R;
 import net.yeonjukko.bodyend.activity.CameraActivity;
 import net.yeonjukko.bodyend.activity.RecordActivity;
 import net.yeonjukko.bodyend.activity.settings.AttendanceMapAcitivity;
 import net.yeonjukko.bodyend.activity.settings.WaterSettingActivity;
+import net.yeonjukko.bodyend.model.ExerciseSpotInfoModel;
 import net.yeonjukko.bodyend.model.UserRecordModel;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 import static net.yeonjukko.bodyend.R.drawable.layout_round_all;
 import static net.yeonjukko.bodyend.R.drawable.layout_round_bottom;
 
 
-public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private final List<RecordItemModel> data;
     private Context context;
@@ -63,6 +76,8 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     private int i = 0;
     private int showDate;
     public static RecyclerView.ViewHolder holderTest;
+    private Handler mHandler = new Handler();
+    private ProgressDialog mProgressDialog;
 
 
     DBmanager dBmanager;
@@ -282,8 +297,31 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                     context.startActivity(intent);
                 }
             });
+            holderExercise.cbAttendance.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                        ArrayList<ExerciseSpotInfoModel> models = dBmanager.selectExerciseSpotsInfo();
+                        int size = models.size();
+                        String items[] = new String[size];
+                        for (int i = 0; i < dBmanager.selectExerciseSpotsInfo().size(); i++) {
+                            items[i] = models.get(i).getSpotName();
+                        }
+                        builder.setTitle("출석체크 할 장소를 선택해주세요. ")
+                                .setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        mProgressDialog = ProgressDialog.show(context, "",
+                                                "잠시만 기다려 주세요.", true);
+//                                        buildGoogleApiClient();
+//                                        createLocationRequest();
 
-/*요기*/
+                                    }
+                                }).show();
+                    }
+                }
+            });
 
 
         } else if (position == 2) {
@@ -528,6 +566,8 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         return data.size();
     }
 
+
+
     public static class ViewHolderWater extends RecyclerView.ViewHolder {
         public TextView textView;
         public RelativeLayout buttonLayout;
@@ -566,7 +606,8 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             expandableLayout = (ExpandableRelativeLayout) v.findViewById(R.id.layout_exercise);
             tvSpotName = (TextView) v.findViewById(R.id.tv_spot_name);
             cbAttendance = (CheckBox) v.findViewById(R.id.cb_attendance);
-            btExerciseSetting = (ImageButton)v.findViewById(R.id.bt_exercise_setting);
+            btExerciseSetting = (ImageButton) v.findViewById(R.id.bt_exercise_setting);
+
         }
     }
 
@@ -643,5 +684,27 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         animator.setDuration(300);
         animator.setInterpolator(Utils.createInterpolator(Utils.LINEAR_INTERPOLATOR));
         return animator;
+    }
+
+
+    //출석체크 관련 메소드
+    @Override
+    public void onConnected(Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
     }
 }

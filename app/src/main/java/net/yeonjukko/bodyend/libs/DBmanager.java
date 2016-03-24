@@ -39,7 +39,7 @@ public class DBmanager {
     //생성테이블
     private static final String DATABASE_CREATE_1 = "CREATE TABLE " + DATABASE_TABLE_1 +
             " (USER_NAME TEXT, USER_SEX INTEGER, USER_HEIGHT FLOAT, USER_CURR_WEIGHT FLOAT, USER_GOAL_WEIGHT FLOAT," +
-            " GOAL_DATE LONG, STIMULUS_WORD TEXT, STIMULUS_PICTURE TEXT)";
+            " GOAL_DATE INTEGER, STIMULUS_WORD TEXT, STIMULUS_PICTURE TEXT)";
     //EXERCISE_ALARM_STATUS 0:OFF 1:ON
 
     private static final String DATABASE_CREATE_2 = "CREATE TABLE " + DATABASE_TABLE_2 +
@@ -307,7 +307,7 @@ public class DBmanager {
 
         ArrayList<ExerciseSpotInfoModel> spotInfoModels = new ArrayList<>();
         // result(Cursor 객체)가 비어 있으면 false 리턴
-        while (result.moveToNext()){
+        while (result.moveToNext()) {
             ExerciseSpotInfoModel spotInfoModel = new ExerciseSpotInfoModel();
             spotInfoModel.setSpotId(result.getInt(0));
             spotInfoModel.setSpotX(result.getDouble(1));
@@ -335,11 +335,15 @@ public class DBmanager {
             userInfoModel.setUserHeight(result.getFloat(2));
             userInfoModel.setUserCurrWeight(result.getFloat(3));
             userInfoModel.setUserGoalWeight(result.getFloat(4));
-            userInfoModel.setGoalDate(result.getLong(5));
+            userInfoModel.setGoalDate(result.getInt(5));
             userInfoModel.setStimulusWord(result.getString(6));
             userInfoModel.setStimulusPicture(result.getString(7));
         }
+        if (userInfoModel.getUserName() == null) {
+            userInfoModel = null;
+        }
         result.close();
+
         return userInfoModel;
     }
 
