@@ -179,11 +179,11 @@
                         android:layout_gravity="right|center_vertical"
                         android:layout_marginRight="10dp"
                         android:padding="16dp"
-                        toggle:borderWidth="0.45dp"
-                        toggle:offBorderColor="#ddd"
-                        toggle:offColor="#ffffff"
-                        toggle:onColor="#3CF07A"
-                        toggle:spotColor="#ffffff" />
+                        toggle:fli_borderWidth="0.45dp"
+                        toggle:fli_offBorderColor="#ddd"
+                        toggle:fli_offColor="#ffffff"
+                        toggle:fli_onColor="#3CF07A"
+                        toggle:fli_spotColor="#ffffff" />
                 </FrameLayout>
 
             </LinearLayout>

@@ -1,118 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="vertical">
-
-        <LinearLayout
+        android:orientation="horizontal">
+        <CheckBox
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:orientation="horizontal"
-            android:padding="3dp">
-
-            <TextView
-                android:id="@+id/tv_breakfast"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:text="아침 :"
-                android:textSize="18sp" />
-
-            <EditText
-                android:id="@+id/et_breakfast"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:hint="아침을 기록하세요" />
-
-        </LinearLayout>
-        <View
+            android:layout_height="48dp"
+            android:textColor="@android:color/black"
+            android:text="출석체크"/>
+        <TextView
+            android:gravity="center_vertical|right"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/Divider" />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:orientation="horizontal"
-            android:padding="3dp">
+            android:layout_height="48dp"
+            android:paddingRight="10dp"
+            android:text="서울시 강동구 성내동 " />
 
-            <TextView
-                android:id="@+id/tv_lunch"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:text="점심 :"
-                android:textSize="18sp" />
+    </FrameLayout>
 
-            <EditText
-                android:id="@+id/et_lunch"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:hint="점심을 기록하세요" />
-
-        </LinearLayout>
-
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/Divider" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:orientation="horizontal"
-            android:padding="3dp">
-
-            <TextView
-                android:id="@+id/tv_dinner"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-
-                android:text="저녁 :"
-                android:textSize="18sp" />
-
-            <EditText
-                android:id="@+id/et_dinner"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:hint="저녁을 기록하세요" />
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/Divider" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:orientation="horizontal"
-            android:padding="3dp">
-
-            <TextView
-                android:id="@+id/tv_refreshment"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:text="간식 :"
-                android:textSize="18sp" />
-
-            <EditText
-                android:id="@+id/et_refreshment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:hint="간식을 기록하세요" />
-        </LinearLayout>
-
-    </LinearLayout>
-
-
-</LinearLayout>
+</RelativeLayout>

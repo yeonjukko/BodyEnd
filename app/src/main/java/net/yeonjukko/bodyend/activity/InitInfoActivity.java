@@ -12,29 +12,35 @@ import android.widget.TextView;
 
 import net.yeonjukko.bodyend.R;
 import net.yeonjukko.bodyend.libs.CheckableButton;
+import net.yeonjukko.bodyend.libs.DBmanager;
 import net.yeonjukko.bodyend.model.UserInfoModel;
 
 public class InitInfoActivity extends AppCompatActivity {
 
     public static UserInfoModel userInfoModel;
+
     int sex = FLAG_SEX_UNCHECKED;  //0: female, 1:male, 2:unChecked
     public final static int FLAG_SEX_FEMALE = 0;
     public final static int FLAG_SEX_MALE = 1;
     public final static int FLAG_SEX_UNCHECKED = 2;
     public static Context mContext;
-
+    private DBmanager dBmanager;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_init_info);
-
+        dBmanager = new DBmanager(this);
 
         if (userInfoModel == null) {
             userInfoModel = new UserInfoModel();
         }
-
+        if (dBmanager.selectUserInfoDB() != null) {
+            Intent intent = new Intent(this, StimulusActivity.class);
+            startActivity(intent);
+            finish();
+        }
         final EditText etName = (EditText) findViewById(R.id.et_name);
         final EditText etHeight = (EditText) findViewById(R.id.et_height);
         final EditText etCurrWeight = (EditText) findViewById(R.id.et_curr_weight);
@@ -190,7 +196,6 @@ public class InitInfoActivity extends AppCompatActivity {
 
 //다른 액티비티에서 호출할때
         mContext = this;
-
 
 
     }

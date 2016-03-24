@@ -12,7 +12,7 @@ public class UserInfoModel {
     private float userHeight;
     private float userCurrWeight;
     private float userGoalWeight;
-    private long goalDate;
+    private int goalDate;
     private String stimulusWord;
     private String stimulusPicture;
 
@@ -60,11 +60,11 @@ public class UserInfoModel {
         this.userGoalWeight = userGoalWeight;
     }
 
-    public long getGoalDate() {
+    public int getGoalDate() {
         return goalDate;
     }
 
-    public void setGoalDate(long goalDate) {
+    public void setGoalDate(int goalDate) {
         this.goalDate = goalDate;
     }
 

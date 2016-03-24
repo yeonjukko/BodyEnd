@@ -64,13 +64,26 @@
         app:ael_expanded="false"
         app:ael_orientation="vertical">
 
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
+            <CheckBox
+                android:id="@+id/cb_attendance"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:textColor="@android:color/black"
+                android:text="출석체크"/>
+            <TextView
+                android:id="@+id/tv_spot_name"
+                android:gravity="center_vertical|right"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:paddingRight="10dp"
+                android:text="서울시 강동구 성내동 " />
 
-        </LinearLayout>
+        </FrameLayout>
 
     </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
 

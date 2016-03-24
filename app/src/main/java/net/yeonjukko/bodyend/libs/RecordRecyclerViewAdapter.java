@@ -6,9 +6,17 @@ package net.yeonjukko.bodyend.libs;
 
 
 import android.animation.ObjectAnimator;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.location.Location;
+import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -18,8 +26,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.GridLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -30,19 +41,27 @@ import com.github.aakira.expandablelayout.ExpandableLayout;
 import com.github.aakira.expandablelayout.ExpandableLayoutListenerAdapter;
 import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
 import com.github.aakira.expandablelayout.Utils;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
 
 import net.yeonjukko.bodyend.R;
+import net.yeonjukko.bodyend.activity.CameraActivity;
 import net.yeonjukko.bodyend.activity.RecordActivity;
+import net.yeonjukko.bodyend.activity.settings.AttendanceMapAcitivity;
 import net.yeonjukko.bodyend.activity.settings.WaterSettingActivity;
+import net.yeonjukko.bodyend.model.ExerciseSpotInfoModel;
 import net.yeonjukko.bodyend.model.UserRecordModel;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 import static net.yeonjukko.bodyend.R.drawable.layout_round_all;
 import static net.yeonjukko.bodyend.R.drawable.layout_round_bottom;
 
 
-public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private final List<RecordItemModel> data;
     private Context context;
@@ -53,13 +72,22 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     private int VIEW_TYPE_MEAL = 103;
     private int VIEW_TYPE_PICTURE = 104;
     private int VIEW_TYPE_ERROR = 105;
+    public static final int REQUEST_CAMERA_CODE = 486;
+    private int i = 0;
+    private int showDate;
+    public static RecyclerView.ViewHolder holderTest;
+    private Handler mHandler = new Handler();
+    private ProgressDialog mProgressDialog;
 
 
     DBmanager dBmanager;
     LayoutInflater inflater;
 
-    public RecordRecyclerViewAdapter(final List<RecordItemModel> data) {
+    //layout 순서 정하기
+    public RecordRecyclerViewAdapter(final List<RecordItemModel> data, int showDate) {
         this.data = data;
+        //RecordActivity에서 넘어온 표시할 날짜
+        this.showDate = showDate;
         for (int i = 0; i < data.size(); i++) {
             expandState.append(0, true);
             expandState.append(1, true);
@@ -117,7 +145,9 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         final RecordItemModel item = data.get(position);
         final Resources resource = context.getResources();
-        UserRecordModel userRecordModel = dBmanager.selectUserRecordDB(((RecordActivity) context).getToday());
+        holderTest = holder;
+
+        UserRecordModel userRecordModel = dBmanager.selectUserRecordDB(showDate);
         if (position == 0) {
             // holderWater 설정
             final ViewHolderWater holderWater = (ViewHolderWater) holder;
@@ -164,7 +194,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             ImageView fullWater;
 
             //<--물 기록 UI 설정 부분
-
+            holderWater.gridWaterLayout.removeAllViews();
             if (waterVolume >= 20) water_cup_count = 20;
             for (int i = 0; i < water_cup_count; i++) {
                 fullWater = new ImageView(context);
@@ -174,7 +204,8 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             }
 
             //<--마신 잔 수 나타내기
-            final int waterRecord = dBmanager.selectUserRecordDB(((RecordActivity) context).getToday()).getWaterRecord();
+            int waterRecord = dBmanager.selectUserRecordDB(showDate).getWaterRecord();
+            Log.d("mox", dBmanager.selectUserRecordDB(showDate).getWaterRecord() + "waterRecord");
             for (int i = 0; i < waterRecord; i++) {
                 holderWater.gridWaterLayout.getChildAt(i).setBackgroundResource(R.drawable.icon_bottle_checked);
                 holderWater.gridWaterLayout.getChildAt(i).setTag("checked");
@@ -183,7 +214,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             holderWater.btWaterPlus.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int waterRecord = dBmanager.selectUserRecordDB(((RecordActivity) context).getToday()).getWaterRecord();
+                    int waterRecord = dBmanager.selectUserRecordDB(showDate).getWaterRecord();
                     if (waterRecord >= waterVolume) {
                         Toast.makeText(context, "이미 목표를 완료하였습니다.", Toast.LENGTH_SHORT).show();
                         return;
@@ -192,8 +223,8 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                     holderWater.gridWaterLayout.getChildAt(waterRecord).setBackgroundResource(R.drawable.icon_bottle_checked);
                     holderWater.gridWaterLayout.getChildAt(waterRecord).setTag("checked");
                     waterRecord++;
-
-                    dBmanager.updateWaterRecord(waterRecord, ((RecordActivity) context).getToday());
+                    dBmanager.updateWaterRecord(waterRecord, showDate);
+                    //dBmanager.updateWaterRecord(waterRecord, ((RecordActivity) context).getToday());
                     holderWater.gridWaterLayout.invalidate();
                 }
             });
@@ -201,7 +232,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             holderWater.btWaterMinus.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int waterRecord = dBmanager.selectUserRecordDB(((RecordActivity) context).getToday()).getWaterRecord();
+                    int waterRecord = dBmanager.selectUserRecordDB(showDate).getWaterRecord();
                     if (waterRecord == 0) {
                         Toast.makeText(context, "물 좀 드새오!", Toast.LENGTH_SHORT).show();
                         return;
@@ -209,8 +240,9 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                     holderWater.gridWaterLayout.getChildAt(waterRecord - 1).setBackgroundResource(R.drawable.icon_bottle_gray_10);
                     holderWater.gridWaterLayout.getChildAt(waterRecord - 1).setTag(null);
                     waterRecord--;
+                    dBmanager.updateWaterRecord(waterRecord, showDate);
 
-                    dBmanager.updateWaterRecord(waterRecord, ((RecordActivity) context).getToday());
+                    //dBmanager.updateWaterRecord(waterRecord, ((RecordActivity) context).getToday());
                     holderWater.gridWaterLayout.invalidate();
                 }
             });
@@ -257,9 +289,39 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 }
             });
             holderExercise.buttonLayout.setRotation(expandState.get(position) ? 180f : 0f);
+            holderExercise.tvSpotName.setTextColor(resource.getColor(R.color.Secondary_text));
+            holderExercise.btExerciseSetting.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, AttendanceMapAcitivity.class);
+                    context.startActivity(intent);
+                }
+            });
+            holderExercise.cbAttendance.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                        ArrayList<ExerciseSpotInfoModel> models = dBmanager.selectExerciseSpotsInfo();
+                        int size = models.size();
+                        String items[] = new String[size];
+                        for (int i = 0; i < dBmanager.selectExerciseSpotsInfo().size(); i++) {
+                            items[i] = models.get(i).getSpotName();
+                        }
+                        builder.setTitle("출석체크 할 장소를 선택해주세요. ")
+                                .setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        mProgressDialog = ProgressDialog.show(context, "",
+                                                "잠시만 기다려 주세요.", true);
+//                                        buildGoogleApiClient();
+//                                        createLocationRequest();
 
-/*요기*/
-
+                                    }
+                                }).show();
+                    }
+                }
+            });
 
 
         } else if (position == 2) {
@@ -304,7 +366,8 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                     float weight = dBmanager.selectUserInfoDB().getUserCurrWeight() + 0.1f;
                     Log.d("mox", weight + "");
                     String strNumber = String.format("%.1f", weight);
-                    dBmanager.updateCurrWeight(Float.parseFloat(strNumber), ((RecordActivity) context).getToday());
+                    dBmanager.updateCurrWeight(Float.parseFloat(strNumber), showDate);
+                    //dBmanager.updateCurrWeight(Float.parseFloat(strNumber), ((RecordActivity) context).getToday());
                     holderWeight.tvWeight.setText(strNumber + "kg");
                     holderWeight.expandableLayout.invalidate();
                 }
@@ -314,7 +377,8 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 public void onClick(View v) {
                     float weight = (float) (dBmanager.selectUserInfoDB().getUserCurrWeight() - 0.1);
                     String strNumber = String.format("%.1f", weight);
-                    dBmanager.updateCurrWeight(Float.parseFloat(strNumber), ((RecordActivity) context).getToday());
+                    dBmanager.updateCurrWeight(Float.parseFloat(strNumber), showDate);
+                    //dBmanager.updateCurrWeight(Float.parseFloat(strNumber), ((RecordActivity) context).getToday());
                     holderWeight.tvWeight.setText(strNumber + "kg");
                     holderWeight.expandableLayout.invalidate();
                 }
@@ -382,7 +446,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    dBmanager.updateBreakfast(s.toString(), ((RecordActivity) context).getToday());
+                    dBmanager.updateBreakfast(s.toString(), showDate);
                 }
             });
             holderMeal.etLunch.addTextChangedListener(new TextWatcher() {
@@ -398,7 +462,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    dBmanager.updateLunch(s.toString(), ((RecordActivity) context).getToday());
+                    dBmanager.updateLunch(s.toString(), showDate);
                 }
             });
             holderMeal.etDinner.addTextChangedListener(new TextWatcher() {
@@ -414,7 +478,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    dBmanager.updateDinner(s.toString(), ((RecordActivity) context).getToday());
+                    dBmanager.updateDinner(s.toString(), showDate);
                 }
             });
             holderMeal.etRefreshment.addTextChangedListener(new TextWatcher() {
@@ -430,7 +494,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    dBmanager.updateRefreshment(s.toString(), ((RecordActivity) context).getToday());
+                    dBmanager.updateRefreshment(s.toString(), ((RecordActivity) context).showDate);
                 }
             });
 
@@ -441,8 +505,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             holderPicture.textView.setTextSize(19);
             holderPicture.textView.setTextColor(context.getResources().getColor(android.R.color.white));
             holderPicture.textView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
-            holderPicture.itemView.setBackground(resource.getDrawable(layout_round_all));
-            holderPicture.expandableLayout.setBackground(resource.getDrawable(R.drawable.layout_round_bottom));
+            holderPicture.itemView.setBackground(resource.getDrawable(R.drawable.layout_round_all));
             holderPicture.expandableLayout.setInterpolator(item.interpolator);
             holderPicture.expandableLayout.setExpanded(expandState.get(position));
             holderPicture.expandableLayout.setListener(new ExpandableLayoutListenerAdapter() {
@@ -469,9 +532,26 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             });
             holderPicture.buttonLayout.setRotation(expandState.get(position) ? 180f : 0f);
 
+            holderPicture.btCamera.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, CameraActivity.class);
+                    ((RecordActivity) context).startActivityForResult(intent, REQUEST_CAMERA_CODE);
+
+                }
+            });
+
             if (!userRecordModel.getPictureRecord().equals("")) {
-                holderPicture.tvMessage.setVisibility(View.GONE);
+
+                Bitmap bitmap = BitmapFactory.decodeFile(userRecordModel.getPictureRecord());
+                holderPicture.imageTodayPic.setImageBitmap(bitmap);
+                holderPicture.imageTodayPic.setVisibility(View.VISIBLE);
+                holderPicture.expandableLayout.setExpanded(expandState.get(position));
+                holderPicture.expandableLayout.getLayoutParams().height = bitmap.getHeight() - holderPicture.imageTodayPic.getPaddingBottom() * 4;
+
             }
+
+
         }
 
     }
@@ -485,6 +565,8 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     public int getItemCount() {
         return data.size();
     }
+
+
 
     public static class ViewHolderWater extends RecyclerView.ViewHolder {
         public TextView textView;
@@ -513,12 +595,19 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         public TextView textView;
         public RelativeLayout buttonLayout;
         public ExpandableRelativeLayout expandableLayout;
+        public TextView tvSpotName;
+        public CheckBox cbAttendance;
+        public ImageButton btExerciseSetting;
 
         public ViewHolderExercise(View v) {
             super(v);
             textView = (TextView) v.findViewById(R.id.textView);
             buttonLayout = (RelativeLayout) v.findViewById(R.id.button1);
             expandableLayout = (ExpandableRelativeLayout) v.findViewById(R.id.layout_exercise);
+            tvSpotName = (TextView) v.findViewById(R.id.tv_spot_name);
+            cbAttendance = (CheckBox) v.findViewById(R.id.cb_attendance);
+            btExerciseSetting = (ImageButton) v.findViewById(R.id.bt_exercise_setting);
+
         }
     }
 
@@ -575,17 +664,16 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         public TextView textView;
         public RelativeLayout buttonLayout;
         public ExpandableRelativeLayout expandableLayout;
-        public LinearLayout messageLayout;
-        public TextView tvMessage;
         public ImageView imageTodayPic;
+        public ImageButton btCamera;
 
         public ViewHolderPicture(View v) {
             super(v);
             textView = (TextView) v.findViewById(R.id.textView);
             buttonLayout = (RelativeLayout) v.findViewById(R.id.button4);
             expandableLayout = (ExpandableRelativeLayout) v.findViewById(R.id.layout_picture);
-            messageLayout = (LinearLayout) v.findViewById(R.id.layout_message);
             imageTodayPic = (ImageView) v.findViewById(R.id.image_today_picture);
+            btCamera = (ImageButton) v.findViewById(R.id.bt_camera);
         }
 
     }
@@ -596,5 +684,27 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         animator.setDuration(300);
         animator.setInterpolator(Utils.createInterpolator(Utils.LINEAR_INTERPOLATOR));
         return animator;
+    }
+
+
+    //출석체크 관련 메소드
+    @Override
+    public void onConnected(Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
     }
 }

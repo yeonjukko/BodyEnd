@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="ToggleButton">
-    	<attr name="borderWidth" format="dimension">
+    <declare-styleable name="fli_ToggleButton">
+    	<attr name="fli_borderWidth" format="dimension">
     	</attr>
-    	<attr name="offBorderColor" format="reference|color">
+    	<attr name="fli_offBorderColor" format="reference|color">
     	</attr>
-    	<attr name="offColor" format="reference|color">
+    	<attr name="fli_offColor" format="reference|color">
     	</attr>
-    	<attr name="onColor" format="reference|color">
+    	<attr name="fli_onColor" format="reference|color">
     	</attr>
-    	<attr name="spotColor" format="reference|color">
+    	<attr name="fli_spotColor" format="reference|color">
     	</attr>
-    	<attr name="animate" format="reference|boolean">
+    	<attr name="fli_animate" format="reference|boolean">
     	</attr>
-	    <attr name="isDefaultOn" format="reference|boolean">
+	    <attr name="fli_isDefaultOn" format="reference|boolean">
 	    </attr>
     </declare-styleable>
 </resources>

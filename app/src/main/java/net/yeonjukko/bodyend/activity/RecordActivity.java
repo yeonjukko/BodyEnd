@@ -1,11 +1,14 @@
 package net.yeonjukko.bodyend.activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import com.github.aakira.expandablelayout.Utils;
@@ -27,6 +30,8 @@ import java.util.List;
 
 public class RecordActivity extends AppCompatActivity {
     public DBmanager dBmanager;
+    public int showDate;
+    RecordRecyclerViewAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +40,18 @@ public class RecordActivity extends AppCompatActivity {
         dBmanager = new DBmanager(this);
 
         //record 테이블 초기화 및 날짜 설정 메소드
+
+        //정각에만 실행
         insertUserRecord();
-        setLayout(getToday());
+        showDate = getToday();
+
+        //CalendarActivity에서 넘어올 때
+        Intent intent = getIntent();
+        if (intent.getIntExtra("showDate", getToday()) != getToday()) {
+            showDate = intent.getIntExtra("showDate", getToday());
+        }
+
+        setLayout(showDate);
 
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -70,7 +85,7 @@ public class RecordActivity extends AppCompatActivity {
                 R.color.Icons,
                 Utils.createInterpolator(Utils.ACCELERATE_DECELERATE_INTERPOLATOR)));
 
-        RecordRecyclerViewAdapter adapter = new RecordRecyclerViewAdapter(data);
+        adapter = new RecordRecyclerViewAdapter(data, showDate);
         recyclerView.setAdapter(adapter);
 
 
@@ -85,6 +100,8 @@ public class RecordActivity extends AppCompatActivity {
         String month = mDate.substring(4, 6);
         String date2 = mDate.substring(6, 8);
         tvCurrDate.setText(year + "/" + month + "/" + date2);
+        tvCurrDate.setTextColor(getResources().getColor(android.R.color.white));
+        tvCurrDay.setTextColor(getResources().getColor(android.R.color.white));
         Calendar date3 = Calendar.getInstance();
         date3.set(Integer.parseInt(year), Integer.parseInt(month) - 1, Integer.parseInt(date2));
 
@@ -149,7 +166,28 @@ public class RecordActivity extends AppCompatActivity {
             strDate = date + "";
 
 
-        String today = year + "" + strMonth + "" + strDate;
+        String today = year + strMonth + strDate;
         return Integer.parseInt(today);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == RecordRecyclerViewAdapter.REQUEST_CAMERA_CODE) {
+            String imagePath = data.getStringExtra(CameraActivity.FLAG_FILE_PATH);
+            dBmanager.updatePictureRecord(imagePath, showDate);
+//            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+//            ((RecordRecyclerViewAdapter.ViewHolderPicture)RecordRecyclerViewAdapter.holderTest).imageTodayPic.setImageBitmap(bitmap);
+//            ((RecordRecyclerViewAdapter.ViewHolderPicture)RecordRecyclerViewAdapter.holderTest).imageTodayPic.setVisibility(View.VISIBLE);
+//           Log.d("mox2",((RecordRecyclerViewAdapter.ViewHolderPicture)RecordRecyclerViewAdapter.holderTest).imageTodayPic.getVisibility()+"visible");
+//                   ((RecordRecyclerViewAdapter.ViewHolderPicture) RecordRecyclerViewAdapter.holderTest).expandableLayout.invalidate();
+
+            this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.notifyDataSetChanged();
+                }
+            });
+        }
     }
 }

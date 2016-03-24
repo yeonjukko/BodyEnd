@@ -70,19 +70,15 @@ public class InitTargetActivity extends InitInfoActivity {
                 dialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        Toast.makeText(getApplicationContext(), year + "년" + monthOfYear + "월" + dayOfMonth + "일", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), year + "년" + monthOfYear+1 + "월" + dayOfMonth + "일", Toast.LENGTH_SHORT).show();
 
-                        calendar = new GregorianCalendar(year, monthOfYear, dayOfMonth);
-                        Calendar now = Calendar.getInstance();
-                        userInfoModel.setGoalDate(calendar.getTimeInMillis());
+                        int now = getToday();
+                        int selected = getSelectDay(year,monthOfYear+1,dayOfMonth);
 
-                        SimpleDateFormat format = new SimpleDateFormat("yyyy년 MM월 dd일");
-
-
-                        if (calendar.getTimeInMillis() < now.getTimeInMillis()) {
+                        if (now > selected) {
                             etGoalDate.setError("오늘보다 이전의 날짜를 선택하셨습니다!");
                         } else {
-                            etGoalDate.setText(format.format(calendar.getTime()));
+                            etGoalDate.setText(selected+"");
                             etGoalDate.setError(null);
                         }
 
@@ -140,7 +136,7 @@ public class InitTargetActivity extends InitInfoActivity {
                 userInfoModel.setUserHeight(userInfoModel.getUserHeight());
                 userInfoModel.setUserCurrWeight(userInfoModel.getUserCurrWeight());
                 userInfoModel.setUserGoalWeight(userInfoModel.getUserGoalWeight());
-                userInfoModel.setGoalDate(calendar.getTimeInMillis());
+                userInfoModel.setGoalDate(Integer.parseInt(etGoalDate.getText().toString()));
                 userInfoModel.setStimulusWord(etStimulusWord.getText().toString());
                 userInfoModel.setStimulusPicture(mDestinationUri.toString());
 
@@ -151,10 +147,9 @@ public class InitTargetActivity extends InitInfoActivity {
                 dbManager.insertWaterAlarmInfoDB(waterAlarmInfoModel);
 
 
-
                 //db에 저장
                 dbManager.insertUserInfoDB(userInfoModel);
-                Log.d("mox", "target"+dbManager.PrintData());
+                Log.d("mox", "target" + dbManager.PrintData());
                 dbManager.selectUserInfoDB();
 
                 Intent intent = new Intent(getContext(), StimulusActivity.class);
@@ -199,8 +194,52 @@ public class InitTargetActivity extends InitInfoActivity {
             final Throwable cropError = UCrop.getError(data);
         }
     }
-    //End of Crop Image-->
 
+    //End of Crop Image-->
+    public int getSelectDay(int year, int month, int date) {
+        //<--오늘 날짜 구하기 ex)20160317
+
+        String strMonth = null;
+        String strDate = null;
+
+        if (month < 10)
+            strMonth = "0" + month;
+        else if (month >= 10)
+            strMonth = month + "";
+
+        if (date < 10)
+            strDate = "0" + month;
+        else if (date >= 10)
+            strDate = date + "";
+
+
+        String today = year + strMonth + strDate;
+        return Integer.parseInt(today);
+    }
+
+    public int getToday() {
+        //<--오늘 날짜 구하기 ex)20160317
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int date = calendar.get(Calendar.DATE);
+        String strMonth = null;
+        String strDate = null;
+
+        if (month < 10)
+            strMonth = "0" + month;
+        else if (month >= 10)
+            strMonth = month + "";
+
+        if (date < 10)
+            strDate = "0" + month;
+        else if (date >= 10)
+            strDate = date + "";
+
+
+        String today = year + strMonth + strDate;
+        return Integer.parseInt(today);
+    }
 
     private Context getContext() {
         return this;
