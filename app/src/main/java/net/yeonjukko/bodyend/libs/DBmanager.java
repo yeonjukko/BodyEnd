@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
 import android.util.Log;
 
+import net.yeonjukko.bodyend.model.ExerciseSpotInfoModel;
 import net.yeonjukko.bodyend.model.UserInfoModel;
 import net.yeonjukko.bodyend.model.UserRecordModel;
 import net.yeonjukko.bodyend.model.WaterAlarmInfoModel;
@@ -41,22 +42,22 @@ public class DBmanager {
             " GOAL_DATE LONG, STIMULUS_WORD TEXT, STIMULUS_PICTURE TEXT)";
     //EXERCISE_ALARM_STATUS 0:OFF 1:ON
 
-    private static final String DATABASE_CREATE_2 = "CREATE TABLE " + DATABASE_TABLE_2 + "" +
+    private static final String DATABASE_CREATE_2 = "CREATE TABLE " + DATABASE_TABLE_2 +
             " (RECORD_DATE INTEGER PRIMARY KEY,  PICTURE_RECORD TEXT, WEIGHT_RECORD INTEGER ," +
             " WATER_RECORD INTEGER, WATER_VOLUME FLOAT, MEAL_BREAKFAST TEXT, MEAL_LUNCH TEXT, MEAL_DINNER TEXT, MEAL_REFRESHMENTS TEXT)";
 
     private static final String DATABASE_CREATE_3 = "CREATE TABLE " + DATABASE_TABLE_3 +
-            " (RECORD_DATE INTEGER, SPOT_ID)";
+            " (RECORD_DATE INTEGER, SPOT_ID INTEGER)";
 
     private static final String DATABASE_CREATE_4 = "CREATE TABLE " + DATABASE_TABLE_4 +
-            " (RECORD_DATE INTEGER, SORT_ID)";
+            " (RECORD_DATE INTEGER, SORT_ID INTEGER)";
 
     private static final String DATABASE_CREATE_5 = "CREATE TABLE " + DATABASE_TABLE_5 +
             " (WATER_ALARM_STATUS INTEGER, WATER_ALARM_PERIOD INTEGER, ALARM_TIMEZONE_START INTEGER, ALARM_TIMEZONE_STOP INTEGER)";
 
     //WATER_ALARM_STATUS 0:OFF 1:ON
     private static final String DATABASE_CREATE_6 = "CREATE TABLE " + DATABASE_TABLE_6 +
-            " (SPOT_ID INTEGER, SPOT_X FLOAT, SPOT_Y FLOAT, SPOT_NAME TEXT, ATTENDANCE_DAY INTEGER)";
+            " (SPOT_ID INTEGER PRIMARY KEY, SPOT_X DOUBLE, SPOT_Y DOUBLE, SPOT_NAME TEXT, ATTENDANCE_DAY INTEGER)";
 
     private static final String DATABASE_CREATE_7 = "CREATE TABLE " + DATABASE_TABLE_7 +
             " (SORT_ID INTEGER, EXERCISE_NAME TEXT, EXERCISE_DAY INTEGER)";
@@ -98,6 +99,16 @@ public class DBmanager {
         }
 
     }
+
+    public void deleteSpot(int id) {
+        String DELETE_SPOT = "DELETE FROM " + DATABASE_TABLE_6 + " WHERE SPOT_ID=" + id;
+
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        db.execSQL(DELETE_SPOT);
+        db.close();
+    }
+
     public void updatePictureRecord(String imgPath, int date) {
         String UPDATE_IMAGE = "UPDATE " + DATABASE_TABLE_2 + " SET PICTURE_RECORD=" + "'" + imgPath + "'" + " WHERE RECORD_DATE=" + date;
 
@@ -107,6 +118,7 @@ public class DBmanager {
         Log.d("mox", selectUserRecordDB(20160323).getPictureRecord() + "db");
         db.close();
     }
+
     public void updatePictureRecordTest(int date) {
         String UPDATE_IMAGE = "UPDATE " + DATABASE_TABLE_2 + " SET PICTURE_RECORD=" + "''" + " WHERE RECORD_DATE=" + date;
 
@@ -206,6 +218,18 @@ public class DBmanager {
         db.close();
     }
 
+    public void insertExerciseSpotInfo(ExerciseSpotInfoModel model) {
+
+        String INSERT_EXERCISE_SPOT = "INSERT INTO " + DATABASE_TABLE_6 + "(SPOT_X,SPOT_Y,SPOT_NAME,ATTENDANCE_DAY)" + " VALUES" +
+                "(" + model.getSpotX() + "," + model.getSpotY()
+                + "," + "'" + model.getSpotName() + "'" + "," + null + ")";
+
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        db.execSQL(INSERT_EXERCISE_SPOT);
+        db.close();
+    }
+
     public void insertWaterAlarmInfoDB(WaterAlarmInfoModel model) {
         String INSERT_WATER_ALARM_INFO = "INSERT INTO " + DATABASE_TABLE_5 + " VALUES" +
                 "(" + model.getWaterAlarmStatus() + "," + model.getWaterAlarmPeriod() + "," + model.getAlarmTimezoneStart()
@@ -227,7 +251,7 @@ public class DBmanager {
 
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        db.execSQL("delete from " + DATABASE_TABLE_1);
+        //db.execSQL("delete from " + DATABASE_TABLE_1);
         db.execSQL(INSERT_BODY_INFO);
         PrintData();
         db.close();
@@ -255,6 +279,47 @@ public class DBmanager {
 
     }
 
+    //설정창, 출석장소정할때
+    public ExerciseSpotInfoModel selectExerciseSpotInfo() {
+        String SELECT_BODY_INFO = "SELECT * FROM " + DATABASE_TABLE_6;
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        Cursor result = db.rawQuery(SELECT_BODY_INFO, null);
+        ExerciseSpotInfoModel spotInfoModel = new ExerciseSpotInfoModel();
+        // result(Cursor 객체)가 비어 있으면 false 리턴
+        if (result.moveToFirst()) {
+            spotInfoModel.setSpotId(result.getInt(0));
+            spotInfoModel.setSpotX(result.getDouble(1));
+            spotInfoModel.setSpotY(result.getDouble(2));
+            spotInfoModel.setSpotName(result.getString(3));
+            spotInfoModel.setAttendanceDay(result.getInt(4));
+        }
+        result.close();
+        return spotInfoModel;
+    }
+
+    //모든 spot을 가져올때
+    public ArrayList<ExerciseSpotInfoModel> selectExerciseSpotsInfo() {
+        String SELECT_BODY_INFO = "SELECT * FROM " + DATABASE_TABLE_6;
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        Cursor result = db.rawQuery(SELECT_BODY_INFO, null);
+
+        ArrayList<ExerciseSpotInfoModel> spotInfoModels = new ArrayList<>();
+        // result(Cursor 객체)가 비어 있으면 false 리턴
+        while (result.moveToNext()){
+            ExerciseSpotInfoModel spotInfoModel = new ExerciseSpotInfoModel();
+            spotInfoModel.setSpotId(result.getInt(0));
+            spotInfoModel.setSpotX(result.getDouble(1));
+            spotInfoModel.setSpotY(result.getDouble(2));
+            spotInfoModel.setSpotName(result.getString(3));
+            spotInfoModel.setAttendanceDay(result.getInt(4));
+            spotInfoModels.add(spotInfoModel);
+        }
+
+        result.close();
+        return spotInfoModels;
+    }
 
     public UserInfoModel selectUserInfoDB() {
         String SELECT_BODY_INFO = "SELECT * FROM " + DATABASE_TABLE_1;
@@ -309,8 +374,8 @@ public class DBmanager {
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
         Cursor result = db.rawQuery(SELECT_RECORD_INFO_ALL, null);
-
-        if (result.moveToFirst()) {
+        result.moveToFirst();
+        for (int i = 0; i < result.getColumnCount(); i++) {
             UserRecordModel userRecordModel = new UserRecordModel();
             userRecordModel.setRecordDate(result.getInt(0));
             userRecordModel.setPictureRecord(result.getString(1));

@@ -70,11 +70,6 @@
         android:layout_alignBottom="@id/layout_picture"
         android:background="@drawable/bgr_picture"
         android:src="@drawable/icon_camera" />
-    <ImageButton
-        android:id="@+id/test"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_alignBottom="@id/bt_camera"
-        android:src="@drawable/icon_camera" />
+
 
 </LinearLayout>

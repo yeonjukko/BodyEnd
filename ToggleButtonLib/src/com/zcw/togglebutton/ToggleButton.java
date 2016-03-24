@@ -43,7 +43,7 @@ public class ToggleButton extends View{
 	/** 开关状态*/
 	private boolean toggleOn = false;
 	/** 边框大小*/
-	private int borderWidth = 2;
+	private int fli_borderWidth = 2;
 	/** 垂直中心*/
 	private float centerY;
 	/** 按钮的开始和结束位置*/
@@ -105,14 +105,14 @@ public class ToggleButton extends View{
 			}
 		});
 		
-		TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.ToggleButton);
-		offBorderColor = typedArray.getColor(R.styleable.ToggleButton_offBorderColor, offBorderColor);
-		onColor = typedArray.getColor(R.styleable.ToggleButton_onColor, onColor);
-		spotColor = typedArray.getColor(R.styleable.ToggleButton_spotColor, spotColor);
-		offColor = typedArray.getColor(R.styleable.ToggleButton_offColor, offColor);
-		borderWidth = typedArray.getDimensionPixelSize(R.styleable.ToggleButton_borderWidth, borderWidth);
-		defaultAnimate = typedArray.getBoolean(R.styleable.ToggleButton_animate, defaultAnimate);
-		isDefaultOn = typedArray.getBoolean(R.styleable.ToggleButton_isDefaultOn, isDefaultOn);
+		TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.fli_ToggleButton);
+		offBorderColor = typedArray.getColor(R.styleable.fli_ToggleButton_fli_offBorderColor, offBorderColor);
+		onColor = typedArray.getColor(R.styleable.fli_ToggleButton_fli_onColor, onColor);
+		spotColor = typedArray.getColor(R.styleable.fli_ToggleButton_fli_spotColor, spotColor);
+		offColor = typedArray.getColor(R.styleable.fli_ToggleButton_fli_offColor, offColor);
+		fli_borderWidth = typedArray.getDimensionPixelSize(R.styleable.fli_ToggleButton_fli_borderWidth, fli_borderWidth);
+		defaultAnimate = typedArray.getBoolean(R.styleable.fli_ToggleButton_fli_animate, defaultAnimate);
+		isDefaultOn = typedArray.getBoolean(R.styleable.fli_ToggleButton_fli_isDefaultOn, isDefaultOn);
 		typedArray.recycle();
 		
 		borderColor = offBorderColor;
@@ -224,9 +224,9 @@ public class ToggleButton extends View{
 		centerY = radius;
 		startX = radius;
 		endX = width - radius;
-		spotMinX = startX + borderWidth;
-		spotMaxX = endX - borderWidth;
-		spotSize = height - 4 * borderWidth;
+		spotMinX = startX + fli_borderWidth;
+		spotMaxX = endX - fli_borderWidth;
+		spotSize = height - 4 * fli_borderWidth;
 		spotX = toggleOn ? spotMaxX : spotMinX;
 		offLineWidth = 0;
 	}

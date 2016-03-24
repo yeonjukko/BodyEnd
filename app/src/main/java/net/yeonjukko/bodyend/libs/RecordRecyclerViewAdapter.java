@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -21,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageButton;
@@ -38,6 +38,7 @@ import com.github.aakira.expandablelayout.Utils;
 import net.yeonjukko.bodyend.R;
 import net.yeonjukko.bodyend.activity.CameraActivity;
 import net.yeonjukko.bodyend.activity.RecordActivity;
+import net.yeonjukko.bodyend.activity.settings.AttendanceMapAcitivity;
 import net.yeonjukko.bodyend.activity.settings.WaterSettingActivity;
 import net.yeonjukko.bodyend.model.UserRecordModel;
 
@@ -273,6 +274,14 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 }
             });
             holderExercise.buttonLayout.setRotation(expandState.get(position) ? 180f : 0f);
+            holderExercise.tvSpotName.setTextColor(resource.getColor(R.color.Secondary_text));
+            holderExercise.btExerciseSetting.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, AttendanceMapAcitivity.class);
+                    context.startActivity(intent);
+                }
+            });
 
 /*요기*/
 
@@ -495,23 +504,15 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             });
 
             if (!userRecordModel.getPictureRecord().equals("")) {
-                Log.d("mox2", "restart");
 
                 Bitmap bitmap = BitmapFactory.decodeFile(userRecordModel.getPictureRecord());
                 holderPicture.imageTodayPic.setImageBitmap(bitmap);
                 holderPicture.imageTodayPic.setVisibility(View.VISIBLE);
                 holderPicture.expandableLayout.setExpanded(expandState.get(position));
+                holderPicture.expandableLayout.getLayoutParams().height = bitmap.getHeight() - holderPicture.imageTodayPic.getPaddingBottom() * 4;
 
             }
 
-            Log.d("mox2", holderPicture.imageTodayPic.getVisibility()+" visible");
-
-            holderPicture.test.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dBmanager.updatePictureRecordTest(20160323);
-                }
-            });
 
         }
 
@@ -554,12 +555,18 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         public TextView textView;
         public RelativeLayout buttonLayout;
         public ExpandableRelativeLayout expandableLayout;
+        public TextView tvSpotName;
+        public CheckBox cbAttendance;
+        public ImageButton btExerciseSetting;
 
         public ViewHolderExercise(View v) {
             super(v);
             textView = (TextView) v.findViewById(R.id.textView);
             buttonLayout = (RelativeLayout) v.findViewById(R.id.button1);
             expandableLayout = (ExpandableRelativeLayout) v.findViewById(R.id.layout_exercise);
+            tvSpotName = (TextView) v.findViewById(R.id.tv_spot_name);
+            cbAttendance = (CheckBox) v.findViewById(R.id.cb_attendance);
+            btExerciseSetting = (ImageButton)v.findViewById(R.id.bt_exercise_setting);
         }
     }
 
@@ -618,7 +625,6 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         public ExpandableRelativeLayout expandableLayout;
         public ImageView imageTodayPic;
         public ImageButton btCamera;
-        public ImageButton test;
 
         public ViewHolderPicture(View v) {
             super(v);
@@ -627,7 +633,6 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             expandableLayout = (ExpandableRelativeLayout) v.findViewById(R.id.layout_picture);
             imageTodayPic = (ImageView) v.findViewById(R.id.image_today_picture);
             btCamera = (ImageButton) v.findViewById(R.id.bt_camera);
-            test = (ImageButton) v.findViewById(R.id.test);
         }
 
     }

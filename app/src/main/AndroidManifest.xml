@@ -5,7 +5,11 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature android:name="android.hardware.camera" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:name=".BodyEndApplication"
@@ -22,18 +26,16 @@
             android:label="@string/activity_info" />
         <activity
             android:name=".activity.TestActvity"
-            android:theme="@style/MyNoActionBar">
+            android:theme="@style/MySettingTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activity.InitTargetActivity"
             android:label="@string/activity_target" />
-
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
@@ -45,7 +47,9 @@
         <activity
             android:name=".activity.settings.WaterSettingActivity"
             android:label="@string/record_water_setting"
-            android:theme="@style/MySettingTheme"></activity>
+            android:theme="@style/MySettingTheme" />
+        <activity android:name=".activity.settings.ExerciseSettingActivity"></activity>
+        <activity android:name=".activity.settings.AttendanceMapAcitivity" android:theme="@style/BodyEndAppTheme"></activity>
     </application>
 
 </manifest>

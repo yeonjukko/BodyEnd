@@ -34,6 +34,7 @@
     <string name="water_alarm_period">알람 주기</string>
     <string name="water_alarm_time">알람 시간대</string>
 
+    <string name="daum_api_key">7069807109219170938</string>
 
 
 </resources>
