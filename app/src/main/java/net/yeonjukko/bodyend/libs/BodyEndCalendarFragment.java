@@ -1,21 +1,26 @@
 package net.yeonjukko.bodyend.libs;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidGridAdapter;
 
 import net.yeonjukko.bodyend.R;
+import net.yeonjukko.bodyend.activity.RecordActivity;
 import net.yeonjukko.bodyend.model.UserRecordModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,14 +33,17 @@ public class BodyEndCalendarFragment extends CaldroidFragment {
 
     private int[] imageViewIds = {R.id.imageViewIcon0, R.id.imageViewIcon1, R.id.imageViewIcon2, R.id.imageViewIcon3};
     private int[] iconImageIds = {android.R.drawable.ic_input_get, android.R.drawable.ic_dialog_email, android.R.drawable.ic_dialog_info, android.R.drawable.ic_dialog_alert};
+    private DBmanager dBmanager;
 
+    private HashMap<Integer, UserRecordModel> mRecordItemModels;
 
     private View rootView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = super.onCreateView(inflater, container, savedInstanceState);
-
+        dBmanager = new DBmanager(getContext());
+        mRecordItemModels = dBmanager.selectUserRecordDB();
         return rootView;
     }
 
@@ -52,26 +60,17 @@ public class BodyEndCalendarFragment extends CaldroidFragment {
                                Map<String, Object> caldroidData,
                                Map<String, Object> extraData) {
             super(context, month, year, caldroidData, extraData);
+
         }
 
         private int cellViewHeightSix;
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            DateTime dateTime = this.datetimeList.get(position);
-
-
-            DBmanager dBmanager = new DBmanager(getContext());
-            UserRecordModel model = dBmanager.selectUserRecordDB(getDate(dateTime));
+            final DateTime dateTime = this.datetimeList.get(position);
+            final UserRecordModel model = mRecordItemModels.get(getDate(dateTime));
 
             boolean isWeight = false, isWater = false, isImage = false, isAttendance = false;
-
-            if (model.getWaterRecord() >= model.getWaterVolume()) {
-                isWater = true;
-            }
-            if (model.getPictureRecord().equals("")) {
-                isImage = true;
-            }
 
 
             View cellView = convertView;
@@ -80,6 +79,18 @@ public class BodyEndCalendarFragment extends CaldroidFragment {
                 cellView = ((LayoutInflater) context
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.adapter_calendar, parent, false);
             }
+
+            if (model != null) {
+                if (model.getWaterRecord() >= model.getWaterVolume()) {
+                    isWater = true;
+                }
+                if (model.getPictureRecord() == null || model.getPictureRecord().equals("")) {
+                    isImage = true;
+                }
+
+            }
+
+
             TextView mTextViewDay = (TextView) cellView.findViewById(R.id.textViewDay);
 
 
@@ -99,6 +110,20 @@ public class BodyEndCalendarFragment extends CaldroidFragment {
                 ((ImageView) cellView.findViewById(imageViewIds[i - 1])).setImageDrawable(null);
             }
             setMatchHeight(cellView);
+
+            cellView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (model != null) {
+                        Intent intent = new Intent(getContext(), RecordActivity.class);
+                        intent.putExtra("showDate", getDate(dateTime));
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(getContext(), "해당 날짜에 데이터가 없습니다.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
             return cellView;
         }
 
@@ -143,14 +168,14 @@ public class BodyEndCalendarFragment extends CaldroidFragment {
         private int getDate(DateTime time) {
             String year = time.getYear() + "";
             String month;
-            if (time.getMonth() < 10) {
+            if (time.getMonth() >= 10) {
                 month = time.getMonth() + "";
             } else {
                 month = "0" + time.getMonth();
             }
 
             String day;
-            if (time.getDay() < 10) {
+            if (time.getDay() >= 10) {
                 day = time.getDay() + "";
             } else {
                 day = "0" + time.getDay();
