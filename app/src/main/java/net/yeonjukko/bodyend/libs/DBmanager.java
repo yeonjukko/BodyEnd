@@ -347,6 +347,7 @@ public class DBmanager {
         return userInfoModel;
     }
 
+    
     public UserRecordModel selectUserRecordDB(int date) {
         String SELECT_RECORD_INFO = "SELECT * FROM " + DATABASE_TABLE_2 + " WHERE RECORD_DATE=" + date;
         this.mDbHelper = new DatabaseHelper(context);
@@ -371,15 +372,15 @@ public class DBmanager {
         return userRecordModel;
     }
 
-    public ArrayList<UserRecordModel> selectUserRecordDB() {
+    public HashMap<Integer, UserRecordModel> selectUserRecordDB() {
         String SELECT_RECORD_INFO_ALL = "SELECT * FROM " + DATABASE_TABLE_2;
 
-        ArrayList<UserRecordModel> mUserRecordModels = new ArrayList<>();
+        HashMap<Integer, UserRecordModel> mUserRecordModels = new HashMap<>();
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
         Cursor result = db.rawQuery(SELECT_RECORD_INFO_ALL, null);
-        result.moveToFirst();
-        for (int i = 0; i < result.getColumnCount(); i++) {
+
+        while (result.moveToNext()) {
             UserRecordModel userRecordModel = new UserRecordModel();
             userRecordModel.setRecordDate(result.getInt(0));
             userRecordModel.setPictureRecord(result.getString(1));
@@ -390,7 +391,7 @@ public class DBmanager {
             userRecordModel.setMealLunch(result.getString(6));
             userRecordModel.setMealDinner(result.getString(7));
             userRecordModel.setMealRefreshments(result.getString(8));
-            mUserRecordModels.add(userRecordModel);
+            mUserRecordModels.put(userRecordModel.getRecordDate(), userRecordModel);
         }
         result.close();
         return mUserRecordModels;
