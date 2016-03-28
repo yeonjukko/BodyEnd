@@ -8,12 +8,15 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
 import android.util.Log;
 
+import net.yeonjukko.bodyend.model.ExerciseAttendanceInfoModel;
+import net.yeonjukko.bodyend.model.ExerciseSortInfoModel;
 import net.yeonjukko.bodyend.model.ExerciseSpotInfoModel;
 import net.yeonjukko.bodyend.model.UserInfoModel;
 import net.yeonjukko.bodyend.model.UserRecordModel;
 import net.yeonjukko.bodyend.model.WaterAlarmInfoModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by yeonjukko on 16. 3. 9..
@@ -60,7 +63,7 @@ public class DBmanager {
             " (SPOT_ID INTEGER PRIMARY KEY, SPOT_X DOUBLE, SPOT_Y DOUBLE, SPOT_NAME TEXT, ATTENDANCE_DAY INTEGER)";
 
     private static final String DATABASE_CREATE_7 = "CREATE TABLE " + DATABASE_TABLE_7 +
-            " (SORT_ID INTEGER, EXERCISE_NAME TEXT, EXERCISE_DAY INTEGER)";
+            " (SORT_ID INTEGER PRIMARY KEY, EXERCISE_NAME TEXT, EXERCISE_DAY INTEGER)";
 
     // 부가적인 객체들
     private Context context;
@@ -100,6 +103,15 @@ public class DBmanager {
 
     }
 
+    public void deleteSort(int id) {
+        String DELETE_SORT = "DELETE FROM " + DATABASE_TABLE_7 + " WHERE SORT_ID=" + id;
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        db.execSQL(DELETE_SORT);
+
+        db.close();
+    }
+
     public void deleteSpot(int id) {
         String DELETE_SPOT = "DELETE FROM " + DATABASE_TABLE_6 + " WHERE SPOT_ID=" + id;
 
@@ -115,7 +127,6 @@ public class DBmanager {
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(UPDATE_IMAGE);
-        Log.d("mox", selectUserRecordDB(20160323).getPictureRecord() + "db");
         db.close();
     }
 
@@ -125,7 +136,6 @@ public class DBmanager {
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(UPDATE_IMAGE);
-        Log.d("mox", selectUserRecordDB(20160323).getPictureRecord() + "db");
         db.close();
     }
 
@@ -135,7 +145,6 @@ public class DBmanager {
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(UPDATE_MEAL_BREAKFAST);
-        Log.d("mox", selectUserRecordDB(20160322).getMealBreakfast() + "db");
         db.close();
     }
 
@@ -144,7 +153,6 @@ public class DBmanager {
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(UPDATE_MEAL_LUNCH);
-        Log.d("mox", selectUserRecordDB(20160322).getMealLunch() + "db");
         db.close();
     }
 
@@ -154,7 +162,6 @@ public class DBmanager {
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(UPDATE_MEAL_DINNER);
-        Log.d("mox", selectUserRecordDB(20160322).getMealDinner() + "db");
 
         db.close();
     }
@@ -165,7 +172,6 @@ public class DBmanager {
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(UPDATE_MEAL_REFRESHMENT);
-        Log.d("mox", selectUserRecordDB(20160322).getMealRefreshments() + "db");
 
         db.close();
     }
@@ -218,6 +224,17 @@ public class DBmanager {
         db.close();
     }
 
+    public void insertExerciseSortInfo(ExerciseSortInfoModel model) {
+
+        String INSERT_EXERCISE_SORT = "INSERT INTO " + DATABASE_TABLE_7 + "(EXERCISE_NAME,EXERCISE_DAY)" + " VALUES" +
+                "(" + "'" + model.getExerciseName() + "'" + "," + model.getExerciseDay() + ")";
+
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        db.execSQL(INSERT_EXERCISE_SORT);
+        db.close();
+    }
+
     public void insertExerciseSpotInfo(ExerciseSpotInfoModel model) {
 
         String INSERT_EXERCISE_SPOT = "INSERT INTO " + DATABASE_TABLE_6 + "(SPOT_X,SPOT_Y,SPOT_NAME,ATTENDANCE_DAY)" + " VALUES" +
@@ -227,6 +244,17 @@ public class DBmanager {
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(INSERT_EXERCISE_SPOT);
+        db.close();
+    }
+
+    public void insertExerciseSpotAttendance(ExerciseAttendanceInfoModel model) {
+
+        String INSERT_EXERCISE_ATTEND = "INSERT INTO " + DATABASE_TABLE_3 + " VALUES" +
+                "(" + model.getRecordDate() + "," + model.getSpotId() + ")";
+
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        db.execSQL(INSERT_EXERCISE_ATTEND);
         db.close();
     }
 
@@ -279,9 +307,31 @@ public class DBmanager {
 
     }
 
-    //설정창, 출석장소정할때
-    public ExerciseSpotInfoModel selectExerciseSpotInfo() {
-        String SELECT_BODY_INFO = "SELECT * FROM " + DATABASE_TABLE_6;
+    //모든 sort을 가져올때
+    public ArrayList<ExerciseSortInfoModel> selectExerciseSortsInfo() {
+        String SELECT_EXERCISE_SORT = "SELECT * FROM " + DATABASE_TABLE_7;
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        Cursor result = db.rawQuery(SELECT_EXERCISE_SORT, null);
+
+        ArrayList<ExerciseSortInfoModel> sortInfoModels = new ArrayList<>();
+        // result(Cursor 객체)가 비어 있으면 false 리턴
+        while (result.moveToNext()) {
+            ExerciseSortInfoModel sortInfoModel = new ExerciseSortInfoModel();
+            sortInfoModel.setSortId(result.getInt(0));
+            sortInfoModel.setExerciseName(result.getString(1));
+            sortInfoModel.setExerciseDay(result.getInt(2));
+            sortInfoModels.add(sortInfoModel);
+        }
+
+        result.close();
+        return sortInfoModels;
+    }
+
+
+    //출석장소의 좌표, 이름을 가져올 때
+    public ExerciseSpotInfoModel selectExerciseSpotInfo(int id) {
+        String SELECT_BODY_INFO = "SELECT * FROM " + DATABASE_TABLE_6 + " WHERE SPOT_ID =" + id;
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
         Cursor result = db.rawQuery(SELECT_BODY_INFO, null);
@@ -321,15 +371,35 @@ public class DBmanager {
         return spotInfoModels;
     }
 
+    //출석한적이 있는지 판단
+    public ExerciseAttendanceInfoModel selectExerciseAttendance(int date) {
+        String SELECT_EXERCISE_ATTEND = "SELECT * FROM " + DATABASE_TABLE_3 + " WHERE RECORD_DATE=" + date;
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        Cursor result = db.rawQuery(SELECT_EXERCISE_ATTEND, null);
+
+        ExerciseAttendanceInfoModel attendInfoModel = new ExerciseAttendanceInfoModel();
+        if (result.moveToNext()) {
+            attendInfoModel.setRecordDate(result.getInt(0));
+            attendInfoModel.setSpotId(result.getInt(1));
+        } else {
+            attendInfoModel = null;
+        }
+        result.close();
+        return attendInfoModel;
+    }
+
+
     public UserInfoModel selectUserInfoDB() {
         String SELECT_BODY_INFO = "SELECT * FROM " + DATABASE_TABLE_1;
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
         Cursor result = db.rawQuery(SELECT_BODY_INFO, null);
 
-        UserInfoModel userInfoModel = new UserInfoModel();
+        UserInfoModel userInfoModel = null;
         // result(Cursor 객체)가 비어 있으면 false 리턴
-        if (result.moveToFirst()) {
+        if (result.moveToNext()) {
+            userInfoModel = new UserInfoModel();
             userInfoModel.setUserName(result.getString(0));
             userInfoModel.setUserSex(result.getInt(1));
             userInfoModel.setUserHeight(result.getFloat(2));
@@ -339,15 +409,12 @@ public class DBmanager {
             userInfoModel.setStimulusWord(result.getString(6));
             userInfoModel.setStimulusPicture(result.getString(7));
         }
-        if (userInfoModel.getUserName() == null) {
-            userInfoModel = null;
-        }
         result.close();
 
         return userInfoModel;
     }
 
-    
+
     public UserRecordModel selectUserRecordDB(int date) {
         String SELECT_RECORD_INFO = "SELECT * FROM " + DATABASE_TABLE_2 + " WHERE RECORD_DATE=" + date;
         this.mDbHelper = new DatabaseHelper(context);
@@ -366,8 +433,6 @@ public class DBmanager {
             userRecordModel.setMealDinner(result.getString(7));
             userRecordModel.setMealRefreshments(result.getString(8));
         }
-        Log.d("mox", userRecordModel.getRecordDate() + "");
-        Log.d("mox", userRecordModel.toString());
         result.close();
         return userRecordModel;
     }

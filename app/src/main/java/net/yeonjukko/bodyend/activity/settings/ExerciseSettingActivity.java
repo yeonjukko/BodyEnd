@@ -24,6 +24,9 @@ public class ExerciseSettingActivity extends AppCompatActivity {
     DBmanager dBmanager;
     LinearLayout spotLayout;
     LinearLayout spotLayout2;
+    LinearLayout sortLayout;
+    LinearLayout sortLayout2;
+
 
 
     @Override
@@ -32,6 +35,10 @@ public class ExerciseSettingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_exercise_setting);
         spotLayout = (LinearLayout) findViewById(R.id.layout_attendance_spot);
         spotLayout2 = (LinearLayout) findViewById(R.id.layout_attendance_spot_2);
+
+        sortLayout = (LinearLayout) findViewById(R.id.layout_exercise);
+        sortLayout2 = (LinearLayout) findViewById(R.id.layout_exercise_2);
+
 
         dBmanager = new DBmanager(getContext());
 
@@ -55,7 +62,6 @@ public class ExerciseSettingActivity extends AppCompatActivity {
         params.leftMargin = 65;
         View view = findViewById(R.id.myView);
         ViewGroup.LayoutParams params2 = view.getLayoutParams();
-
 
         TextView tvSpots;
         for (int i = 0; i < model.size(); i++) {

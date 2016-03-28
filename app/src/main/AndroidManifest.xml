@@ -48,8 +48,12 @@
             android:name=".activity.settings.WaterSettingActivity"
             android:label="@string/record_water_setting"
             android:theme="@style/MySettingTheme" />
-        <activity android:name=".activity.settings.ExerciseSettingActivity"></activity>
-        <activity android:name=".activity.settings.AttendanceMapAcitivity" android:theme="@style/BodyEndAppTheme"></activity>
+        <activity android:name=".activity.settings.ExerciseSettingActivity" />
+        <activity
+            android:name=".activity.settings.AttendanceMapAcitivity"
+            android:theme="@style/BodyEndAppTheme" />
+        <activity android:name=".activity.CalendarActivity" />
+        <activity android:name=".activity.settings.ExerciseManagerActivity"></activity>
     </application>
 
 </manifest>

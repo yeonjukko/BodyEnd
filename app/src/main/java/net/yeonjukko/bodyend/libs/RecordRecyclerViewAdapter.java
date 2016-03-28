@@ -14,7 +14,9 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Paint;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
@@ -44,16 +46,18 @@ import com.github.aakira.expandablelayout.Utils;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 
 import net.yeonjukko.bodyend.R;
 import net.yeonjukko.bodyend.activity.CameraActivity;
 import net.yeonjukko.bodyend.activity.RecordActivity;
-import net.yeonjukko.bodyend.activity.settings.AttendanceMapAcitivity;
+import net.yeonjukko.bodyend.activity.settings.ExerciseSettingActivity;
 import net.yeonjukko.bodyend.activity.settings.WaterSettingActivity;
+import net.yeonjukko.bodyend.model.ExerciseAttendanceInfoModel;
 import net.yeonjukko.bodyend.model.ExerciseSpotInfoModel;
 import net.yeonjukko.bodyend.model.UserRecordModel;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,11 +77,13 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     private int VIEW_TYPE_PICTURE = 104;
     private int VIEW_TYPE_ERROR = 105;
     public static final int REQUEST_CAMERA_CODE = 486;
-    private int i = 0;
     private int showDate;
     public static RecyclerView.ViewHolder holderTest;
-    private Handler mHandler = new Handler();
     private ProgressDialog mProgressDialog;
+
+    private LocationRequest mLocationRequest;
+    protected GoogleApiClient mGoogleApiClient;
+    ExerciseSpotInfoModel checkModel;
 
 
     DBmanager dBmanager;
@@ -149,8 +155,16 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
         UserRecordModel userRecordModel = dBmanager.selectUserRecordDB(showDate);
         if (position == 0) {
+
             // holderWater 설정
             final ViewHolderWater holderWater = (ViewHolderWater) holder;
+
+            //오늘보다 이전의 데이터를 가져왔을 때 버튼 enable처리
+            if (showDate < ((RecordActivity)context).getToday()){
+                holderWater.btWaterMinus.setEnabled(false);
+                holderWater.btWaterPlus.setEnabled(false);
+            }
+
             holderWater.textView.setText(item.description);
             holderWater.textView.setTextSize(19);
             holderWater.textView.setTextColor(context.getResources().getColor(android.R.color.white));
@@ -258,7 +272,12 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
         } else if (position == 1) {
             final ViewHolderExercise holderExercise = (ViewHolderExercise) holder;
-            holderExercise.textView.setText(item.description);
+
+            if (showDate < ((RecordActivity)context).getToday()){
+                holderExercise.cbAttendance.setEnabled(false);
+            }
+
+                holderExercise.textView.setText(item.description);
             holderExercise.textView.setTextSize(19);
             holderExercise.textView.setTextColor(context.getResources().getColor(android.R.color.white));
             holderExercise.textView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
@@ -290,32 +309,66 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             });
             holderExercise.buttonLayout.setRotation(expandState.get(position) ? 180f : 0f);
             holderExercise.tvSpotName.setTextColor(resource.getColor(R.color.Secondary_text));
+
             holderExercise.btExerciseSetting.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, AttendanceMapAcitivity.class);
+                    Intent intent = new Intent(context, ExerciseSettingActivity.class);
                     context.startActivity(intent);
                 }
             });
+
+            //출석체크를 이미 했을 때
+            if (dBmanager.selectExerciseAttendance(showDate) != null) {
+                holderExercise.cbAttendance.setChecked(false);
+                holderExercise.cbAttendance.setTextColor(resource.getColor(R.color.Divider));
+                holderExercise.cbAttendance.setPaintFlags(holderExercise.cbAttendance.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                holderExercise.tvSpotName.setText(dBmanager.selectExerciseSpotInfo(dBmanager.selectExerciseAttendance(showDate).getSpotId()).getSpotName() + "");
+                holderExercise.cbAttendance.setChecked(true);
+                holderExercise.cbAttendance.setEnabled(false);
+            }else {
+                holderExercise.cbAttendance.setTextColor(resource.getColor(android.R.color.holo_red_light));
+
+            }
+
             holderExercise.cbAttendance.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (isChecked) {
-                        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+                        if (dBmanager.selectExerciseAttendance(showDate) != null) {
+                            Toast.makeText(context, "이미 출석체크가 완료되었습니다.", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        final AlertDialog.Builder builderAttend = new AlertDialog.Builder(context);
                         ArrayList<ExerciseSpotInfoModel> models = dBmanager.selectExerciseSpotsInfo();
                         int size = models.size();
                         String items[] = new String[size];
                         for (int i = 0; i < dBmanager.selectExerciseSpotsInfo().size(); i++) {
                             items[i] = models.get(i).getSpotName();
                         }
-                        builder.setTitle("출석체크 할 장소를 선택해주세요. ")
+
+                        builderAttend.setTitle("출석체크 할 장소를 선택해주세요. ")
                                 .setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        mProgressDialog = ProgressDialog.show(context, "",
-                                                "잠시만 기다려 주세요.", true);
-//                                        buildGoogleApiClient();
-//                                        createLocationRequest();
+
+                                        LocationManager manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+                                        boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+                                        if (statusOfGPS) {
+                                            mProgressDialog = ProgressDialog.show(context, "",
+                                                    "잠시만 기다려 주세요.", true);
+                                            //선택한 장소의 정보가져오기
+                                            checkModel = dBmanager.selectExerciseSpotsInfo().get(which);
+                                            buildGoogleApiClient();
+                                            createLocationRequest();
+                                            dialog.dismiss();
+
+                                        } else {
+                                            Toast.makeText(context, "GPS을 켜고 출석체크하세요.", Toast.LENGTH_SHORT).show();
+                                            holderExercise.cbAttendance.setChecked(false);
+                                        }
 
                                     }
                                 }).show();
@@ -326,6 +379,12 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
         } else if (position == 2) {
             final ViewHolderWeight holderWeight = (ViewHolderWeight) holder;
+
+            //오늘보다 이전의 데이터를 가져왔을 때 버튼 enable처리
+            if (showDate < ((RecordActivity)context).getToday()){
+                holderWeight.btWeightPlus.setEnabled(false);
+                holderWeight.btWeightMinus.setEnabled(false);
+            }
             holderWeight.textView.setText(item.description);
             holderWeight.textView.setTextSize(19);
             holderWeight.textView.setTextColor(context.getResources().getColor(android.R.color.white));
@@ -387,6 +446,16 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
         } else if (position == 3) {
             final ViewHolderMeal holderMeal = (ViewHolderMeal) holder;
+
+            //오늘보다 이전의 데이터를 가져왔을 때 버튼 enable처리
+            if (showDate < ((RecordActivity)context).getToday()){
+                holderMeal.etBreakfast.setEnabled(false);
+                holderMeal.etLunch.setEnabled(false);
+                holderMeal.etDinner.setEnabled(false);
+                holderMeal.etRefreshment.setEnabled(false);
+
+            }
+
             holderMeal.textView.setText(item.description);
             holderMeal.textView.setTextSize(19);
             holderMeal.textView.setTextColor(context.getResources().getColor(android.R.color.white));
@@ -415,7 +484,6 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 @Override
                 public void onClick(View v) {
                     onClickButton(holderMeal.expandableLayout);
-                    holderMeal.itemView.setClickable(false);
                 }
             });
 
@@ -501,6 +569,11 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
         } else if (position == 4) {
             final ViewHolderPicture holderPicture = (ViewHolderPicture) holder;
+            //오늘보다 이전의 데이터를 가져왔을 때 버튼 enable처리
+            if (showDate < ((RecordActivity)context).getToday()){
+                holderPicture.btCamera.setEnabled(false);
+
+            }
             holderPicture.textView.setText(item.description);
             holderPicture.textView.setTextSize(19);
             holderPicture.textView.setTextColor(context.getResources().getColor(android.R.color.white));
@@ -565,7 +638,6 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     public int getItemCount() {
         return data.size();
     }
-
 
 
     public static class ViewHolderWater extends RecyclerView.ViewHolder {
@@ -690,16 +762,40 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     //출석체크 관련 메소드
     @Override
     public void onConnected(Bundle bundle) {
-
+        Log.d("service", "Attend onConnected");
+        startLocationUpdates();
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        mGoogleApiClient.connect();
     }
 
     @Override
     public void onLocationChanged(Location location) {
+        //onConnect 다음 실행
+
+        stopLocationUpdates();
+        double dbX = checkModel.getSpotX();
+        double dbY = checkModel.getSpotY();
+
+        Location lo = new Location("dbLocation");
+        lo.setLongitude(dbX);
+        lo.setLatitude(dbY);
+        float distance = location.distanceTo(lo);
+
+        if (distance <= 50) {
+            ExerciseAttendanceInfoModel model = new ExerciseAttendanceInfoModel();
+            model.setRecordDate(showDate);
+            model.setSpotId(checkModel.getSpotId());
+            dBmanager.insertExerciseSpotAttendance(model);
+            notifyDataSetChanged();
+        }else{
+            Toast.makeText(context,"거리가 멀어서 출석체크할 수 없습니다.",Toast.LENGTH_SHORT).show();
+        }
+
+        mProgressDialog.dismiss();
+
 
     }
 
@@ -707,4 +803,36 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
     }
+
+    protected void startLocationUpdates() {
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+
+        Log.d("service", "Attend startLocationUpdates");
+    }
+
+    protected void stopLocationUpdates() {
+        if (mGoogleApiClient.isConnected()) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+            mGoogleApiClient.disconnect();
+        }
+
+    }
+
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(context)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+
+        mGoogleApiClient.connect();
+    }
+
+    protected void createLocationRequest() {
+        Log.d("service", "Attend createLocationRequest");
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(10000000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+    }
+
 }

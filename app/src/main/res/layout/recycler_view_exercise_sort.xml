@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginTop="8dp"
+    android:background="@drawable/layout_round_all_white"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:id="@+id/layout_sort"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center_vertical|right"
+            android:layout_marginRight="10dp"
+            android:layout_marginStart="15dp"
+            android:src="@drawable/icon_exercise" />
+
+        <TextView
+            android:id="@+id/tv_exercise_sort"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:layout_marginLeft="10dp"
+            android:gravity="center_vertical"
+            android:text="스쿼트" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="3dp"
+        android:background="@android:color/white">
+
+        <net.yeonjukko.bodyend.libs.CheckableButton
+            android:id="@+id/set_cb_monday"
+            android:layout_width="match_parent"
+            android:layout_height="53dp"
+            android:layout_margin="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/choose_commonday_radio_button_selector"
+            android:text="월" />
+
+        <net.yeonjukko.bodyend.libs.CheckableButton
+            android:id="@+id/set_cb_tuesday"
+            android:layout_width="match_parent"
+            android:layout_height="53dp"
+            android:layout_margin="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/choose_commonday_radio_button_selector"
+            android:text="화" />
+
+        <net.yeonjukko.bodyend.libs.CheckableButton
+            android:id="@+id/set_cb_wednesday"
+            android:layout_width="match_parent"
+            android:layout_height="53dp"
+            android:layout_margin="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/choose_commonday_radio_button_selector"
+            android:text="수" />
+
+        <net.yeonjukko.bodyend.libs.CheckableButton
+            android:id="@+id/set_cb_thursday"
+            android:layout_width="match_parent"
+            android:layout_height="53dp"
+            android:layout_margin="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/choose_commonday_radio_button_selector"
+            android:text="목" />
+
+        <net.yeonjukko.bodyend.libs.CheckableButton
+            android:id="@+id/set_cb_friday"
+            android:layout_width="match_parent"
+            android:layout_height="53dp"
+            android:layout_margin="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/choose_commonday_radio_button_selector"
+            android:text="금" />
+
+        <net.yeonjukko.bodyend.libs.CheckableButton
+            android:id="@+id/set_cb_saturday"
+            android:layout_width="match_parent"
+            android:layout_height="53dp"
+            android:layout_margin="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/choose_saturday_radio_button_selector"
+            android:text="토" />
+
+        <net.yeonjukko.bodyend.libs.CheckableButton
+            android:id="@+id/set_cb_sunday"
+            android:layout_width="match_parent"
+            android:layout_height="53dp"
+            android:layout_margin="3dp"
+            android:layout_weight="1"
+            android:background="@drawable/choose_sunday_radio_button_selector"
+            android:text="일" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

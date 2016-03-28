@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.aakira.expandablelayout.Utils;
@@ -44,6 +45,17 @@ public class RecordActivity extends AppCompatActivity {
         //정각에만 실행
         insertUserRecord();
         showDate = getToday();
+
+        //캘린더 불러오기
+        ImageView btCalendar = (ImageView) findViewById(R.id.ic_calendar);
+        btCalendar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RecordActivity.this, CalendarActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
         //CalendarActivity에서 넘어올 때
         Intent intent = getIntent();
