@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,8 @@ import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidGridAdapter;
 
 import net.yeonjukko.bodyend.R;
-import net.yeonjukko.bodyend.activity.RecordActivity;
+import net.yeonjukko.bodyend.activity.MainActivity;
+import net.yeonjukko.bodyend.activity.RecordFragment;
 import net.yeonjukko.bodyend.model.UserRecordModel;
 
 import java.util.ArrayList;
@@ -115,7 +115,7 @@ public class BodyEndCalendarFragment extends CaldroidFragment {
                 @Override
                 public void onClick(View v) {
                     if (model != null) {
-                        Intent intent = new Intent(getContext(), RecordActivity.class);
+                        Intent intent = new Intent(getContext(), MainActivity.class);
                         intent.putExtra("showDate", getDate(dateTime));
                         startActivity(intent);
                     } else {

@@ -1,11 +1,16 @@
 package net.yeonjukko.bodyend.activity.settings;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +28,8 @@ import com.zcw.togglebutton.ToggleButton;
 import net.yeonjukko.bodyend.R;
 import net.yeonjukko.bodyend.libs.DBmanager;
 import net.yeonjukko.bodyend.model.WaterAlarmInfoModel;
+
+import java.util.Calendar;
 
 public class WaterSettingActivity extends AppCompatActivity {
     DBmanager dBmanager;
@@ -65,6 +72,7 @@ public class WaterSettingActivity extends AppCompatActivity {
             @Override
             public void onOpen() {
                 dBmanager.updateWaterAlarmStatus(1);
+
             }
 
             @Override
@@ -155,6 +163,7 @@ public class WaterSettingActivity extends AppCompatActivity {
 
     }
 
+
     Handler mHandler = new Handler();
 
     @Override
@@ -179,4 +188,6 @@ public class WaterSettingActivity extends AppCompatActivity {
     public Context getContext(){
         return this;
     }
+
+
 }

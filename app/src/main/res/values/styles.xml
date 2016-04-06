@@ -20,9 +20,9 @@
     <style name="MyNoActionBar" parent="Theme.AppCompat.NoActionBar">
         <item name="colorPrimary">@color/Primary</item>
         <item name="colorPrimaryDark">@color/Background</item>
+        <item name="android:divider">@color/Divider</item>
         <item name="android:textColor">@android:color/black</item>
         <item name="android:textColorPrimary">@android:color/black</item>
-
         <item name="colorAccent">@color/Accent</item>
     </style>
 

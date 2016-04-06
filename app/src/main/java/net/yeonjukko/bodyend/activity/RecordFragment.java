@@ -1,43 +1,44 @@
 package net.yeonjukko.bodyend.activity;
 
+import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.aakira.expandablelayout.Utils;
-import com.yalantis.ucrop.UCrop;
 
 import net.yeonjukko.bodyend.R;
 import net.yeonjukko.bodyend.libs.DBmanager;
 import net.yeonjukko.bodyend.libs.DividerItemDecoration;
 import net.yeonjukko.bodyend.libs.RecordItemModel;
 import net.yeonjukko.bodyend.libs.RecordRecyclerViewAdapter;
-import net.yeonjukko.bodyend.model.UserInfoModel;
 import net.yeonjukko.bodyend.model.UserRecordModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 
-public class RecordActivity extends AppCompatActivity {
+public class RecordFragment extends Fragment {
     public DBmanager dBmanager;
     public int showDate;
+    View rootView;
     RecordRecyclerViewAdapter adapter;
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_record);
-        dBmanager = new DBmanager(this);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        rootView = inflater.inflate(R.layout.fragment_record, container, false);
+        dBmanager = new DBmanager(getContext());
 
         //record 테이블 초기화 및 날짜 설정 메소드
 
@@ -45,18 +46,28 @@ public class RecordActivity extends AppCompatActivity {
         insertUserRecord();
         showDate = getToday();
 
+        //캘린더 불러오기
+        ImageView btCalendar = (ImageView) rootView.findViewById(R.id.ic_calendar);
+        btCalendar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), CalendarActivity.class);
+                startActivity(intent);
+                getActivity().finish();
+            }
+        });
+
         //CalendarActivity에서 넘어올 때
-        Intent intent = getIntent();
+        Intent intent = getActivity().getIntent();
         if (intent.getIntExtra("showDate", getToday()) != getToday()) {
             showDate = intent.getIntExtra("showDate", getToday());
         }
-
         setLayout(showDate);
 
-        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        final RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
-        recyclerView.addItemDecoration(new DividerItemDecoration(this));
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.addItemDecoration(new DividerItemDecoration(getContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         final List<RecordItemModel> data = new ArrayList<>();
         data.add(new RecordItemModel(
@@ -85,16 +96,16 @@ public class RecordActivity extends AppCompatActivity {
                 R.color.Icons,
                 Utils.createInterpolator(Utils.ACCELERATE_DECELERATE_INTERPOLATOR)));
 
-        adapter = new RecordRecyclerViewAdapter(data, showDate);
+        adapter = new RecordRecyclerViewAdapter(data, showDate, this);
         recyclerView.setAdapter(adapter);
 
-
+        return rootView;
     }
 
 
     private void setLayout(int date) {
-        TextView tvCurrDate = (TextView) findViewById(R.id.tv_curr_date);
-        TextView tvCurrDay = (TextView) findViewById(R.id.tv_curr_day);
+        TextView tvCurrDate = (TextView) rootView.findViewById(R.id.tv_curr_date);
+        TextView tvCurrDay = (TextView) rootView.findViewById(R.id.tv_curr_day);
         String mDate = date + "";
         String year = mDate.substring(0, 4);
         String month = mDate.substring(4, 6);
@@ -151,9 +162,10 @@ public class RecordActivity extends AppCompatActivity {
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH) + 1;
-        int date = calendar.get(Calendar.DATE);
+        int date = calendar.get(Calendar.DAY_OF_MONTH);
         String strMonth = null;
         String strDate = null;
+
 
         if (month < 10)
             strMonth = "0" + month;
@@ -161,7 +173,7 @@ public class RecordActivity extends AppCompatActivity {
             strMonth = month + "";
 
         if (date < 10)
-            strDate = "0" + month;
+            strDate = "0" + date;
         else if (date >= 10)
             strDate = date + "";
 
@@ -170,10 +182,11 @@ public class RecordActivity extends AppCompatActivity {
         return Integer.parseInt(today);
     }
 
+
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == RecordRecyclerViewAdapter.REQUEST_CAMERA_CODE) {
+        if (resultCode == Activity.RESULT_OK && requestCode == RecordRecyclerViewAdapter.REQUEST_CAMERA_CODE) {
             String imagePath = data.getStringExtra(CameraActivity.FLAG_FILE_PATH);
             dBmanager.updatePictureRecord(imagePath, showDate);
 //            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
@@ -182,7 +195,7 @@ public class RecordActivity extends AppCompatActivity {
 //           Log.d("mox2",((RecordRecyclerViewAdapter.ViewHolderPicture)RecordRecyclerViewAdapter.holderTest).imageTodayPic.getVisibility()+"visible");
 //                   ((RecordRecyclerViewAdapter.ViewHolderPicture) RecordRecyclerViewAdapter.holderTest).expandableLayout.invalidate();
 
-            this.runOnUiThread(new Runnable() {
+            getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     adapter.notifyDataSetChanged();

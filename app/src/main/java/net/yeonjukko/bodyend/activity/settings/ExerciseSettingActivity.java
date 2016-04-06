@@ -21,9 +21,14 @@ import java.util.ArrayList;
 public class ExerciseSettingActivity extends AppCompatActivity {
 
     private static final int REQUEST_SPOT_NAME = 106;
+    private static final int REQUEST_SORT_NAME = 107;
+
     DBmanager dBmanager;
     LinearLayout spotLayout;
     LinearLayout spotLayout2;
+    LinearLayout sortLayout;
+    LinearLayout sortLayout2;
+
 
 
     @Override
@@ -33,6 +38,10 @@ public class ExerciseSettingActivity extends AppCompatActivity {
         spotLayout = (LinearLayout) findViewById(R.id.layout_attendance_spot);
         spotLayout2 = (LinearLayout) findViewById(R.id.layout_attendance_spot_2);
 
+        sortLayout = (LinearLayout) findViewById(R.id.layout_exercise);
+        sortLayout2 = (LinearLayout) findViewById(R.id.layout_exercise_2);
+
+
         dBmanager = new DBmanager(getContext());
 
         setSpotList();
@@ -41,6 +50,14 @@ public class ExerciseSettingActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), AttendanceMapAcitivity.class);
                 startActivityForResult(intent, REQUEST_SPOT_NAME);
+            }
+        });
+
+        sortLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), ExerciseManagerActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -55,7 +72,6 @@ public class ExerciseSettingActivity extends AppCompatActivity {
         params.leftMargin = 65;
         View view = findViewById(R.id.myView);
         ViewGroup.LayoutParams params2 = view.getLayoutParams();
-
 
         TextView tvSpots;
         for (int i = 0; i < model.size(); i++) {

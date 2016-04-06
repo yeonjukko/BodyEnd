@@ -37,7 +37,7 @@ public class InitInfoActivity extends AppCompatActivity {
             userInfoModel = new UserInfoModel();
         }
         if (dBmanager.selectUserInfoDB() != null) {
-            Intent intent = new Intent(this, StimulusActivity.class);
+            Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();
         }

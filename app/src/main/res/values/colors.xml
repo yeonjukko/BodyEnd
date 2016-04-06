@@ -17,4 +17,6 @@
     <color name="Icons">#FFFFFF</color>
     <color name="Divider">#A0A0A0</color>
 
+    <color name="transparent">#00ffffff</color>
+
 </resources>

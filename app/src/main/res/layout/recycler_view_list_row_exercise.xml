@@ -64,26 +64,63 @@
         app:ael_expanded="false"
         app:ael_orientation="vertical">
 
-        <FrameLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <CheckBox
-                android:id="@+id/cb_attendance"
+            android:orientation="vertical">
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:textColor="@android:color/black"
-                android:text="출석체크"/>
-            <TextView
-                android:id="@+id/tv_spot_name"
-                android:gravity="center_vertical|right"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:paddingRight="10dp"
-                android:text="서울시 강동구 성내동 " />
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/Divider">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="3dp"
+                    android:layout_marginStart="7dp"
+                    android:textColor="@android:color/white"
+                    android:text="출석기록"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/white"
+                    android:orientation="horizontal">
+                    <CheckBox
+                        android:id="@+id/cb_attendance"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:textColor="@android:color/black"
+                        android:text="출석체크"/>
+                    <TextView
+                        android:id="@+id/tv_spot_name"
+                        android:gravity="center_vertical|right"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:paddingRight="10dp" />
+                </LinearLayout>
+            </LinearLayout>
 
-        </FrameLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/Divider">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="3dp"
+                    android:layout_marginStart="7dp"
+                    android:textColor="@android:color/white"
+                    android:text="오늘의 운동 기록"/>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/layout_exercise_sorts"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </LinearLayout>
+
+        </LinearLayout>
 
     </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
 

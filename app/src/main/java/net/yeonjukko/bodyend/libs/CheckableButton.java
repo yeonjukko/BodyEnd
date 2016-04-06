@@ -2,6 +2,12 @@ package net.yeonjukko.bodyend.libs;
 
 /**
  * Created by yeonjukko on 16. 3. 11..
+ * <p/>
+ * Created by MoonJongRak on 2016. 2. 17..
+ * <p/>
+ * Created by MoonJongRak on 2016. 2. 17..
+ * <p/>
+ * Created by MoonJongRak on 2016. 2. 17..
  */
 
 /**
@@ -79,4 +85,10 @@ public class CheckableButton extends Button implements Checkable {
         void onCheckedChanged(CheckableButton buttonView, boolean isChecked);
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        //Get canvas width and height
+        int width = MeasureSpec.getSize(widthMeasureSpec);
+        setMeasuredDimension(width, width);
+    }
 }
