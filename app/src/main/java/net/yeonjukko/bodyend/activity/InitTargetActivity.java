@@ -24,10 +24,8 @@ import net.yeonjukko.bodyend.model.WaterAlarmInfoModel;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 public class InitTargetActivity extends InitInfoActivity {
 
@@ -152,7 +150,7 @@ public class InitTargetActivity extends InitInfoActivity {
                 Log.d("mox", "target" + dbManager.PrintData());
                 dbManager.selectUserInfoDB();
 
-                Intent intent = new Intent(getContext(), StimulusActivity.class);
+                Intent intent = new Intent(getContext(), MainActivity.class);
                 startActivity(intent);
                 finish();
             }

@@ -1,6 +1,5 @@
 package net.yeonjukko.bodyend.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -8,8 +7,11 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,24 +22,23 @@ import net.yeonjukko.bodyend.libs.DayCounter;
 
 import java.io.IOException;
 
-public class StimulusActivity extends AppCompatActivity {
+public class StimulusFragment extends Fragment {
     Bitmap bitmap;
     DBmanager dBmanager;
 
-
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_stimulus);
-        dBmanager = new DBmanager(this);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_stimulus, container, false);
+        dBmanager = new DBmanager(rootView.getContext());
 
-        TextView tvDday = (TextView)findViewById(R.id.tv_d_day);
-        TextView tvStimulusWord = (TextView)findViewById(R.id.tv_stimulus);
-        ImageView btSetting = (ImageView)findViewById(R.id.bt_setting);
+        TextView tvDday = (TextView)rootView.findViewById(R.id.tv_d_day);
+        TextView tvStimulusWord = (TextView)rootView.findViewById(R.id.tv_stimulus);
+        ImageView btSetting = (ImageView)rootView.findViewById(R.id.bt_setting);
         btSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(StimulusActivity.this,RecordActivity.class);
+                Intent intent = new Intent(getContext(),RecordFragment.class);
                 startActivity(intent);
             }
         });
@@ -52,12 +53,12 @@ public class StimulusActivity extends AppCompatActivity {
 
 
         //<--레이아웃 배경화면 설정
-        ImageView layout = (ImageView) findViewById(R.id.layout_bgr);
+        ImageView layout = (ImageView) rootView.findViewById(R.id.layout_bgr);
         Toast.makeText(getContext(),dBmanager.selectUserInfoDB().getStimulusPicture(),Toast.LENGTH_LONG).show();
         Uri resultUri = Uri.parse(dBmanager.selectUserInfoDB().getStimulusPicture());
 
         try {
-            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), resultUri);
+            bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), resultUri);
             Drawable drawable = new BitmapDrawable(getResources(), bitmap);
             drawable.setAlpha(190);
             layout.setBackground(drawable);
@@ -68,10 +69,11 @@ public class StimulusActivity extends AppCompatActivity {
         //<--레이아웃 배경화면 설정-->
 
 
+
+
+        return rootView;
     }
 
-    private Context getContext() {
-        return this;
-    }
+
 
 }

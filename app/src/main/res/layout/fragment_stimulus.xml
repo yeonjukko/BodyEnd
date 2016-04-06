@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.StimulusActivity">
+    android:id="@+id/fragment1View"
+    tools:context=".activity.StimulusFragment">
 
     <ImageView
         android:id="@+id/layout_bgr"

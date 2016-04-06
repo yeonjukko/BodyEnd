@@ -21,6 +21,8 @@ import java.util.ArrayList;
 public class ExerciseSettingActivity extends AppCompatActivity {
 
     private static final int REQUEST_SPOT_NAME = 106;
+    private static final int REQUEST_SORT_NAME = 107;
+
     DBmanager dBmanager;
     LinearLayout spotLayout;
     LinearLayout spotLayout2;
@@ -48,6 +50,14 @@ public class ExerciseSettingActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), AttendanceMapAcitivity.class);
                 startActivityForResult(intent, REQUEST_SPOT_NAME);
+            }
+        });
+
+        sortLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), ExerciseManagerActivity.class);
+                startActivity(intent);
             }
         });
 

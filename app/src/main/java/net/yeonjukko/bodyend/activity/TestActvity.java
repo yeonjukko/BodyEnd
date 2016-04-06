@@ -7,6 +7,6 @@ import net.yeonjukko.bodyend.activity.settings.WaterSettingActivity;
 /**
  * Created by yeonjukko on 16. 3. 11..
  */
-public class TestActvity extends ExerciseManagerActivity {
+public class TestActvity extends InitInfoActivity {
 
 }

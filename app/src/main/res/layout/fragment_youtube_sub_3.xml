@@ -1,13 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Background"
     android:orientation="vertical"
-    android:fitsSystemWindows="true"
-    tools:context="net.yeonjukko.bodyend.activity.settings.ExerciseManagerActivity">
+    tools:context=".activity.YoutubeFragmentSub1">
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,7 +26,7 @@
             android:textColor="@android:color/white"
             android:textSize="25sp"
             android:textStyle="bold"
-            android:text="나만의 운동 설정" />
+            android:text="선택한 유투브 타이틀" />
 
         <ImageButton
             android:id="@+id/ib_plus_sort"
@@ -37,15 +34,26 @@
             android:layout_height="wrap_content"
             android:background="@null"
             android:layout_weight="3"
-            android:layout_gravity="center"
-            android:src="@drawable/icon_plus"/>
+            android:layout_gravity="center"/>
 
     </LinearLayout>
-
-    <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/recycler_view_exercise"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="vertical" />
+        android:layout_height="wrap_content"
+        android:background="@color/Divider">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="3dp"
+            android:layout_marginStart="7dp"
+            android:textColor="@android:color/white"
+            android:text="동영상 리스트"/>
+    </LinearLayout>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerViewYoutube"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
 
 </LinearLayout>

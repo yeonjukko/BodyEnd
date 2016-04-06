@@ -7,11 +7,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.github.aakira.expandablelayout.Utils;
@@ -26,7 +28,9 @@ import net.yeonjukko.bodyend.libs.RecordRecyclerViewAdapter;
 import net.yeonjukko.bodyend.model.ExerciseSortInfoModel;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.UUID;
 
 public class ExerciseManagerActivity extends AppCompatActivity {
     CheckableButton cbMonday;
@@ -36,8 +40,11 @@ public class ExerciseManagerActivity extends AppCompatActivity {
     CheckableButton cbFriday;
     CheckableButton cbSaturday;
     CheckableButton cbSunday;
+    RadioButton rdOxygen;
+    RadioButton rdNonoxygen;
+    RadioButton rdYoutube;
     EditText etExerciseName;
-    private int exerciseDay = 0;
+
     public static final int FLAG_MONDAY = 0x40;
     public static final int FLAG_TUESDAY = 0x20;
     public static final int FLAG_WEDNESDAY = 0x10;
@@ -58,7 +65,17 @@ public class ExerciseManagerActivity extends AppCompatActivity {
 
         ImageButton ibPlusSort = (ImageButton) findViewById(R.id.ib_plus_sort);
         setRecyclerLayout();
+        etExerciseName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (rdYoutube.isChecked()){
+                   // if(인터넷이 연결이 안됬다면)
+                   // 리스트가져와서 보여주긱
 
+                }
+            }
+        });
+        assert ibPlusSort != null;
         ibPlusSort.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,6 +83,7 @@ public class ExerciseManagerActivity extends AppCompatActivity {
                 plusView = inflater.from(getContext()).inflate(R.layout.dialog_ex_sort_plus, null, false);
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 setDialogLayout();
+
                 builder.setView(plusView)
                         .setTitle("운동을 추가하세요.")
                         .setPositiveButton("추가", new DialogInterface.OnClickListener() {
@@ -73,6 +91,7 @@ public class ExerciseManagerActivity extends AppCompatActivity {
 
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                int exerciseDay = 0;
                                 if (cbMonday.isChecked())
                                     exerciseDay += FLAG_MONDAY;
                                 if (cbTuesday.isChecked())
@@ -89,15 +108,30 @@ public class ExerciseManagerActivity extends AppCompatActivity {
                                     exerciseDay += FLAG_SUNDAY;
 
                                 if (!(cbMonday.isChecked() || cbTuesday.isChecked() || cbWednesday.isChecked() || cbThursday.isChecked() || cbFriday.isChecked() || cbSaturday.isChecked() || cbSunday.isChecked())) {
-                                    Toast.makeText(getContext(),"반드시 한 요일 이상 선택하세요.",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(), "반드시 한 요일 이상 선택하세요.", Toast.LENGTH_SHORT).show();
                                     return;
                                 }
 
+
                                 ExerciseSortInfoModel model = new ExerciseSortInfoModel();
+                                model.setSortId(UUID.randomUUID().toString());
                                 model.setExerciseDay(exerciseDay);
                                 model.setExerciseName(etExerciseName.getText().toString());
+                                if (rdOxygen.isChecked()) {
+                                    model.setExerciseType(1);
+                                    model.setSortId(UUID.randomUUID().toString());
+                                } else if (rdNonoxygen.isChecked()) {
+                                    model.setExerciseType(0);
+                                    model.setSortId(UUID.randomUUID().toString());
+                                } else if (rdYoutube.isChecked()) {
+                                    model.setExerciseType(2);
+                                    //model.setSortId(유투브 아이디를 입력);
+
+                                }
+                                model.setExerciseAddDate(getToday());
                                 dBmanager.insertExerciseSortInfo(model);
                                 setRecyclerLayout();
+
 
                             }
                         }).show();
@@ -122,16 +156,32 @@ public class ExerciseManagerActivity extends AppCompatActivity {
         cbFriday = (CheckableButton) plusView.findViewById(R.id.cb_friday);
         cbSaturday = (CheckableButton) plusView.findViewById(R.id.cb_saturday);
         cbSunday = (CheckableButton) plusView.findViewById(R.id.cb_sunday);
+        rdOxygen = (RadioButton) plusView.findViewById(R.id.rd_oxygen);
+        rdNonoxygen = (RadioButton) plusView.findViewById(R.id.rd_nonoxygen);
+        rdYoutube = (RadioButton)plusView.findViewById(R.id.rd_youtube);
+    }
+    public int getToday() {
+        //<--오늘 날짜 구하기 ex)20160317
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int date = calendar.get(Calendar.DATE);
+        String strMonth = null;
+        String strDate = null;
+
+        if (month < 10)
+            strMonth = "0" + month;
+        else if (month >= 10)
+            strMonth = month + "";
+
+        if (date < 10)
+            strDate = "0" + month;
+        else if (date >= 10)
+            strDate = date + "";
 
 
-        cbMonday.setChecked(false);
-        cbTuesday.setChecked(false);
-        cbWednesday.setChecked(false);
-        cbThursday.setChecked(false);
-        cbFriday.setChecked(false);
-        cbSaturday.setChecked(false);
-        cbSunday.setChecked(false);
-
+        String today = year + strMonth + strDate;
+        return Integer.parseInt(today);
     }
 
     public Context getContext() {

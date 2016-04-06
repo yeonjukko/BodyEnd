@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.util.Log;
 
 import net.yeonjukko.bodyend.model.ExerciseAttendanceInfoModel;
+import net.yeonjukko.bodyend.model.ExerciseJoinSortInfoModel;
 import net.yeonjukko.bodyend.model.ExerciseSortInfoModel;
 import net.yeonjukko.bodyend.model.ExerciseSpotInfoModel;
 import net.yeonjukko.bodyend.model.UserInfoModel;
@@ -32,6 +33,7 @@ public class DBmanager {
     private static final String DATABASE_TABLE_5 = "WATER_ALARM_INFO";
     private static final String DATABASE_TABLE_6 = "EXERCISE_SPOT_INFO";
     private static final String DATABASE_TABLE_7 = "EXERCISE_SORT_INFO";
+    private static final String DATABASE_TABLE_8 = "EXERCISE_SORT_INFO_CLONE";
 
     private static final int DATABASE_VERSION = 2;
 
@@ -53,7 +55,7 @@ public class DBmanager {
             " (RECORD_DATE INTEGER, SPOT_ID INTEGER)";
 
     private static final String DATABASE_CREATE_4 = "CREATE TABLE " + DATABASE_TABLE_4 +
-            " (RECORD_DATE INTEGER, SORT_ID INTEGER)";
+            " (RECORD_DATE INTEGER, SORT_ID TEXT)";
 
     private static final String DATABASE_CREATE_5 = "CREATE TABLE " + DATABASE_TABLE_5 +
             " (WATER_ALARM_STATUS INTEGER, WATER_ALARM_PERIOD INTEGER, ALARM_TIMEZONE_START INTEGER, ALARM_TIMEZONE_STOP INTEGER)";
@@ -63,7 +65,10 @@ public class DBmanager {
             " (SPOT_ID INTEGER PRIMARY KEY, SPOT_X DOUBLE, SPOT_Y DOUBLE, SPOT_NAME TEXT, ATTENDANCE_DAY INTEGER)";
 
     private static final String DATABASE_CREATE_7 = "CREATE TABLE " + DATABASE_TABLE_7 +
-            " (SORT_ID INTEGER PRIMARY KEY, EXERCISE_NAME TEXT, EXERCISE_DAY INTEGER)";
+            " (SORT_ID TEXT PRIMARY KEY, EXERCISE_NAME TEXT, EXERCISE_DAY INTEGER, EXERCISE_TYPE INTEGER, EXERCISE_ADD_DATE INTEGER)";
+
+    private static final String DATABASE_CREATE_8 = "CREATE TABLE " + DATABASE_TABLE_8 +
+            " (SORT_ID TEXT PRIMARY KEY, EXERCISE_NAME TEXT, EXERCISE_DAY INTEGER, EXERCISE_TYPE INTEGER, EXERCISE_ADD_DATE INTEGER)";
 
     // 부가적인 객체들
     private Context context;
@@ -94,6 +99,8 @@ public class DBmanager {
             db.execSQL(DATABASE_CREATE_5);
             db.execSQL(DATABASE_CREATE_6);
             db.execSQL(DATABASE_CREATE_7);
+            db.execSQL(DATABASE_CREATE_8);
+
         }
 
         @Override
@@ -103,7 +110,7 @@ public class DBmanager {
 
     }
 
-    public void deleteSort(int id) {
+    public void deleteSort(String id) {
         String DELETE_SORT = "DELETE FROM " + DATABASE_TABLE_7 + " WHERE SORT_ID=" + id;
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
@@ -118,6 +125,22 @@ public class DBmanager {
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(DELETE_SPOT);
+        db.close();
+    }
+
+    public void updateCheckStatus(String id, int date, boolean isChecked) {
+        String INSERT_EXERCISE_SORT_RECORD = "INSERT INTO " + DATABASE_TABLE_4 + " VALUES" + " (" + date + "," + id + ")";
+        String DELETE_EXERCISE_SORT_RECORD = "DELETE FROM " + DATABASE_TABLE_4 + " WHERE RECORD_DATE = " + date + " AND SORT_ID =" + id;
+
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        if (isChecked) {
+            db.execSQL(INSERT_EXERCISE_SORT_RECORD);
+            Log.d("mox", "insert");
+        } else {
+            db.execSQL(DELETE_EXERCISE_SORT_RECORD);
+            Log.d("mox", "delete");
+        }
         db.close();
     }
 
@@ -178,8 +201,7 @@ public class DBmanager {
 
     public void updateCurrWeight(float weight, int date) {
         String UPDATE_CURR_WEIGHT_RECORD = "UPDATE " + DATABASE_TABLE_1 + " SET USER_CURR_WEIGHT=" + weight;
-        String UPDATE_TODAY_WEIGHT_RECORD = "UPDATE " + DATABASE_TABLE_2 + " SET WEIGHT_RECORD=" + weight + " WHERE RECORD_DATE=" + date;
-
+        String UPDATE_TODAY_WEIGHT_RECORD = "UPDATE " + DATABASE_TABLE_2 + " SET WEIGHT_RECORD=" + weight +",WATER_VOLUME="+(int)(weight*33/300)+ " WHERE RECORD_DATE=" + date;
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(UPDATE_CURR_WEIGHT_RECORD);
@@ -224,14 +246,18 @@ public class DBmanager {
         db.close();
     }
 
+    //1:유산소 0:무산소 2:유투브
     public void insertExerciseSortInfo(ExerciseSortInfoModel model) {
-
-        String INSERT_EXERCISE_SORT = "INSERT INTO " + DATABASE_TABLE_7 + "(EXERCISE_NAME,EXERCISE_DAY)" + " VALUES" +
-                "(" + "'" + model.getExerciseName() + "'" + "," + model.getExerciseDay() + ")";
-
+        String INSERT_EXERCISE_SORT = "INSERT INTO " + DATABASE_TABLE_7 + " VALUES " +
+                "(" + "'" + model.getSortId() + "'" + ","+ "'" + model.getExerciseName() + "'" + "," + model.getExerciseDay() + "," + model.getExerciseType() + "," + model.getExerciseAddDate() + ")";
+        String INSERT_EXERCISE_SORT_CLONE = "INSERT INTO " + DATABASE_TABLE_8 + " VALUES " +
+                "(" + "'" + model.getSortId() + "'" + ","+ "'" + model.getExerciseName() + "'" + "," + model.getExerciseDay() + "," + model.getExerciseType() + "," + model.getExerciseAddDate() + ")";
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
         db.execSQL(INSERT_EXERCISE_SORT);
+        db.execSQL(INSERT_EXERCISE_SORT_CLONE);
+
         db.close();
     }
 
@@ -308,6 +334,11 @@ public class DBmanager {
     }
 
     //모든 sort을 가져올때
+
+    /**
+     * oxygen은 0일때 무산소운동 1일때 유산소운동
+     */
+    //오늘의 데이터를 가져올 때
     public ArrayList<ExerciseSortInfoModel> selectExerciseSortsInfo() {
         String SELECT_EXERCISE_SORT = "SELECT * FROM " + DATABASE_TABLE_7;
         this.mDbHelper = new DatabaseHelper(context);
@@ -318,14 +349,51 @@ public class DBmanager {
         // result(Cursor 객체)가 비어 있으면 false 리턴
         while (result.moveToNext()) {
             ExerciseSortInfoModel sortInfoModel = new ExerciseSortInfoModel();
-            sortInfoModel.setSortId(result.getInt(0));
+            sortInfoModel.setSortId(result.getString(0));
             sortInfoModel.setExerciseName(result.getString(1));
             sortInfoModel.setExerciseDay(result.getInt(2));
+            sortInfoModel.setExerciseType(result.getInt(3));
             sortInfoModels.add(sortInfoModel);
         }
 
         result.close();
         return sortInfoModels;
+    }
+
+
+    //과거의 데이터를 가져올때
+    public ArrayList<ExerciseJoinSortInfoModel> selectRecordExerciseSortsInfo(boolean isToday, int date, int day) {
+        String SELECT_EXERCISE_SORT_TODAY = "SELECT EXERCISE_SORT_INFO.SORT_ID, EXERCISE_SORT_INFO.EXERCISE_NAME,EXERCISE_SORT_INFO.EXERCISE_DAY," +
+                "EXERCISE_SORT_INFO.EXERCISE_OXYGEN,EXERCISE_SORT_RECORD.RECORD_DATE FROM " + DATABASE_TABLE_7 + " LEFT OUTER JOIN " + DATABASE_TABLE_4 + " ON "
+                + DATABASE_TABLE_4 + ".SORT_ID = " + DATABASE_TABLE_7 + ".SORT_ID AND EXERCISE_SORT_RECORD.RECORD_DATE =" + date +
+                " WHERE EXERCISE_DAY &" + day + "!=0";
+        String SELECT_EXERCISE_SORT = "SELECT EXERCISE_SORT_INFO_CLONE.SORT_ID, EXERCISE_SORT_INFO_CLONE.EXERCISE_NAME,EXERCISE_SORT_INFO_CLONE.EXERCISE_DAY," +
+                "EXERCISE_SORT_INFO_CLONE.EXERCISE_OXYGEN,EXERCISE_SORT_RECORD.RECORD_DATE FROM " + DATABASE_TABLE_8 + " LEFT OUTER JOIN " + DATABASE_TABLE_4 + " ON "
+                + DATABASE_TABLE_4 + ".SORT_ID = " + DATABASE_TABLE_8 + ".SORT_ID AND EXERCISE_SORT_RECORD.RECORD_DATE =" + date +
+                " WHERE EXERCISE_DAY &" + day + "!=0";
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        Cursor result;
+        if (isToday)
+            result = db.rawQuery(SELECT_EXERCISE_SORT_TODAY, null);
+        else
+            result = db.rawQuery(SELECT_EXERCISE_SORT, null);
+
+        ArrayList<ExerciseJoinSortInfoModel> sortJoinInfoModels = new ArrayList<>();
+        // result(Cursor 객체)가 비어 있으면 false 리턴
+        while (result.moveToNext()) {
+
+            ExerciseJoinSortInfoModel sortJoinInfoModel = new ExerciseJoinSortInfoModel();
+            sortJoinInfoModel.setSortId(result.getString(0));
+            sortJoinInfoModel.setExerciseName(result.getString(1));
+            sortJoinInfoModel.setExerciseDay(result.getInt(2));
+            sortJoinInfoModel.setExerciseType(result.getInt(3));
+            sortJoinInfoModel.setRecordDate(result.getInt(4));
+            sortJoinInfoModels.add(sortJoinInfoModel);
+        }
+
+        result.close();
+        return sortJoinInfoModels;
     }
 
 

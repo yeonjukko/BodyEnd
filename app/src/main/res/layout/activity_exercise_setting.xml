@@ -14,6 +14,67 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@color/Primary"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3" />
+
+                <TextView
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@android:color/white"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    android:text="운동 설정" />
+
+                <ImageButton
+                    android:id="@+id/ib_plus_sort"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:layout_weight="3"
+                    android:layout_gravity="center"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_exercise"
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:background="@android:color/white"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="center_vertical|right"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginRight="10dp"
+                    android:src="@drawable/icon_exercise" />
+
+                <TextView
+                    android:id="@+id/tv_my_exercise"
+                    android:layout_width="match_parent"
+                    android:layout_height="75dp"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center_vertical"
+                    android:text="나만의 운동 만들기" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/Divider" />
+
+            </LinearLayout>
+            <LinearLayout
                 android:id="@+id/layout_attendance_spot"
                 android:layout_width="match_parent"
                 android:orientation="horizontal"
@@ -68,47 +129,8 @@
                     android:background="@color/Divider" />
 
             </LinearLayout>
-            <LinearLayout
-                android:id="@+id/layout_exercise"
-                android:layout_width="match_parent"
-                android:orientation="horizontal"
-                android:background="@android:color/white"
-                android:layout_height="wrap_content">
 
-                <ImageView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center_vertical|right"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginRight="10dp"
-                    android:src="@drawable/icon_exercise" />
 
-                <TextView
-                    android:id="@+id/tv_my_exercise"
-                    android:layout_width="match_parent"
-                    android:layout_height="75dp"
-                    android:layout_marginLeft="10dp"
-                    android:gravity="center_vertical"
-                    android:text="나만의 운동 설정" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:background="@color/Divider" />
-
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/Divider">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="3dp"
-                    android:layout_marginStart="7dp"
-                    android:textColor="@android:color/white"
-                    android:text="저장된 나만의 운동"/>
-            </LinearLayout>
             <LinearLayout
                 android:id="@+id/layout_exercise_2"
                 android:layout_width="match_parent"

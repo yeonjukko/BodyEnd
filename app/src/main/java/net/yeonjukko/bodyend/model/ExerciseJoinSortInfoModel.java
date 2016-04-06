@@ -3,12 +3,12 @@ package net.yeonjukko.bodyend.model;
 /**
  * Created by yeonjukko on 16. 3. 25..
  */
-public class ExerciseSortInfoModel {
+public class ExerciseJoinSortInfoModel {
+    private int recordDate;
     private String sortId;
     private String exerciseName;
     private int exerciseDay;
     private int exerciseType;
-    private int exerciseAddDate;
 
     public String getSortId() {
         return sortId;
@@ -34,20 +34,21 @@ public class ExerciseSortInfoModel {
         this.exerciseDay = exerciseDay;
     }
 
+
+
+    public int getRecordDate() {
+        return recordDate;
+    }
+
+    public void setRecordDate(int recordDate) {
+        this.recordDate = recordDate;
+    }
+
     public int getExerciseType() {
         return exerciseType;
     }
 
     public void setExerciseType(int exerciseType) {
         this.exerciseType = exerciseType;
-    }
-
-
-    public int getExerciseAddDate() {
-        return exerciseAddDate;
-    }
-
-    public void setExerciseAddDate(int exerciseAddDate) {
-        this.exerciseAddDate = exerciseAddDate;
     }
 }

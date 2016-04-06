@@ -6,27 +6,117 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1. 운동 종류"
+            android:textSize="17sp" />
+
+        <RadioGroup
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rd_oxygen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="유산소" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="7dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/icon_oxygen" />
+
+            <RadioButton
+                android:id="@+id/rd_nonoxygen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="무산소" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="7dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/icon_nonoxygen" />
+            <RadioButton
+                android:id="@+id/rd_youtube"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="유투브" />
+
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginLeft="7dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/icon_youtube" />
+        </RadioGroup>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2. 운동명"
+            android:textSize="17sp"  />
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/layout_sort"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <ImageView
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_gravity="center_vertical|right"
-            android:layout_marginRight="10dp"
-            android:layout_marginStart="15dp"
-            android:src="@drawable/icon_exercise" />
-
         <EditText
             android:id="@+id/et_exercise_name"
             android:layout_width="match_parent"
-            android:layout_height="75dp"
-            android:layout_marginLeft="10dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:gravity="center_vertical"
-            android:hint="운동 이름을 입력해주세요. (ex.스쿼트 20회 3세트)" />
+            android:hint="ex.스쿼트 20회 3세트" />
 
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3. 운동 요일"
+            android:textSize="17sp"  />
     </LinearLayout>
 
     <LinearLayout
@@ -37,64 +127,64 @@
 
         <net.yeonjukko.bodyend.libs.CheckableButton
             android:id="@+id/cb_monday"
-            android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="53dp"
             android:layout_margin="3dp"
+            android:layout_weight="1"
             android:background="@drawable/choose_commonday_radio_button_selector"
             android:text="월" />
 
         <net.yeonjukko.bodyend.libs.CheckableButton
             android:id="@+id/cb_tuesday"
-            android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="53dp"
             android:layout_margin="3dp"
+            android:layout_weight="1"
             android:background="@drawable/choose_commonday_radio_button_selector"
             android:text="화" />
 
         <net.yeonjukko.bodyend.libs.CheckableButton
             android:id="@+id/cb_wednesday"
-            android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="53dp"
             android:layout_margin="3dp"
+            android:layout_weight="1"
             android:background="@drawable/choose_commonday_radio_button_selector"
             android:text="수" />
 
         <net.yeonjukko.bodyend.libs.CheckableButton
             android:id="@+id/cb_thursday"
-            android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="53dp"
             android:layout_margin="3dp"
+            android:layout_weight="1"
             android:background="@drawable/choose_commonday_radio_button_selector"
             android:text="목" />
 
         <net.yeonjukko.bodyend.libs.CheckableButton
             android:id="@+id/cb_friday"
-            android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="53dp"
             android:layout_margin="3dp"
+            android:layout_weight="1"
             android:background="@drawable/choose_commonday_radio_button_selector"
             android:text="금" />
 
         <net.yeonjukko.bodyend.libs.CheckableButton
             android:id="@+id/cb_saturday"
-            android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="53dp"
             android:layout_margin="3dp"
+            android:layout_weight="1"
             android:background="@drawable/choose_saturday_radio_button_selector"
             android:text="토" />
 
         <net.yeonjukko.bodyend.libs.CheckableButton
             android:id="@+id/cb_sunday"
-            android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="53dp"
             android:layout_margin="3dp"
+            android:layout_weight="1"
             android:background="@drawable/choose_sunday_radio_button_selector"
             android:text="일" />
 

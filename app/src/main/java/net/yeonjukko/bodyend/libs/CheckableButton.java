@@ -87,7 +87,8 @@ public class CheckableButton extends Button implements Checkable {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        getLayoutParams().height = getWidth();
+        //Get canvas width and height
+        int width = MeasureSpec.getSize(widthMeasureSpec);
+        setMeasuredDimension(width, width);
     }
 }

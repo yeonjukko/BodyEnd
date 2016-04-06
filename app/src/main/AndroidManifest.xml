@@ -19,9 +19,6 @@
         android:supportsRtl="true"
         android:theme="@style/BodyEndAppTheme">
         <activity
-            android:name=".activity.StimulusActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
             android:name=".activity.InitInfoActivity"
             android:label="@string/activity_info" />
         <activity
@@ -40,7 +37,6 @@
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".activity.RecordActivity" />
         <activity
             android:name=".activity.CameraActivity"
             android:theme="@style/MyNoActionBar" />
@@ -48,12 +44,27 @@
             android:name=".activity.settings.WaterSettingActivity"
             android:label="@string/record_water_setting"
             android:theme="@style/MySettingTheme" />
-        <activity android:name=".activity.settings.ExerciseSettingActivity" />
+        <activity android:name=".activity.settings.ExerciseSettingActivity" android:theme="@style/MyNoActionBar" />
         <activity
             android:name=".activity.settings.AttendanceMapAcitivity"
             android:theme="@style/BodyEndAppTheme" />
         <activity android:name=".activity.CalendarActivity" />
-        <activity android:name=".activity.settings.ExerciseManagerActivity"></activity>
+        <activity
+            android:name=".activity.settings.ExerciseManagerActivity"
+            android:theme="@style/MyNoActionBar" />
+        <activity
+            android:name=".activity.MainActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="nosensor"
+            android:theme="@style/MyNoActionBar" />
+        <activity
+            android:name=".activity.VideoListActivity"
+            android:theme="@style/MyNoActionBar" />
+        <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
+             App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>
