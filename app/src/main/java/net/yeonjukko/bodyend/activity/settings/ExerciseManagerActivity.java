@@ -65,16 +65,7 @@ public class ExerciseManagerActivity extends AppCompatActivity {
 
         ImageButton ibPlusSort = (ImageButton) findViewById(R.id.ib_plus_sort);
         setRecyclerLayout();
-        etExerciseName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (rdYoutube.isChecked()){
-                   // if(인터넷이 연결이 안됬다면)
-                   // 리스트가져와서 보여주긱
 
-                }
-            }
-        });
         assert ibPlusSort != null;
         ibPlusSort.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,7 +74,16 @@ public class ExerciseManagerActivity extends AppCompatActivity {
                 plusView = inflater.from(getContext()).inflate(R.layout.dialog_ex_sort_plus, null, false);
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 setDialogLayout();
+                etExerciseName.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (rdYoutube.isChecked()) {
+                            // if(인터넷이 연결이 안됬다면)
+                            // 리스트가져와서 보여주긱
 
+                        }
+                    }
+                });
                 builder.setView(plusView)
                         .setTitle("운동을 추가하세요.")
                         .setPositiveButton("추가", new DialogInterface.OnClickListener() {
