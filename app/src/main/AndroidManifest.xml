@@ -21,6 +21,7 @@
         android:theme="@style/BodyEndAppTheme">
         <activity
             android:name=".activity.InitInfoActivity"
+            android:theme="@style/MyNoActionBar"
             android:label="@string/activity_info" />
         <activity
             android:name=".activity.TestActvity"
@@ -33,6 +34,7 @@
         </activity>
         <activity
             android:name=".activity.InitTargetActivity"
+            android:theme="@style/MyNoActionBar"
             android:label="@string/activity_target" />
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
