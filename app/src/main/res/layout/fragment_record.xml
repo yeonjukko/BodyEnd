@@ -59,14 +59,12 @@
         <ImageView
             android:id="@+id/image_right"
             android:layout_width="37dp"
-            android:layout_height="37dp"
-            android:src="@drawable/icon_back" />
+            android:layout_height="37dp" />
 
         <ImageView
             android:layout_width="37dp"
             android:layout_height="37dp"
-            android:layout_alignParentRight="true"
-            android:src="@drawable/icon_forward" />
+            android:layout_alignParentRight="true" />
 
 
         <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"

@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -38,6 +39,7 @@ public class YoutubePlayerActivity extends YouTubeBaseActivity implements
     YouTubePlayer player;
     private MyPlaybackEventListener myPlaybackEventListener;
     private static final int RECOVERY_DIALOG_REQUEST = 1;
+    Boolean flag_check = false;
     String log = "";
 
     @Override
@@ -119,15 +121,15 @@ public class YoutubePlayerActivity extends YouTubeBaseActivity implements
 
         @Override
         public void onPaused() {
-            updateLog("onPaused");
+            //updateLog("onPaused");
 
         }
 
         @Override
         public void onStopped() {
             updateLog("onStopped");
-            if (player.getCurrentTimeMillis() == player.getDurationMillis() && player.getCurrentTimeMillis() != 0) {
-
+            if ((player.getCurrentTimeMillis() == player.getDurationMillis() && player.getCurrentTimeMillis() != 0) && !flag_check) {
+                flag_check = true;
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 RadioButton radioButton = new RadioButton(getContext());
                 radioButton.setChecked(true);
@@ -139,9 +141,18 @@ public class YoutubePlayerActivity extends YouTubeBaseActivity implements
                             public void onClick(DialogInterface dialog, int which) {
                                 YoutubeRecordModel model = new YoutubeRecordModel();
                                 model.setYoutubeId(id);
+                                if (title.contains("'")) {
+                                    title = title.replace("'", "''");
+                                }
                                 model.setYoutubeTitle(title);
                                 model.setExerciseDate(new DayCounter().getToday());
                                 dBmanager.insertVideoCheck(model);
+
+
+                                finish();
+
+
+
                             }
                         })
                         .show();
@@ -151,13 +162,13 @@ public class YoutubePlayerActivity extends YouTubeBaseActivity implements
 
         @Override
         public void onBuffering(boolean b) {
-            updateLog("onBuffering");
+            //updateLog("onBuffering");
 
         }
 
         @Override
         public void onSeekTo(int i) {
-            updateLog("onSeekTo");
+           // updateLog("onSeekTo");
 
         }
     }

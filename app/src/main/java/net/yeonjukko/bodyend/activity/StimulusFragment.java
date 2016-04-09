@@ -2,6 +2,7 @@ package net.yeonjukko.bodyend.activity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -20,6 +21,7 @@ import net.yeonjukko.bodyend.R;
 import net.yeonjukko.bodyend.libs.DBmanager;
 import net.yeonjukko.bodyend.libs.DayCounter;
 
+import java.io.File;
 import java.io.IOException;
 
 public class StimulusFragment extends Fragment {
@@ -32,13 +34,13 @@ public class StimulusFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_stimulus, container, false);
         dBmanager = new DBmanager(rootView.getContext());
 
-        TextView tvDday = (TextView)rootView.findViewById(R.id.tv_d_day);
-        TextView tvStimulusWord = (TextView)rootView.findViewById(R.id.tv_stimulus);
-        ImageView btSetting = (ImageView)rootView.findViewById(R.id.bt_setting);
+        TextView tvDday = (TextView) rootView.findViewById(R.id.tv_d_day);
+        TextView tvStimulusWord = (TextView) rootView.findViewById(R.id.tv_stimulus);
+        ImageView btSetting = (ImageView) rootView.findViewById(R.id.bt_setting);
         btSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(),RecordFragment.class);
+                Intent intent = new Intent(getContext(), RecordFragment.class);
                 startActivity(intent);
             }
         });
@@ -48,32 +50,39 @@ public class StimulusFragment extends Fragment {
         int day = counter.dayCounter(dBmanager.selectUserInfoDB().getGoalDate());
         String stimulusWord = dBmanager.selectUserInfoDB().getStimulusWord();
 
-        tvDday.setText(day+"");
+        tvDday.setText(day + "");
         tvStimulusWord.setText(stimulusWord);
 
 
         //<--레이아웃 배경화면 설정
-        ImageView layout = (ImageView) rootView.findViewById(R.id.layout_bgr);
-        Toast.makeText(getContext(),dBmanager.selectUserInfoDB().getStimulusPicture(),Toast.LENGTH_LONG).show();
-        Uri resultUri = Uri.parse(dBmanager.selectUserInfoDB().getStimulusPicture());
+        final ImageView layout = (ImageView) rootView.findViewById(R.id.layout_bgr);
+        Toast.makeText(getContext(), dBmanager.selectUserInfoDB().getStimulusPicture(), Toast.LENGTH_LONG).show();
 
-        try {
-            bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), resultUri);
-            Drawable drawable = new BitmapDrawable(getResources(), bitmap);
-            drawable.setAlpha(190);
-            layout.setBackground(drawable);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inSampleSize = 2;
+                bitmap = BitmapFactory.decodeFile(dBmanager.selectUserInfoDB().getStimulusPicture(), options);
+                final Drawable drawable = new BitmapDrawable(getResources(), bitmap);
+                drawable.setAlpha(190);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        layout.setBackground(drawable);
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+                    }
+                });
+
+            }
+        }).start();
+
+
         //<--레이아웃 배경화면 설정-->
-
-
 
 
         return rootView;
     }
-
 
 
 }

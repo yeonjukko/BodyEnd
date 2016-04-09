@@ -20,6 +20,7 @@ import com.yalantis.ucrop.UCrop;
 
 import net.yeonjukko.bodyend.R;
 import net.yeonjukko.bodyend.libs.DBmanager;
+import net.yeonjukko.bodyend.libs.DayCounter;
 import net.yeonjukko.bodyend.model.WaterAlarmInfoModel;
 
 import java.io.File;
@@ -33,6 +34,7 @@ public class InitTargetActivity extends InitInfoActivity {
     private Calendar calendar;
     private ImageView imageStimulus;
     private Bitmap bitmap;
+    public static String mDestination;
     public static Uri mDestinationUri;
     private EditText etStimulusImage;
     private WaterAlarmInfoModel waterAlarmInfoModel;
@@ -57,10 +59,11 @@ public class InitTargetActivity extends InitInfoActivity {
 
         Button btBack = (Button) findViewById(R.id.bt_back);
         Button btFinish = (Button) findViewById(R.id.bt_finish);
-        mDestinationUri = Uri.fromFile(new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), SAMPLE_CROPPED_IMAGE_NAME + "_" + new Date().getTime()));
-
+        mDestination = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), SAMPLE_CROPPED_IMAGE_NAME + "_" + new Date().getTime()).getAbsolutePath();
+        mDestinationUri = Uri.parse(mDestination);
 
         //<--Start of DatePicker
+        assert etGoalDate != null;
         etGoalDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,15 +71,15 @@ public class InitTargetActivity extends InitInfoActivity {
                 dialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        Toast.makeText(getApplicationContext(), year + "년" + monthOfYear+1 + "월" + dayOfMonth + "일", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), year + "년" + monthOfYear + 1 + "월" + dayOfMonth + "일", Toast.LENGTH_SHORT).show();
 
-                        int now = getToday();
-                        int selected = getSelectDay(year,monthOfYear+1,dayOfMonth);
+                        int now = new DayCounter().getToday();
+                        int selected = getSelectDay(year, monthOfYear + 1, dayOfMonth);
 
                         if (now > selected) {
                             etGoalDate.setError("오늘보다 이전의 날짜를 선택하셨습니다!");
                         } else {
-                            etGoalDate.setText(selected+"");
+                            etGoalDate.setText(selected + "");
                             etGoalDate.setError(null);
                         }
 
@@ -100,6 +103,7 @@ public class InitTargetActivity extends InitInfoActivity {
 
 
         //<--Start of BackButton
+        assert btBack != null;
         btBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,6 +116,7 @@ public class InitTargetActivity extends InitInfoActivity {
         //End of BackButton-->
 
         //<--Start of Finish Button
+        assert btFinish != null;
         btFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -136,7 +141,7 @@ public class InitTargetActivity extends InitInfoActivity {
                 userInfoModel.setUserGoalWeight(userInfoModel.getUserGoalWeight());
                 userInfoModel.setGoalDate(Integer.parseInt(etGoalDate.getText().toString()));
                 userInfoModel.setStimulusWord(etStimulusWord.getText().toString());
-                userInfoModel.setStimulusPicture(mDestinationUri.toString());
+                userInfoModel.setStimulusPicture(mDestination);
 
                 waterAlarmInfoModel.setWaterAlarmStatus(0);
                 waterAlarmInfoModel.setWaterAlarmPeriod(30);
@@ -215,29 +220,6 @@ public class InitTargetActivity extends InitInfoActivity {
         return Integer.parseInt(today);
     }
 
-    public int getToday() {
-        //<--오늘 날짜 구하기 ex)20160317
-        Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH) + 1;
-        int date = calendar.get(Calendar.DATE);
-        String strMonth = null;
-        String strDate = null;
-
-        if (month < 10)
-            strMonth = "0" + month;
-        else if (month >= 10)
-            strMonth = month + "";
-
-        if (date < 10)
-            strDate = "0" + month;
-        else if (date >= 10)
-            strDate = date + "";
-
-
-        String today = year + strMonth + strDate;
-        return Integer.parseInt(today);
-    }
 
     private Context getContext() {
         return this;
