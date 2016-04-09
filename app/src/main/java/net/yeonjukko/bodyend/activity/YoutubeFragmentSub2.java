@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import net.yeonjukko.bodyend.R;
@@ -26,11 +28,13 @@ public class YoutubeFragmentSub2 extends Fragment {
     View rootView;
     public JSONObject data = null;
     public static final String DEFAULT_URL = "http://yeonjukko.net:7533/getVideo?category=";
-    public int id;
+    public long id;
+    public String title;
 
-    public YoutubeFragmentSub2(int selectId) {
+    public YoutubeFragmentSub2(long selectId,String selectTitle) {
         super();
         id = selectId;
+        title = selectTitle;
     }
 
 
@@ -42,6 +46,15 @@ public class YoutubeFragmentSub2 extends Fragment {
 
         final RecyclerView recyclerViewYoutube = (RecyclerView) rootView.findViewById(R.id.recyclerViewYoutube);
         recyclerViewYoutube.setLayoutManager(new LinearLayoutManager(getContext()));
+        TextView tvSelectTitle = (TextView)rootView.findViewById(R.id.tv_selected_yt_title);
+        ImageButton ibBack = (ImageButton)rootView.findViewById(R.id.ib_icon_back);
+        tvSelectTitle.setText(title);
+        ibBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().onBackPressed();
+            }
+        });
 
         new Thread(new Runnable() {
             @Override

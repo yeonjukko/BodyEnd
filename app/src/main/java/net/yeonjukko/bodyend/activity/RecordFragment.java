@@ -1,6 +1,7 @@
 package net.yeonjukko.bodyend.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,6 +19,7 @@ import com.github.aakira.expandablelayout.Utils;
 
 import net.yeonjukko.bodyend.R;
 import net.yeonjukko.bodyend.libs.DBmanager;
+import net.yeonjukko.bodyend.libs.DayCounter;
 import net.yeonjukko.bodyend.libs.DividerItemDecoration;
 import net.yeonjukko.bodyend.libs.RecordItemModel;
 import net.yeonjukko.bodyend.libs.RecordRecyclerViewAdapter;
@@ -32,19 +34,21 @@ public class RecordFragment extends Fragment {
     public DBmanager dBmanager;
     public int showDate;
     View rootView;
-    RecordRecyclerViewAdapter adapter;
+    public RecordRecyclerViewAdapter adapter;
+    DayCounter dayCounter;
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_record, container, false);
         dBmanager = new DBmanager(getContext());
-
+        dayCounter = new DayCounter();
         //record 테이블 초기화 및 날짜 설정 메소드
 
         //정각에만 실행
         insertUserRecord();
-        showDate = getToday();
+        showDate = dayCounter.getToday();
 
         //캘린더 불러오기
         ImageView btCalendar = (ImageView) rootView.findViewById(R.id.ic_calendar);
@@ -59,8 +63,8 @@ public class RecordFragment extends Fragment {
 
         //CalendarActivity에서 넘어올 때
         Intent intent = getActivity().getIntent();
-        if (intent.getIntExtra("showDate", getToday()) != getToday()) {
-            showDate = intent.getIntExtra("showDate", getToday());
+        if (intent.getIntExtra("showDate", dayCounter.getToday()) != dayCounter.getToday()) {
+            showDate = intent.getIntExtra("showDate", dayCounter.getToday());
         }
         setLayout(showDate);
 
@@ -145,7 +149,7 @@ public class RecordFragment extends Fragment {
 
     public void insertUserRecord() {
         UserRecordModel model = new UserRecordModel();
-        model.setRecordDate(getToday());
+        model.setRecordDate(dayCounter.getToday());
         model.setPictureRecord("");
         model.setWeightRecord(dBmanager.selectUserInfoDB().getUserCurrWeight());
         model.setWaterRecord(0);
@@ -155,31 +159,6 @@ public class RecordFragment extends Fragment {
         model.setMealDinner("");
         model.setMealRefreshments("");
         dBmanager.insertUserRecordDB(model);
-    }
-
-    public int getToday() {
-        //<--오늘 날짜 구하기 ex)20160317
-        Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH) + 1;
-        int date = calendar.get(Calendar.DAY_OF_MONTH);
-        String strMonth = null;
-        String strDate = null;
-
-
-        if (month < 10)
-            strMonth = "0" + month;
-        else if (month >= 10)
-            strMonth = month + "";
-
-        if (date < 10)
-            strDate = "0" + date;
-        else if (date >= 10)
-            strDate = date + "";
-
-
-        String today = year + strMonth + strDate;
-        return Integer.parseInt(today);
     }
 
 
@@ -203,4 +182,5 @@ public class RecordFragment extends Fragment {
             });
         }
     }
+
 }

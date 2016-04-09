@@ -52,12 +52,12 @@ public class YoutubeFragmentSub1 extends Fragment {
                         } else {
                             Log.d("mox", resultCategory.toJSONString());
                             if ((long) resultCategory.get("code") == 0) {
-                                JSONArray categoryList = (JSONArray) resultCategory.get("contents");
+                                final JSONArray categoryList = (JSONArray) resultCategory.get("contents");
                                 String mCategory[] = new String[categoryList.size()];
                                 for (int i = 0; i < categoryList.size(); i++) {
                                     JSONObject tmp = (JSONObject) categoryList.get(i);
-                                    mCategory[i] = (String) tmp.get("video_category_title");
-                                    Log.d("mox", mCategory[i]);
+                                    mCategory[i] = tmp.get("video_category_title") + " (" + tmp.get("video_count") + ")";
+
                                 }
                                 ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, mCategory);
                                 listView.setAdapter(adapter);
@@ -66,7 +66,7 @@ public class YoutubeFragmentSub1 extends Fragment {
                                     @Override
                                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                         FragmentManager fm = getFragmentManager();
-                                        YoutubeFragmentSub2 fragment = new YoutubeFragmentSub2(position);
+                                        YoutubeFragmentSub2 fragment = new YoutubeFragmentSub2((long) ((JSONObject) categoryList.get(position)).get("video_category_id"),(String) ((JSONObject) categoryList.get(position)).get("video_category_title") );
                                         fm.beginTransaction()
                                                 .replace(R.id.fragment3View, fragment)
                                                 .addToBackStack(null)

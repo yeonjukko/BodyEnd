@@ -14,7 +14,6 @@ public class DayCounter {
     public int dayCounter(int d_day) {
         try {
             SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-            Log.d("mox4","="+d_day);
 
             long dbDate = format.parse(d_day+"").getTime();
 
@@ -36,5 +35,29 @@ public class DayCounter {
             e.printStackTrace();
             return -1;
         }
+    }
+
+    public int getToday() {
+        //<--오늘 날짜 구하기 ex)20160317
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int date = calendar.get(Calendar.DATE);
+        String strMonth = null;
+        String strDate = null;
+
+        if (month < 10)
+            strMonth = "0" + month;
+        else if (month >= 10)
+            strMonth = month + "";
+
+        if (date < 10)
+            strDate = "0" + date;
+        else if (date >= 10)
+            strDate = date + "";
+
+        String today = year + strMonth + strDate;
+
+        return Integer.parseInt(today);
     }
 }

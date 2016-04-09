@@ -17,6 +17,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:largeHeap="true"
         android:theme="@style/BodyEndAppTheme">
         <activity
             android:name=".activity.InitInfoActivity"
@@ -58,7 +59,7 @@
             android:screenOrientation="nosensor"
             android:theme="@style/MyNoActionBar" />
         <activity
-            android:name=".activity.VideoListActivity"
+            android:name=".activity.YoutubePlayerActivity"
             android:theme="@style/MyNoActionBar" />
         <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
              App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->

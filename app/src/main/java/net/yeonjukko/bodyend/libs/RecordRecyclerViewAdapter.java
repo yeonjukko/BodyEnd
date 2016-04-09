@@ -63,6 +63,7 @@ import net.yeonjukko.bodyend.model.ExerciseAttendanceInfoModel;
 import net.yeonjukko.bodyend.model.ExerciseJoinSortInfoModel;
 import net.yeonjukko.bodyend.model.ExerciseSpotInfoModel;
 import net.yeonjukko.bodyend.model.UserRecordModel;
+import net.yeonjukko.bodyend.model.YoutubeRecordModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,6 +95,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     DBmanager dBmanager;
     LayoutInflater inflater;
     RecordFragment recordFragemnt;
+    DayCounter dayCounter;
 
     //layout 순서 정하기
     public RecordRecyclerViewAdapter(final List<RecordItemModel> data, int showDate, RecordFragment recordFragment) {
@@ -101,6 +103,8 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         this.recordFragemnt = recordFragment;
         //RecordActivity에서 넘어온 표시할 날짜
         this.showDate = showDate;
+        Log.d("MOX","recycler TODAY:"+showDate);
+
         for (int i = 0; i < data.size(); i++) {
             expandState.append(0, true);
             expandState.append(1, true);
@@ -116,6 +120,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         this.context = parent.getContext();
         dBmanager = new DBmanager(context);
         inflater = ((MainActivity) context).getLayoutInflater();
+        dayCounter = new DayCounter();
 
         if (viewType == VIEW_TYPE_WATER) {
             return new ViewHolderWater(LayoutInflater.from(context)
@@ -167,7 +172,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             final ViewHolderWater holderWater = (ViewHolderWater) holder;
 
             //오늘보다 이전의 데이터를 가져왔을 때 버튼 enable처리
-            if (showDate < recordFragemnt.getToday()) {
+            if (showDate < dayCounter.getToday()) {
                 holderWater.btWaterMinus.setEnabled(false);
                 holderWater.btWaterPlus.setEnabled(false);
             }
@@ -226,7 +231,6 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
             //<--마신 잔 수 나타내기
             int waterRecord = dBmanager.selectUserRecordDB(showDate).getWaterRecord();
-            Log.d("mox", dBmanager.selectUserRecordDB(showDate).getWaterRecord() + "waterRecord");
             for (int i = 0; i < waterRecord; i++) {
                 holderWater.gridWaterLayout.getChildAt(i).setBackgroundResource(R.drawable.icon_bottle_checked);
                 holderWater.gridWaterLayout.getChildAt(i).setTag("checked");
@@ -245,7 +249,6 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                     holderWater.gridWaterLayout.getChildAt(waterRecord).setTag("checked");
                     waterRecord++;
                     dBmanager.updateWaterRecord(waterRecord, showDate);
-                    //dBmanager.updateWaterRecord(waterRecord, ((RecordFragment) context).getToday());
                     holderWater.gridWaterLayout.invalidate();
                 }
             });
@@ -262,8 +265,6 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                     holderWater.gridWaterLayout.getChildAt(waterRecord - 1).setTag(null);
                     waterRecord--;
                     dBmanager.updateWaterRecord(waterRecord, showDate);
-
-                    //dBmanager.updateWaterRecord(waterRecord, ((RecordFragment) context).getToday());
                     holderWater.gridWaterLayout.invalidate();
                 }
             });
@@ -280,7 +281,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         } else if (position == 1) {
             final ViewHolderExercise holderExercise = (ViewHolderExercise) holder;
 
-            if (showDate < recordFragemnt.getToday()) {
+            if (showDate < dayCounter.getToday()) {
                 holderExercise.cbAttendance.setEnabled(false);
                 //출석체크를 이미 했을 때
                 if (dBmanager.selectExerciseAttendance(showDate) != null) {
@@ -402,15 +403,16 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             params.gravity = Gravity.CENTER_VERTICAL;
 
             //오늘날짜
-            if (recordFragemnt.getToday() == showDate) {
+            if (dayCounter.getToday() == showDate) {
                 final ArrayList<ExerciseJoinSortInfoModel> model = dBmanager.selectRecordExerciseSortsInfo(true, showDate, new Int2DayCalculator().getDay(showDate));
-
+                final ArrayList<YoutubeRecordModel> ytModel = dBmanager.selectYoutubeInfo(showDate);
                 for (int i = 0; i < model.size(); i++) {
                     final int j = i;
                     CheckBox mFlam = new CheckBox(context);
                     mFlam.setText(model.get(i).getExerciseName());
+                    mFlam.setTextColor(resource.getColor(R.color.Primary_text));
+                    mFlam.setPaintFlags(mFlam.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 
-                    Log.d("mox", "recordate" + model.get(i).getRecordDate());
                     if (model.get(i).getRecordDate() != 0) {
                         mFlam.setChecked(true);
                     } else {
@@ -419,15 +421,25 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                     mFlam.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                            Log.d("mox", "id:" + model.get(j).getSortId() + "");
                             dBmanager.updateCheckStatus(model.get(j).getSortId(), showDate, isChecked);
                         }
                     });
                     holderExercise.exsortLayout.addView(mFlam, params);
                 }
+                for (int i = 0; i < ytModel.size(); i++) {
+                    CheckBox mFlam = new CheckBox(context);
+                    mFlam.setText(ytModel.get(i).getYoutubeTitle());
+                    mFlam.setTextColor(resource.getColor(R.color.Divider));
+                    mFlam.setPaintFlags(mFlam.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    mFlam.setChecked(true);
+                    mFlam.setEnabled(false);
+                    holderExercise.exsortLayout.addView(mFlam, params);
+                }
 
             } else {
                 final ArrayList<ExerciseJoinSortInfoModel> model = dBmanager.selectRecordExerciseSortsInfo(false, showDate, new Int2DayCalculator().getDay(showDate));
+                final ArrayList<YoutubeRecordModel> ytModel = dBmanager.selectYoutubeInfo(showDate);
+
                 for (int i = 0; i < model.size(); i++) {
                     CheckBox mFlam = new CheckBox(context);
                     mFlam.setText(model.get(i).getExerciseName());
@@ -443,6 +455,16 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                     mFlam.setEnabled(false);
                     holderExercise.exsortLayout.addView(mFlam, params);
                 }
+
+                for (int i = 0; i < ytModel.size(); i++) {
+                    CheckBox mFlam = new CheckBox(context);
+                    mFlam.setText(ytModel.get(i).getYoutubeTitle());
+                    mFlam.setTextColor(resource.getColor(R.color.Divider));
+                    mFlam.setChecked(true);
+                    mFlam.setEnabled(false);
+                    mFlam.setPaintFlags(mFlam.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    holderExercise.exsortLayout.addView(mFlam, params);
+                }
             }
 
 
@@ -450,7 +472,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             final ViewHolderWeight holderWeight = (ViewHolderWeight) holder;
 
             //오늘보다 이전의 데이터를 가져왔을 때 버튼 enable처리
-            if (showDate < recordFragemnt.getToday()) {
+            if (showDate < dayCounter.getToday()) {
                 holderWeight.btWeightPlus.setEnabled(false);
                 holderWeight.btWeightMinus.setEnabled(false);
             }
@@ -492,10 +514,8 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 public void onClick(View v) {
 
                     float weight = dBmanager.selectUserInfoDB().getUserCurrWeight() + 0.1f;
-                    Log.d("mox", weight + "");
                     String strNumber = String.format("%.1f", weight);
                     dBmanager.updateCurrWeight(Float.parseFloat(strNumber), showDate);
-                    //dBmanager.updateCurrWeight(Float.parseFloat(strNumber), ((RecordFragment) context).getToday());
                     holderWeight.tvWeight.setText(strNumber + "kg");
                     holderWeight.expandableLayout.invalidate();
                 }
@@ -506,7 +526,6 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                     float weight = (float) (dBmanager.selectUserInfoDB().getUserCurrWeight() - 0.1);
                     String strNumber = String.format("%.1f", weight);
                     dBmanager.updateCurrWeight(Float.parseFloat(strNumber), showDate);
-                    //dBmanager.updateCurrWeight(Float.parseFloat(strNumber), ((RecordFragment) context).getToday());
                     holderWeight.tvWeight.setText(strNumber + "kg");
                     holderWeight.expandableLayout.invalidate();
                 }
@@ -517,7 +536,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             final ViewHolderMeal holderMeal = (ViewHolderMeal) holder;
 
             //오늘보다 이전의 데이터를 가져왔을 때 버튼 enable처리
-            if (showDate < recordFragemnt.getToday()) {
+            if (showDate < dayCounter.getToday()) {
                 holderMeal.etBreakfast.setEnabled(false);
                 holderMeal.etLunch.setEnabled(false);
                 holderMeal.etDinner.setEnabled(false);
@@ -639,7 +658,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         } else if (position == 4) {
             final ViewHolderPicture holderPicture = (ViewHolderPicture) holder;
             //오늘보다 이전의 데이터를 가져왔을 때 버튼 enable처리
-            if (showDate < recordFragemnt.getToday()) {
+            if (showDate < dayCounter.getToday()) {
                 holderPicture.btCamera.setEnabled(false);
 
             }

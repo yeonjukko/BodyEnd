@@ -35,7 +35,8 @@
     <string name="water_alarm_time">알람 시간대</string>
 
     <string name="daum_api_key">7069807109219170938</string>
-    <string name="youtube_api_key">AIzaSyDFJfd0OTAkc35K4kqb5et4E0N7YN1C_og</string>
+    <string name="youtube_api_key">AIzaSyCqV5R5Y-GomfgzWaq7npppR-7X4p3kSlU</string>
+    <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

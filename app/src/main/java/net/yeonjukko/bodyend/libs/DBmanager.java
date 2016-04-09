@@ -15,6 +15,7 @@ import net.yeonjukko.bodyend.model.ExerciseSpotInfoModel;
 import net.yeonjukko.bodyend.model.UserInfoModel;
 import net.yeonjukko.bodyend.model.UserRecordModel;
 import net.yeonjukko.bodyend.model.WaterAlarmInfoModel;
+import net.yeonjukko.bodyend.model.YoutubeRecordModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +35,8 @@ public class DBmanager {
     private static final String DATABASE_TABLE_6 = "EXERCISE_SPOT_INFO";
     private static final String DATABASE_TABLE_7 = "EXERCISE_SORT_INFO";
     private static final String DATABASE_TABLE_8 = "EXERCISE_SORT_INFO_CLONE";
+    private static final String DATABASE_TABLE_9 = "EXERCISE_YOUTUBE_RECORD";
+
 
     private static final int DATABASE_VERSION = 2;
 
@@ -65,10 +68,13 @@ public class DBmanager {
             " (SPOT_ID INTEGER PRIMARY KEY, SPOT_X DOUBLE, SPOT_Y DOUBLE, SPOT_NAME TEXT, ATTENDANCE_DAY INTEGER)";
 
     private static final String DATABASE_CREATE_7 = "CREATE TABLE " + DATABASE_TABLE_7 +
-            " (SORT_ID TEXT PRIMARY KEY, EXERCISE_NAME TEXT, EXERCISE_DAY INTEGER, EXERCISE_TYPE INTEGER, EXERCISE_ADD_DATE INTEGER)";
+            " (SORT_ID TEXT , EXERCISE_NAME TEXT, EXERCISE_DAY INTEGER, EXERCISE_TYPE INTEGER, EXERCISE_ADD_DATE INTEGER)";
 
     private static final String DATABASE_CREATE_8 = "CREATE TABLE " + DATABASE_TABLE_8 +
-            " (SORT_ID TEXT PRIMARY KEY, EXERCISE_NAME TEXT, EXERCISE_DAY INTEGER, EXERCISE_TYPE INTEGER, EXERCISE_ADD_DATE INTEGER)";
+            " (SORT_ID TEXT , EXERCISE_NAME TEXT, EXERCISE_DAY INTEGER, EXERCISE_TYPE INTEGER, EXERCISE_ADD_DATE INTEGER)";
+
+    private static final String DATABASE_CREATE_9 = "CREATE TABLE " + DATABASE_TABLE_9 +
+            " (YOUTUBE_TITLE TEXT , YOUTUBE_ID TEXT, EXERCISE_DATE INTEGER)";
 
     // 부가적인 객체들
     private Context context;
@@ -100,6 +106,7 @@ public class DBmanager {
             db.execSQL(DATABASE_CREATE_6);
             db.execSQL(DATABASE_CREATE_7);
             db.execSQL(DATABASE_CREATE_8);
+            db.execSQL(DATABASE_CREATE_9);
 
         }
 
@@ -128,9 +135,18 @@ public class DBmanager {
         db.close();
     }
 
+    public void insertVideoCheck(YoutubeRecordModel model) {
+        String INSERT_YOUTUBE_RECORD = "INSERT INTO " + DATABASE_TABLE_9 + " VALUES" + " ('"  + model.getYoutubeTitle() +"','"+model.getYoutubeId() +"',"+ model.getExerciseDate() + ")";
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        db.execSQL(INSERT_YOUTUBE_RECORD);
+
+        db.close();
+    }
+
     public void updateCheckStatus(String id, int date, boolean isChecked) {
-        String INSERT_EXERCISE_SORT_RECORD = "INSERT INTO " + DATABASE_TABLE_4 + " VALUES" + " (" + date + "," + id + ")";
-        String DELETE_EXERCISE_SORT_RECORD = "DELETE FROM " + DATABASE_TABLE_4 + " WHERE RECORD_DATE = " + date + " AND SORT_ID =" + id;
+        String INSERT_EXERCISE_SORT_RECORD = "INSERT INTO " + DATABASE_TABLE_4 + " VALUES" + " (" + date + ",'" + id + "')";
+        String DELETE_EXERCISE_SORT_RECORD = "DELETE FROM " + DATABASE_TABLE_4 + " WHERE RECORD_DATE = " + date + " AND SORT_ID ='" + id + "'";
 
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
@@ -201,7 +217,7 @@ public class DBmanager {
 
     public void updateCurrWeight(float weight, int date) {
         String UPDATE_CURR_WEIGHT_RECORD = "UPDATE " + DATABASE_TABLE_1 + " SET USER_CURR_WEIGHT=" + weight;
-        String UPDATE_TODAY_WEIGHT_RECORD = "UPDATE " + DATABASE_TABLE_2 + " SET WEIGHT_RECORD=" + weight +",WATER_VOLUME="+(int)(weight*33/300)+ " WHERE RECORD_DATE=" + date;
+        String UPDATE_TODAY_WEIGHT_RECORD = "UPDATE " + DATABASE_TABLE_2 + " SET WEIGHT_RECORD=" + weight + ",WATER_VOLUME=" + (int) (weight * 33 / 300) + " WHERE RECORD_DATE=" + date;
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(UPDATE_CURR_WEIGHT_RECORD);
@@ -249,9 +265,9 @@ public class DBmanager {
     //1:유산소 0:무산소 2:유투브
     public void insertExerciseSortInfo(ExerciseSortInfoModel model) {
         String INSERT_EXERCISE_SORT = "INSERT INTO " + DATABASE_TABLE_7 + " VALUES " +
-                "(" + "'" + model.getSortId() + "'" + ","+ "'" + model.getExerciseName() + "'" + "," + model.getExerciseDay() + "," + model.getExerciseType() + "," + model.getExerciseAddDate() + ")";
+                "(" + "'" + model.getSortId() + "'" + "," + "'" + model.getExerciseName() + "'" + "," + model.getExerciseDay() + "," + model.getExerciseType() + "," + model.getExerciseAddDate() + ")";
         String INSERT_EXERCISE_SORT_CLONE = "INSERT INTO " + DATABASE_TABLE_8 + " VALUES " +
-                "(" + "'" + model.getSortId() + "'" + ","+ "'" + model.getExerciseName() + "'" + "," + model.getExerciseDay() + "," + model.getExerciseType() + "," + model.getExerciseAddDate() + ")";
+                "(" + "'" + model.getSortId() + "'" + "," + "'" + model.getExerciseName() + "'" + "," + model.getExerciseDay() + "," + model.getExerciseType() + "," + model.getExerciseAddDate() + ")";
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
@@ -332,13 +348,28 @@ public class DBmanager {
         db.close();
 
     }
+    public ArrayList<YoutubeRecordModel> selectYoutubeInfo(int date) {
+        String SELECT_BODY_INFO = "SELECT * FROM " + DATABASE_TABLE_9 + " WHERE EXERCISE_DATE =" + date;
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        Cursor result = db.rawQuery(SELECT_BODY_INFO, null);
+        ArrayList<YoutubeRecordModel> youtubeRecordModels = new ArrayList<>();
+        // result(Cursor 객체)가 비어 있으면 false 리턴
+        while (result.moveToNext()) {
+            YoutubeRecordModel youtubeRecordModel = new YoutubeRecordModel();
+            youtubeRecordModel.setYoutubeTitle(result.getString(0));
+            youtubeRecordModel.setYoutubeId(result.getString(1));
+            youtubeRecordModel.setExerciseDate(result.getInt(2));
+            youtubeRecordModels.add(youtubeRecordModel);
 
-    //모든 sort을 가져올때
-
+        }
+        result.close();
+        return youtubeRecordModels;
+    }
     /**
      * oxygen은 0일때 무산소운동 1일때 유산소운동
      */
-    //오늘의 데이터를 가져올 때
+    //단순 운동 검색
     public ArrayList<ExerciseSortInfoModel> selectExerciseSortsInfo() {
         String SELECT_EXERCISE_SORT = "SELECT * FROM " + DATABASE_TABLE_7;
         this.mDbHelper = new DatabaseHelper(context);
@@ -361,7 +392,8 @@ public class DBmanager {
     }
 
 
-    //과거의 데이터를 가져올때
+    //과거, 오늘
+    // 의 데이터를 가져올때
     public ArrayList<ExerciseJoinSortInfoModel> selectRecordExerciseSortsInfo(boolean isToday, int date, int day) {
         String SELECT_EXERCISE_SORT_TODAY = "SELECT EXERCISE_SORT_INFO.SORT_ID, EXERCISE_SORT_INFO.EXERCISE_NAME,EXERCISE_SORT_INFO.EXERCISE_DAY," +
                 "EXERCISE_SORT_INFO.EXERCISE_TYPE,EXERCISE_SORT_RECORD.RECORD_DATE FROM " + DATABASE_TABLE_7 + " LEFT OUTER JOIN " + DATABASE_TABLE_4 + " ON "
