@@ -1,26 +1,15 @@
 package net.yeonjukko.bodyend.activity.settings;
 
-import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.appyvet.rangebar.IRangeBarFormatter;
 import com.appyvet.rangebar.RangeBar;
 import com.fenjuly.mylibrary.ToggleExpandLayout;
 import com.zcw.togglebutton.ToggleButton;
@@ -29,12 +18,9 @@ import net.yeonjukko.bodyend.R;
 import net.yeonjukko.bodyend.libs.DBmanager;
 import net.yeonjukko.bodyend.model.WaterAlarmInfoModel;
 
-import java.util.Calendar;
-
 public class WaterSettingActivity extends AppCompatActivity {
     DBmanager dBmanager;
     ToggleExpandLayout alarmToggleLayout;
-    int mRightPinValue, mLeftPinValue;
 
 
     @Override
@@ -47,13 +33,13 @@ public class WaterSettingActivity extends AppCompatActivity {
         final TextView tvPeriod = (TextView) findViewById(R.id.tv_alarm_period);
         final TextView tvStartTime = (TextView) findViewById(R.id.tv_start_time);
         final TextView tvStopTime = (TextView) findViewById(R.id.tv_stop_time);
-        ToggleButton switchButton = (ToggleButton) findViewById(R.id.switch_button);
+        final ToggleButton switchButton = (ToggleButton) findViewById(R.id.switch_button);
         alarmToggleLayout = (ToggleExpandLayout) findViewById(R.id.toogleLayout);
 
         dBmanager = new DBmanager(this);
 
 
-        WaterAlarmInfoModel model = dBmanager.selectWaterAlarmInfoDB();
+        final WaterAlarmInfoModel model = dBmanager.selectWaterAlarmInfoDB();
         final int alarmPeriod = model.getWaterAlarmPeriod();
         int alarmStartTime = model.getAlarmTimezoneStart();
         int alarmStopTime = model.getAlarmTimezoneStop();
@@ -116,7 +102,7 @@ public class WaterSettingActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 tvPeriod.setText(dBmanager.selectWaterAlarmInfoDB().getWaterAlarmPeriod() + "");
-                                periodLayout.invalidate();
+                                alarmToggleLayout.refresh(true);
 
                             }
                         })
@@ -137,23 +123,15 @@ public class WaterSettingActivity extends AppCompatActivity {
                 builder.setView(view)
                         .setTitle("알람할 시간을 설정해주세요.");
 
-                RangeBar rangeBar = (RangeBar) view.findViewById(R.id.rangebar);
-                rangeBar.setOnRangeBarChangeListener(new RangeBar.OnRangeBarChangeListener() {
-                    @Override
-                    public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex,
-                                                      int rightPinIndex,
-                                                      String leftPinValue, String rightPinValue) {
-                        mLeftPinValue = Integer.parseInt(leftPinValue);
-                        mRightPinValue = Integer.parseInt(rightPinValue);
-                    }
-                });
+                final RangeBar rangeBar = (RangeBar) view.findViewById(R.id.rangebar);
+                rangeBar.setRangePinsByValue(model.getAlarmTimezoneStart(), model.getAlarmTimezoneStop());
                 builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        dBmanager.updateWaterAlarmTime(mLeftPinValue,mRightPinValue);
-                        tvStartTime.setText(mLeftPinValue + "시 ~ ");
-                        tvStopTime.setText(mRightPinValue+"시");
-                        timeLayout.invalidate();
+                        dBmanager.updateWaterAlarmTime(rangeBar.getLeftIndex(), rangeBar.getRightIndex());
+                        tvStartTime.setText(rangeBar.getLeftIndex() + "시 ~ ");
+                        tvStopTime.setText(rangeBar.getRightIndex() + "시");
+                        alarmToggleLayout.refresh(true);
                     }
                 });
                 builder.show();
@@ -163,9 +141,6 @@ public class WaterSettingActivity extends AppCompatActivity {
 
     }
 
-
-    Handler mHandler = new Handler();
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -174,18 +149,13 @@ public class WaterSettingActivity extends AppCompatActivity {
         final int alarmStatus = dBmanager.selectWaterAlarmInfoDB().getWaterAlarmStatus();
         if (alarmStatus == 0) switchButton.setToggleOff();
         else if (alarmStatus == 1) switchButton.setToggleOn();
-
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (alarmStatus == 1)
-                    alarmToggleLayout.open();
-            }
-        }, 400);
+        if (alarmStatus == 1) {
+            alarmToggleLayout.refresh(true);
+        }
 
     }
 
-    public Context getContext(){
+    public Context getContext() {
         return this;
     }
 
