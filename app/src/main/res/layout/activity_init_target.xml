@@ -6,7 +6,39 @@
     android:background="@color/Background"
     android:orientation="vertical"
     tools:context=".activity.InitInfoActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/Primary"
+        android:orientation="horizontal">
 
+        <ImageButton
+            android:id="@+id/ib_icon_back"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="3"
+            android:background="@null" />
+
+        <TextView
+            android:id="@+id/tv_selected_yt_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="목표 설정"
+            android:textColor="@android:color/white"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:background="@null" />
+
+    </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -41,9 +73,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:color/white"
+                    
                     android:editable="false"
                     android:clickable="false"
-
                     />
 
 
@@ -118,11 +150,10 @@
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="10">
+        android:layout_height="50dp">
         <Button
             android:id="@+id/bt_back"
-            android:layout_gravity="left"
+            android:layout_gravity="left|bottom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -143,7 +174,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_gravity="right"
+            android:layout_gravity="right|bottom"
             android:text="완료"
             android:textSize="15dp"
             android:textColor="@color/Icons"

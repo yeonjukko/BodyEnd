@@ -60,7 +60,7 @@ public class InitTargetActivity extends InitInfoActivity {
         Button btBack = (Button) findViewById(R.id.bt_back);
         Button btFinish = (Button) findViewById(R.id.bt_finish);
         mDestination = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), SAMPLE_CROPPED_IMAGE_NAME + "_" + new Date().getTime()).getAbsolutePath();
-        mDestinationUri = Uri.parse(mDestination);
+        mDestinationUri = Uri.fromFile(new File(mDestination));
 
         //<--Start of DatePicker
         assert etGoalDate != null;
@@ -178,6 +178,8 @@ public class InitTargetActivity extends InitInfoActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
             mDestinationUri = UCrop.getOutput(data);
+            Log.d("mox", mDestinationUri.getPath());
+
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mDestinationUri);
                 imageStimulus.setImageBitmap(bitmap);
@@ -193,8 +195,11 @@ public class InitTargetActivity extends InitInfoActivity {
                     .withAspectRatio(9, 16)
                     .withMaxResultSize(1080, 1920)
                     .start(InitTargetActivity.this);
+
         } else if (resultCode == UCrop.RESULT_ERROR) {
             final Throwable cropError = UCrop.getError(data);
+            Log.d("mox", "croperror" + cropError.toString());
+
         }
     }
 
