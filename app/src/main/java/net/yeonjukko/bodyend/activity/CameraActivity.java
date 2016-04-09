@@ -2,14 +2,22 @@ package net.yeonjukko.bodyend.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.RectF;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -17,6 +25,13 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
+import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
+import com.github.amlcurran.showcaseview.ShowcaseDrawer;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.SimpleShowcaseEventListener;
+import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import net.yeonjukko.bodyend.R;
 
@@ -48,6 +63,61 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
             mImageButtonChangeCamera.setVisibility(View.GONE);
         }
         findViewById(R.id.buttonTakePicture).setOnClickListener(this);
+        showShowCaseCamera();
+    }
+
+    private void showShowCaseCamera() {
+
+        ShowcaseView view = new ShowcaseView.Builder(this)
+                .setTarget(new ViewTarget(findViewById(R.id.imageViewCameraPosition)))
+                .withNewStyleShowcase()
+                .setStyle(R.style.CustomShowcaseTheme)
+                .setContentTitle("다음")
+                .setContentText("카메라를 그림과 같이 위치시켜 주세요.")
+                .hideOnTouchOutside()
+                .setShowcaseEventListener(new SimpleShowcaseEventListener() {
+                    @Override
+                    public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+                        findViewById(R.id.imageViewCameraPosition).setVisibility(View.GONE);
+                        showShowCaseManLine();
+                    }
+                })
+                .build();
+
+    }
+
+    private void showShowCaseManLine() {
+
+        new ShowcaseView.Builder(this)
+                .setTarget(new ViewTarget(findViewById(R.id.viewHumanLine)))
+                .withNewStyleShowcase()
+                .setStyle(R.style.CustomShowcaseTheme)
+                .setContentTitle("다음")
+                .setContentText("그림에 맞춰 거울에 서주세요.")
+                .hideOnTouchOutside()
+                .setShowcaseEventListener(new SimpleShowcaseEventListener() {
+                    @Override
+                    public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+                        findViewById(R.id.buttonTakePicture).setVisibility(View.VISIBLE);
+                        showShowCaseTakePicture();
+
+                    }
+                })
+                .build();
+
+    }
+
+    private void showShowCaseTakePicture() {
+
+        new ShowcaseView.Builder(this)
+                .setTarget(new ViewTarget(findViewById(R.id.buttonTakePicture)))
+                .withNewStyleShowcase()
+                .setStyle(R.style.CustomShowcaseTheme)
+                .setContentTitle("확인")
+                .setContentText("버튼을 눌러 사진을 촬영합니다.")
+                .hideOnTouchOutside()
+                .build();
+
     }
 
     @Override
@@ -123,7 +193,12 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
 
                             BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(save));
                             Matrix matrix = new Matrix();
-                            matrix.postRotate(90);
+
+                            if (mCameraFace == Camera.CameraInfo.CAMERA_FACING_BACK) {
+                                matrix.postRotate(90);
+                            } else {
+                                matrix.postRotate(270);
+                            }
                             Bitmap rotate = Bitmap.createBitmap(bitmapOrg, 0, 0, bitmapOrg.getWidth(), bitmapOrg.getHeight(), matrix, true);
                             rotate.compress(Bitmap.CompressFormat.JPEG, 100, out);
                             out.close();
