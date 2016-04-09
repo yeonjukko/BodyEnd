@@ -72,7 +72,7 @@ public class ExerciseManagerActivity extends AppCompatActivity {
             public void onClick(View v) {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
                 plusView = inflater.from(getContext()).inflate(R.layout.dialog_ex_sort_plus, null, false);
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), android.support.v7.appcompat.R.style.Base_Theme_AppCompat_Light_Dialog_Alert);
                 setDialogLayout();
                 etExerciseName.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -158,8 +158,9 @@ public class ExerciseManagerActivity extends AppCompatActivity {
         cbSunday = (CheckableButton) plusView.findViewById(R.id.cb_sunday);
         rdOxygen = (RadioButton) plusView.findViewById(R.id.rd_oxygen);
         rdNonoxygen = (RadioButton) plusView.findViewById(R.id.rd_nonoxygen);
-        rdYoutube = (RadioButton)plusView.findViewById(R.id.rd_youtube);
+        rdYoutube = (RadioButton) plusView.findViewById(R.id.rd_youtube);
     }
+
     public int getToday() {
         //<--오늘 날짜 구하기 ex)20160317
         Calendar calendar = Calendar.getInstance();

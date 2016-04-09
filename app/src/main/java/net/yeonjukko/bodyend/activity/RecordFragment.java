@@ -1,6 +1,7 @@
 package net.yeonjukko.bodyend.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -33,8 +34,9 @@ public class RecordFragment extends Fragment {
     public DBmanager dBmanager;
     public int showDate;
     View rootView;
-    RecordRecyclerViewAdapter adapter;
+    public RecordRecyclerViewAdapter adapter;
     DayCounter dayCounter;
+
 
     @Nullable
     @Override
@@ -180,4 +182,5 @@ public class RecordFragment extends Fragment {
             });
         }
     }
+
 }
