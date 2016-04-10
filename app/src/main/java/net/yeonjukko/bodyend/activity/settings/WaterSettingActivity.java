@@ -3,8 +3,10 @@ package net.yeonjukko.bodyend.activity.settings;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -17,6 +19,7 @@ import com.zcw.togglebutton.ToggleButton;
 import net.yeonjukko.bodyend.R;
 import net.yeonjukko.bodyend.libs.DBmanager;
 import net.yeonjukko.bodyend.model.WaterAlarmInfoModel;
+import net.yeonjukko.bodyend.service.AlarmService;
 
 public class WaterSettingActivity extends AppCompatActivity {
     DBmanager dBmanager;
@@ -49,37 +52,17 @@ public class WaterSettingActivity extends AppCompatActivity {
         tvPeriod.setText(alarmPeriod + "");
         tvStartTime.setText(alarmStartTime + "시 ~ ");
         tvStopTime.setText(alarmStopTime + "시");
-        alarmToggleLayout.setOnToggleTouchListener(new ToggleExpandLayout.OnToggleTouchListener() {
-            @Override
-            public void onStartOpen(int height, int originalHeight) {
-
-            }
-
-            @Override
-            public void onOpen() {
-                dBmanager.updateWaterAlarmStatus(1);
-
-            }
-
-            @Override
-            public void onStartClose(int height, int originalHeight) {
-
-            }
-
-            @Override
-            public void onClosed() {
-                dBmanager.updateWaterAlarmStatus(0);
-            }
-        });
 
         switchButton.setOnToggleChanged(new ToggleButton.OnToggleChanged() {
             @Override
             public void onToggle(boolean on) {
                 if (on) {
-                    alarmToggleLayout.open();
+                    dBmanager.updateWaterAlarmStatus(1);
                 } else {
-                    alarmToggleLayout.close();
+                    dBmanager.updateWaterAlarmStatus(0);
                 }
+
+                refreshAlarm(on);
             }
         });
 
@@ -98,11 +81,12 @@ public class WaterSettingActivity extends AppCompatActivity {
                                 dBmanager.updateWaterAlarmPeriod((which + 1) * 15);
                             }
                         })
+                        .setCancelable(false)
                         .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 tvPeriod.setText(dBmanager.selectWaterAlarmInfoDB().getWaterAlarmPeriod() + "");
-                                alarmToggleLayout.refresh(true);
+                                refreshAlarm(true);
 
                             }
                         })
@@ -125,19 +109,26 @@ public class WaterSettingActivity extends AppCompatActivity {
 
                 final RangeBar rangeBar = (RangeBar) view.findViewById(R.id.rangebar);
                 rangeBar.setRangePinsByValue(model.getAlarmTimezoneStart(), model.getAlarmTimezoneStop());
-                builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                builder.setCancelable(false).setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dBmanager.updateWaterAlarmTime(rangeBar.getLeftIndex(), rangeBar.getRightIndex());
                         tvStartTime.setText(rangeBar.getLeftIndex() + "시 ~ ");
                         tvStopTime.setText(rangeBar.getRightIndex() + "시");
-                        alarmToggleLayout.refresh(true);
+                        refreshAlarm(true);
+
                     }
                 });
                 builder.show();
             }
         });
 
+
+    }
+
+    private void refreshAlarm(boolean on) {
+        startService(new Intent(getContext(), AlarmService.class));
+        alarmToggleLayout.refresh(on);
 
     }
 
