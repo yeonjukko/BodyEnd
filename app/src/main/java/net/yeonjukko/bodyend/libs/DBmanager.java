@@ -136,7 +136,7 @@ public class DBmanager {
     }
 
     public void insertVideoCheck(YoutubeRecordModel model) {
-        String INSERT_YOUTUBE_RECORD = "INSERT INTO " + DATABASE_TABLE_9 + " VALUES" + " ('"  + model.getYoutubeTitle() +"','"+model.getYoutubeId() +"',"+ model.getExerciseDate() + ")";
+        String INSERT_YOUTUBE_RECORD = "INSERT INTO " + DATABASE_TABLE_9 + " VALUES" + " ('" + model.getYoutubeTitle() + "','" + model.getYoutubeId() + "'," + model.getExerciseDate() + ")";
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(INSERT_YOUTUBE_RECORD);
@@ -348,6 +348,7 @@ public class DBmanager {
         db.close();
 
     }
+
     public ArrayList<YoutubeRecordModel> selectYoutubeInfo(int date) {
         String SELECT_BODY_INFO = "SELECT * FROM " + DATABASE_TABLE_9 + " WHERE EXERCISE_DATE =" + date;
         this.mDbHelper = new DatabaseHelper(context);
@@ -366,6 +367,7 @@ public class DBmanager {
         result.close();
         return youtubeRecordModels;
     }
+
     /**
      * oxygen은 0일때 무산소운동 1일때 유산소운동
      */
@@ -559,6 +561,36 @@ public class DBmanager {
             mUserRecordModels.put(userRecordModel.getRecordDate(), userRecordModel);
         }
         result.close();
+        return mUserRecordModels;
+    }
+
+    public ArrayList<UserRecordModel> selectUserRecordImage() {
+        String SELECT_RECORD_INFO_ALL = "SELECT * FROM " + DATABASE_TABLE_2;
+
+        ArrayList<UserRecordModel> mUserRecordModels = new ArrayList<>();
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        Cursor result = db.rawQuery(SELECT_RECORD_INFO_ALL, null);
+
+        while (result.moveToNext()) {
+            String imagePath = result.getString(1);
+            if (imagePath == null || imagePath.equals("")) {
+                continue;
+            }
+            UserRecordModel userRecordModel = new UserRecordModel();
+            userRecordModel.setRecordDate(result.getInt(0));
+            userRecordModel.setPictureRecord(imagePath);
+            userRecordModel.setWeightRecord(result.getFloat(2));
+            userRecordModel.setWaterRecord(result.getInt(3));
+            userRecordModel.setWaterVolume(result.getInt(4));
+            userRecordModel.setMealBreakfast(result.getString(5));
+            userRecordModel.setMealLunch(result.getString(6));
+            userRecordModel.setMealDinner(result.getString(7));
+            userRecordModel.setMealRefreshments(result.getString(8));
+            mUserRecordModels.add(userRecordModel);
+        }
+        result.close();
+        db.close();
         return mUserRecordModels;
     }
 
