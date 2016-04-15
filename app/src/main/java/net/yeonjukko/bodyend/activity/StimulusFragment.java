@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import net.yeonjukko.bodyend.R;
+import net.yeonjukko.bodyend.activity.settings.DefaultSettingActivity;
 import net.yeonjukko.bodyend.libs.DBmanager;
 import net.yeonjukko.bodyend.libs.DayCounter;
 
@@ -31,7 +32,7 @@ public class StimulusFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_stimulus, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_stimulus, container, false);
         dBmanager = new DBmanager(rootView.getContext());
 
         TextView tvDday = (TextView) rootView.findViewById(R.id.tv_d_day);
@@ -40,8 +41,9 @@ public class StimulusFragment extends Fragment {
         btSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), RecordFragment.class);
+                Intent intent = new Intent(getContext(), DefaultSettingActivity.class);
                 startActivity(intent);
+                getActivity().finish();
             }
         });
 
@@ -56,7 +58,6 @@ public class StimulusFragment extends Fragment {
 
         //<--레이아웃 배경화면 설정
         final ImageView layout = (ImageView) rootView.findViewById(R.id.layout_bgr);
-        Toast.makeText(getContext(), dBmanager.selectUserInfoDB().getStimulusPicture(), Toast.LENGTH_LONG).show();
 
         new Thread(new Runnable() {
             @Override

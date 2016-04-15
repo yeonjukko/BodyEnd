@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/Background"
+    tools:context="net.yeonjukko.bodyend.activity.settings.DefaultSettingActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/Primary"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/ib_exit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="3"
+            android:src="@drawable/icon_back"
+            android:background="@null" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="기본 설정"
+            android:textColor="@android:color/white"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+        <ImageButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="3"
+            android:background="@null" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_default_day"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:background="@android:color/white"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center_vertical|right"
+            android:layout_marginStart="15dp"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/icon_pink_calendar" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginStart="15dp"
+            android:layout_weight="1"
+            android:text="목표 날짜 설정"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/Divider" />
+
+    <LinearLayout
+        android:id="@+id/layout_default_word"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:background="@android:color/white"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center_vertical|right"
+            android:layout_marginStart="18dp"
+            android:src="@drawable/icon_pink_word" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginStart="18dp"
+            android:layout_weight="1"
+            android:text="목표 문구"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/Divider" />
+
+    <LinearLayout
+        android:id="@+id/layout_default_weight"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:background="@android:color/white"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center_vertical|right"
+            android:layout_marginStart="18dp"
+            android:src="@drawable/icon_pink_scale" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginStart="18dp"
+            android:layout_weight="1"
+            android:text="체중 설정"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/Divider" />
+
+    <LinearLayout
+        android:id="@+id/layout_default_picture"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:background="@android:color/white"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center_vertical|right"
+            android:layout_marginStart="15dp"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/icon_pink_picture" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginStart="15dp"
+            android:layout_weight="1"
+            android:text="다이어트 자극사진 설정"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/Divider" />
+</LinearLayout>

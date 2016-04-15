@@ -71,7 +71,6 @@ public class InitTargetActivity extends InitInfoActivity {
                 dialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        Toast.makeText(getApplicationContext(), year + "년" + monthOfYear + 1 + "월" + dayOfMonth + "일", Toast.LENGTH_SHORT).show();
 
                         int now = new DayCounter().getToday();
                         int selected = getSelectDay(year, monthOfYear + 1, dayOfMonth);
@@ -86,6 +85,7 @@ public class InitTargetActivity extends InitInfoActivity {
 
                     }
                 }, today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE));
+
                 dialog.show();
             }
         });
@@ -103,7 +103,6 @@ public class InitTargetActivity extends InitInfoActivity {
 
 
         //<--Start of BackButton
-        assert btBack != null;
         btBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,7 +115,6 @@ public class InitTargetActivity extends InitInfoActivity {
         //End of BackButton-->
 
         //<--Start of Finish Button
-        assert btFinish != null;
         btFinish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

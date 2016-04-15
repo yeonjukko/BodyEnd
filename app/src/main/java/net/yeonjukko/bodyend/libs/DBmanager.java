@@ -136,7 +136,7 @@ public class DBmanager {
     }
 
     public void insertVideoCheck(YoutubeRecordModel model) {
-        String INSERT_YOUTUBE_RECORD = "INSERT INTO " + DATABASE_TABLE_9 + " VALUES" + " ('"  + model.getYoutubeTitle() +"','"+model.getYoutubeId() +"',"+ model.getExerciseDate() + ")";
+        String INSERT_YOUTUBE_RECORD = "INSERT INTO " + DATABASE_TABLE_9 + " VALUES" + " ('" + model.getYoutubeTitle() + "','" + model.getYoutubeId() + "'," + model.getExerciseDate() + ")";
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(INSERT_YOUTUBE_RECORD);
@@ -162,15 +162,6 @@ public class DBmanager {
 
     public void updatePictureRecord(String imgPath, int date) {
         String UPDATE_IMAGE = "UPDATE " + DATABASE_TABLE_2 + " SET PICTURE_RECORD=" + "'" + imgPath + "'" + " WHERE RECORD_DATE=" + date;
-
-        this.mDbHelper = new DatabaseHelper(context);
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        db.execSQL(UPDATE_IMAGE);
-        db.close();
-    }
-
-    public void updatePictureRecordTest(int date) {
-        String UPDATE_IMAGE = "UPDATE " + DATABASE_TABLE_2 + " SET PICTURE_RECORD=" + "''" + " WHERE RECORD_DATE=" + date;
 
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
@@ -212,6 +203,41 @@ public class DBmanager {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(UPDATE_MEAL_REFRESHMENT);
 
+        db.close();
+    }
+
+    public void updateStimulusPic(String pic) {
+        String UPDATE_STIMULUS_PICTURE = "UPDATE " + DATABASE_TABLE_1 + " SET STIMULUS_PICTURE='" + pic + "'";
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        db.execSQL(UPDATE_STIMULUS_PICTURE);
+        db.close();
+    }
+
+    public void updateStimulusWord(String word) {
+        String UPDATE_STIMULUS_WORD = "UPDATE " + DATABASE_TABLE_1 + " SET STIMULUS_WORD='" + word + "'";
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        db.execSQL(UPDATE_STIMULUS_WORD);
+        db.close();
+    }
+
+    public void updateGoalWeight(float weight, int date) {
+        String UPDATE_GOAL_WEIGHT = "UPDATE " + DATABASE_TABLE_1 + " SET USER_GOAL_WEIGHT=" + weight;
+        String UPDATE_WEIGHT_RECORD = "UPDATE " + DATABASE_TABLE_2 + " SET WATER_VOLUME=" + (int) (weight * 33 / 300) + " WHERE RECORD_DATE=" + date;
+
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        db.execSQL(UPDATE_GOAL_WEIGHT);
+        db.execSQL(UPDATE_WEIGHT_RECORD);
+        db.close();
+    }
+
+    public void updateGoalDate(int date) {
+        String UPDATE_GOAL_DATE = "UPDATE " + DATABASE_TABLE_1 + " SET GOAL_DATE=" + date;
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        db.execSQL(UPDATE_GOAL_DATE);
         db.close();
     }
 
@@ -348,6 +374,7 @@ public class DBmanager {
         db.close();
 
     }
+
     public ArrayList<YoutubeRecordModel> selectYoutubeInfo(int date) {
         String SELECT_BODY_INFO = "SELECT * FROM " + DATABASE_TABLE_9 + " WHERE EXERCISE_DATE =" + date;
         this.mDbHelper = new DatabaseHelper(context);
@@ -366,6 +393,7 @@ public class DBmanager {
         result.close();
         return youtubeRecordModels;
     }
+
     /**
      * oxygen은 0일때 무산소운동 1일때 유산소운동
      */
@@ -514,15 +542,22 @@ public class DBmanager {
         return userInfoModel;
     }
 
+    public UserRecordModel selectDescUserRecordDB(boolean isPrev, int date) {
+        Log.d("ttttt",date+"");
+        String SELECT_RECORD_INFO_DESC = "SELECT * FROM " + DATABASE_TABLE_2 + " WHERE RECORD_DATE<=" + date + " ORDER BY RECORD_DATE DESC LIMIT 1";
+        String SELECT_RECORD_INFO_ASEN = "SELECT * FROM " + DATABASE_TABLE_2 + " WHERE RECORD_DATE>=" + date + " ORDER BY RECORD_DATE LIMIT 1";
 
-    public UserRecordModel selectUserRecordDB(int date) {
-        String SELECT_RECORD_INFO = "SELECT * FROM " + DATABASE_TABLE_2 + " WHERE RECORD_DATE=" + date;
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
-        Cursor result = db.rawQuery(SELECT_RECORD_INFO, null);
+        Cursor result;
+        if (isPrev)
+            result = db.rawQuery(SELECT_RECORD_INFO_DESC, null);
+        else
+            result = db.rawQuery(SELECT_RECORD_INFO_ASEN, null);
 
-        UserRecordModel userRecordModel = new UserRecordModel();
+        UserRecordModel userRecordModel = null;
         if (result.moveToFirst()) {
+            userRecordModel = new UserRecordModel();
             userRecordModel.setRecordDate(result.getInt(0));
             userRecordModel.setPictureRecord(result.getString(1));
             userRecordModel.setWeightRecord(result.getFloat(2));
@@ -533,7 +568,35 @@ public class DBmanager {
             userRecordModel.setMealDinner(result.getString(7));
             userRecordModel.setMealRefreshments(result.getString(8));
         }
+
         result.close();
+        db.close();
+        return userRecordModel;
+
+    }
+
+    public UserRecordModel selectUserRecordDB(int date) {
+        String SELECT_RECORD_INFO = "SELECT * FROM " + DATABASE_TABLE_2 + " WHERE RECORD_DATE=" + date;
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        Cursor result = db.rawQuery(SELECT_RECORD_INFO, null);
+
+        UserRecordModel userRecordModel = null;
+        if (result.moveToFirst()) {
+            userRecordModel = new UserRecordModel();
+            userRecordModel.setRecordDate(result.getInt(0));
+            userRecordModel.setPictureRecord(result.getString(1));
+            userRecordModel.setWeightRecord(result.getFloat(2));
+            userRecordModel.setWaterRecord(result.getInt(3));
+            userRecordModel.setWaterVolume(result.getInt(4));
+            userRecordModel.setMealBreakfast(result.getString(5));
+            userRecordModel.setMealLunch(result.getString(6));
+            userRecordModel.setMealDinner(result.getString(7));
+            userRecordModel.setMealRefreshments(result.getString(8));
+        }
+
+        result.close();
+        db.close();
         return userRecordModel;
     }
 
