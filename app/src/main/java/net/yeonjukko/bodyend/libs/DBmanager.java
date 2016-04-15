@@ -625,6 +625,36 @@ public class DBmanager {
         return mUserRecordModels;
     }
 
+    public ArrayList<UserRecordModel> selectUserRecordImage() {
+        String SELECT_RECORD_INFO_ALL = "SELECT * FROM " + DATABASE_TABLE_2;
+
+        ArrayList<UserRecordModel> mUserRecordModels = new ArrayList<>();
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        Cursor result = db.rawQuery(SELECT_RECORD_INFO_ALL, null);
+
+        while (result.moveToNext()) {
+            String imagePath = result.getString(1);
+            if (imagePath == null || imagePath.equals("")) {
+                continue;
+            }
+            UserRecordModel userRecordModel = new UserRecordModel();
+            userRecordModel.setRecordDate(result.getInt(0));
+            userRecordModel.setPictureRecord(imagePath);
+            userRecordModel.setWeightRecord(result.getFloat(2));
+            userRecordModel.setWaterRecord(result.getInt(3));
+            userRecordModel.setWaterVolume(result.getInt(4));
+            userRecordModel.setMealBreakfast(result.getString(5));
+            userRecordModel.setMealLunch(result.getString(6));
+            userRecordModel.setMealDinner(result.getString(7));
+            userRecordModel.setMealRefreshments(result.getString(8));
+            mUserRecordModels.add(userRecordModel);
+        }
+        result.close();
+        db.close();
+        return mUserRecordModels;
+    }
+
     public WaterAlarmInfoModel selectWaterAlarmInfoDB() {
         String SELECT_WATER_ALARM_INFO = "SELECT * FROM " + DATABASE_TABLE_5;
         this.mDbHelper = new DatabaseHelper(context);

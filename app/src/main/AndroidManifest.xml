@@ -78,6 +78,10 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
+        <activity
+            android:name=".activity.GalleryActivity"
+            android:theme="@style/MyNoActionBar" />
+
         <service android:name=".service.AlarmService" />
         <receiver android:name=".service.AlarmService$DeviceStartBroadcastReceiver">
             <intent-filter>
