@@ -74,16 +74,7 @@ public class ExerciseManagerActivity extends AppCompatActivity {
                 plusView = inflater.from(getContext()).inflate(R.layout.dialog_ex_sort_plus, null, false);
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), android.support.v7.appcompat.R.style.Base_Theme_AppCompat_Light_Dialog_Alert);
                 setDialogLayout();
-                etExerciseName.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (rdYoutube.isChecked()) {
-                            // if(인터넷이 연결이 안됬다면)
-                            // 리스트가져와서 보여주긱
 
-                        }
-                    }
-                });
                 builder.setView(plusView)
                         .setTitle("운동을 추가하세요.")
                         .setPositiveButton("추가", new DialogInterface.OnClickListener() {
@@ -123,11 +114,11 @@ public class ExerciseManagerActivity extends AppCompatActivity {
                                 } else if (rdNonoxygen.isChecked()) {
                                     model.setExerciseType(0);
                                     model.setSortId(UUID.randomUUID().toString());
-                                } else if (rdYoutube.isChecked()) {
-                                    model.setExerciseType(2);
-                                    //model.setSortId(유투브 아이디를 입력);
-
                                 }
+//                                else if (rdYoutube.isChecked()) {
+//                                    model.setExerciseType(2);
+//                                    //model.setSortId(유투브 아이디를 입력);
+//                                }
                                 model.setExerciseAddDate(getToday());
                                 dBmanager.insertExerciseSortInfo(model);
                                 setRecyclerLayout();
@@ -158,7 +149,7 @@ public class ExerciseManagerActivity extends AppCompatActivity {
         cbSunday = (CheckableButton) plusView.findViewById(R.id.cb_sunday);
         rdOxygen = (RadioButton) plusView.findViewById(R.id.rd_oxygen);
         rdNonoxygen = (RadioButton) plusView.findViewById(R.id.rd_nonoxygen);
-        rdYoutube = (RadioButton) plusView.findViewById(R.id.rd_youtube);
+        //rdYoutube = (RadioButton) plusView.findViewById(R.id.rd_youtube);
     }
 
     public int getToday() {

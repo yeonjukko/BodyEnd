@@ -32,6 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
+                android:textColor="@color/caldroid_black"
                 android:text="유산소" />
 
             <ImageView
@@ -46,6 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
+                android:textColor="@color/caldroid_black"
                 android:text="무산소" />
 
             <ImageView
@@ -54,19 +56,7 @@
                 android:layout_marginLeft="7dp"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/icon_nonoxygen" />
-            <RadioButton
-                android:id="@+id/rd_youtube"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:text="유투브" />
 
-            <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginLeft="7dp"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/icon_youtube" />
         </RadioGroup>
 
 

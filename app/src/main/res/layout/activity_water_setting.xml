@@ -5,7 +5,37 @@
     android:layout_height="match_parent"
     android:background="@color/Background"
     android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/Primary"
+        android:orientation="horizontal">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="3" />
+
+        <TextView
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@android:color/white"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:text="물 마시기 설정" />
+
+        <ImageButton
+            android:id="@+id/ib_plus_sort"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:layout_weight="3"
+            android:layout_gravity="center"/>
+
+    </LinearLayout>
     <LinearLayout
         android:id="@+id/layout_water_volume"
         android:layout_width="match_parent"
@@ -19,6 +49,7 @@
             android:layout_gravity="start|center_vertical"
             android:layout_marginStart="15dp"
             android:layout_weight="1"
+            android:textSize="18sp"
             android:text="@string/water_goal_volume" />
 
         <LinearLayout
@@ -168,6 +199,7 @@
                         android:layout_centerVertical="true"
                         android:layout_gravity="left|center_vertical"
                         android:layout_marginLeft="15dp"
+                        android:textSize="18sp"
                         android:text="@string/water_alarm_setting" />
 
 

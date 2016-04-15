@@ -65,6 +65,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="75dp"
                     android:layout_marginLeft="10dp"
+                    android:textSize="18sp"
                     android:gravity="center_vertical"
                     android:text="나만의 운동 만들기" />
 
@@ -74,6 +75,10 @@
                     android:background="@color/Divider" />
 
             </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/Divider" />
             <LinearLayout
                 android:id="@+id/layout_attendance_spot"
                 android:layout_width="match_parent"
@@ -94,6 +99,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="75dp"
                     android:layout_marginLeft="10dp"
+                    android:textSize="18sp"
                     android:gravity="center_vertical"
                     android:text="출석 체크 장소 설정" />
 
@@ -144,10 +150,7 @@
                     android:background="@color/Divider" />
 
             </LinearLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/Divider" />
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

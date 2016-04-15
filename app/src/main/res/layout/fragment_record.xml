@@ -16,14 +16,14 @@
         android:src="@drawable/icon_calendar" />
 
     <ImageView
-        android:id="@+id/ic_setting"
+        android:id="@+id/ic_photos"
         android:layout_width="37dp"
         android:layout_height="37dp"
         android:layout_gravity="right|top"
         android:layout_marginRight="7dp"
         android:layout_marginTop="7dp"
         android:padding="3dp"
-        android:src="@drawable/icon_settings" />
+        android:src="@drawable/icon_photos" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -36,6 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="36dp"
             android:gravity="center"
+            android:text="2016/04/13"
             android:textSize="20sp" />
 
         <TextView
@@ -48,6 +49,7 @@
             android:gravity="center"
             android:alpha="255"
             android:textSize="30sp"
+            android:text="수요일"
             android:textStyle="bold" />
     </RelativeLayout>
 
@@ -57,13 +59,16 @@
         android:layout_marginTop="60dp">
 
         <ImageView
-            android:id="@+id/image_right"
+            android:id="@+id/image_left"
             android:layout_width="37dp"
+            android:src="@drawable/icon_back"
             android:layout_height="37dp" />
 
         <ImageView
+            android:id="@+id/image_right"
             android:layout_width="37dp"
             android:layout_height="37dp"
+            android:src="@drawable/icon_forward"
             android:layout_alignParentRight="true" />
 
 

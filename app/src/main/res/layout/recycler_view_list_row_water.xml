@@ -96,7 +96,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@drawable/button_roundcorner"
-                    android:text="+" />
+                    android:text="+"
+                    android:textColor="@android:color/white" />
 
                 <Button
                     android:id="@+id/bt_water_minus"
@@ -104,7 +105,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@drawable/button_roundcorner_bottom_right"
-                    android:text="-" />
+                    android:text="-"
+                    android:textColor="@android:color/white" />
             </LinearLayout>
         </LinearLayout>
 

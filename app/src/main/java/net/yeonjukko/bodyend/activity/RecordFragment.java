@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.aakira.expandablelayout.Utils;
 
@@ -21,8 +22,11 @@ import net.yeonjukko.bodyend.libs.DayCounter;
 import net.yeonjukko.bodyend.libs.DividerItemDecoration;
 import net.yeonjukko.bodyend.libs.RecordItemModel;
 import net.yeonjukko.bodyend.libs.RecordRecyclerViewAdapter;
+import net.yeonjukko.bodyend.model.ExerciseSpotInfoModel;
 import net.yeonjukko.bodyend.model.UserRecordModel;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -31,10 +35,14 @@ import java.util.List;
 public class RecordFragment extends Fragment {
     public DBmanager dBmanager;
     public int showDate;
+    public int tmpDate;
     View rootView;
     public RecordRecyclerViewAdapter adapter;
     DayCounter dayCounter;
-
+    List<RecordItemModel> data;
+    RecyclerView recyclerView;
+    ImageView ivLeft;
+    ImageView ivRight;
 
     @Nullable
     @Override
@@ -42,12 +50,16 @@ public class RecordFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_record, container, false);
         dBmanager = new DBmanager(getContext());
         dayCounter = new DayCounter();
+
+        ivLeft = (ImageView) rootView.findViewById(R.id.image_left);
+        ivRight = (ImageView) rootView.findViewById(R.id.image_right);
+
         //record 테이블 초기화 및 날짜 설정 메소드
 
         //정각에만 실행
         insertUserRecord();
         showDate = dayCounter.getToday();
-
+        tmpDate = showDate;
         //캘린더 불러오기
         ImageView btCalendar = (ImageView) rootView.findViewById(R.id.ic_calendar);
         btCalendar.setOnClickListener(new View.OnClickListener() {
@@ -59,6 +71,16 @@ public class RecordFragment extends Fragment {
             }
         });
 
+
+        //날짜바꾸기 버튼
+        ivLeft.setOnClickListener(changeDate);
+        ivRight.setOnClickListener(changeDate);
+
+
+        //비포 애프터 사진 모음
+        ImageView btGallery = (ImageView) rootView.findViewById(R.id.ic_photos);
+
+
         //CalendarActivity에서 넘어올 때
         Intent intent = getActivity().getIntent();
         if (intent.getIntExtra("showDate", dayCounter.getToday()) != dayCounter.getToday()) {
@@ -66,12 +88,12 @@ public class RecordFragment extends Fragment {
         }
         setLayout(showDate);
 
-        final RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext()));
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        final List<RecordItemModel> data = new ArrayList<>();
+        data = new ArrayList<>();
         data.add(new RecordItemModel(
                 getString(R.string.record_water),
                 R.color.Primary,
@@ -111,6 +133,47 @@ public class RecordFragment extends Fragment {
 
         return rootView;
     }
+
+
+    View.OnClickListener changeDate = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+            try {
+                //오늘 날짜
+                long dbDate = format.parse(tmpDate + "").getTime();
+                UserRecordModel model = null;
+
+                if (v == ivLeft) {
+                    dbDate -= 60 * 60 * 24 * 1000;
+                    int tmp = dayCounter.convertDate(dbDate);
+                    model = dBmanager.selectDescUserRecordDB(true, tmp);
+
+                } else if (v == ivRight) {
+                    dbDate += 60 * 60 * 24 * 1000;
+
+                    int tmp = dayCounter.convertDate(dbDate);
+                    model = dBmanager.selectDescUserRecordDB(false, tmp);
+                }
+
+                if (model != null) {
+                    setLayout(model.getRecordDate());
+                    tmpDate = model.getRecordDate();
+                    adapter = new RecordRecyclerViewAdapter(data, tmpDate, RecordFragment.this);
+                    recyclerView.setAdapter(adapter);
+
+                } else {
+                    if (tmpDate != showDate) {
+                        Toast.makeText(getContext(), "이전의 데이터가 없습니다.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+    };
 
 
     private void setLayout(int date) {
@@ -171,21 +234,34 @@ public class RecordFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK && requestCode == RecordRecyclerViewAdapter.REQUEST_CAMERA_CODE) {
-            String imagePath = data.getStringExtra(CameraActivity.FLAG_FILE_PATH);
-            dBmanager.updatePictureRecord(imagePath, showDate);
-//            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-//            ((RecordRecyclerViewAdapter.ViewHolderPicture)RecordRecyclerViewAdapter.holderTest).imageTodayPic.setImageBitmap(bitmap);
-//            ((RecordRecyclerViewAdapter.ViewHolderPicture)RecordRecyclerViewAdapter.holderTest).imageTodayPic.setVisibility(View.VISIBLE);
-//           Log.d("mox2",((RecordRecyclerViewAdapter.ViewHolderPicture)RecordRecyclerViewAdapter.holderTest).imageTodayPic.getVisibility()+"visible");
-//                   ((RecordRecyclerViewAdapter.ViewHolderPicture) RecordRecyclerViewAdapter.holderTest).expandableLayout.invalidate();
+        if (resultCode == Activity.RESULT_OK) {
+            Log.d("mox", resultCode + "");
 
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    adapter.notifyDataSetChanged();
-                }
-            });
+            if (requestCode == RecordRecyclerViewAdapter.REQUEST_SPOT_NAME) {
+                Log.d("mox", "spot" + data.getDoubleExtra("longitude", 0));
+                double longitude = data.getDoubleExtra("longitude", 0);
+                double latitude = data.getDoubleExtra("latitude", 0);
+                String spotName = data.getStringExtra("location");
+                ExerciseSpotInfoModel spotInfoModel = new ExerciseSpotInfoModel();
+                spotInfoModel.setSpotX(longitude);
+                spotInfoModel.setSpotY(latitude);
+                spotInfoModel.setSpotName(spotName);
+                spotInfoModel.setAttendanceDay(0);
+                dBmanager.insertExerciseSpotInfo(spotInfoModel);
+
+
+            } else if (requestCode == RecordRecyclerViewAdapter.REQUEST_CAMERA_CODE) {
+
+                String imagePath = data.getStringExtra(CameraActivity.FLAG_FILE_PATH);
+                dBmanager.updatePictureRecord(imagePath, showDate);
+
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+            }
         }
     }
 

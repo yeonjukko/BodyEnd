@@ -58,6 +58,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="3"
+                android:textColor="@android:color/white"
                 android:background="@drawable/button_roundcorner_bottom_left"
                 android:text="-" />
 
@@ -82,6 +83,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="3"
+                android:textColor="@android:color/white"
                 android:background="@drawable/button_roundcorner_bottom_right"
                 android:text="+" />
         </LinearLayout>
