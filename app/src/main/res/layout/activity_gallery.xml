@@ -37,9 +37,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginRight="5dp"
             android:layout_weight="3"
             android:background="@null"
-            android:src="@drawable/icon_youtube" />
+            android:src="@drawable/icon_refresh" />
 
 
     </LinearLayout>

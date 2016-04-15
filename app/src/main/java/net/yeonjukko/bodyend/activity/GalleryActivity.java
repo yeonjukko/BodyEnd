@@ -112,10 +112,10 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
 
         //선택 사이즈가 2개이면 알맞게 선택한것으로 간주.
         if (size == 2) {
-            mImageButtonStyleChange.setImageResource(R.drawable.calendar_prev_arrow);
+            mImageButtonStyleChange.setImageResource(R.drawable.icon_finish);
             mImageButtonStyleChange.setTag(TAG_STYLE_COMPLETE);
         } else {
-            mImageButtonStyleChange.setImageResource(R.drawable.icon_youtube);
+            mImageButtonStyleChange.setImageResource(R.drawable.icon_refresh);
             mImageButtonStyleChange.setTag(TAG_STYLE_CHANGE);
         }
     }
