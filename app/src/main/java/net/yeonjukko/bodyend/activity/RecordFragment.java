@@ -1,14 +1,12 @@
 package net.yeonjukko.bodyend.activity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -124,6 +122,14 @@ public class RecordFragment extends Fragment {
 
         adapter = new RecordRecyclerViewAdapter(data, showDate, this);
         recyclerView.setAdapter(adapter);
+
+
+        rootView.findViewById(R.id.ic_setting).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(), GalleryActivity.class));
+            }
+        });
 
         return rootView;
     }
