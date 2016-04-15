@@ -130,11 +130,12 @@ public class YoutubePlayerActivity extends YouTubeBaseActivity implements
             updateLog("onStopped");
             if ((player.getCurrentTimeMillis() == player.getDurationMillis() && player.getCurrentTimeMillis() != 0) && !flag_check) {
                 flag_check = true;
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.MyDialog);
                 RadioButton radioButton = new RadioButton(getContext());
                 radioButton.setChecked(true);
                 radioButton.setText(title);
-                builder.setTitle("운동을 완료하셨습니다! 오늘의 운동에 추가하세요.")
+                radioButton.setTextColor(getResources().getColor(R.color.Primary_text));
+                builder.setTitle("운동을 완료하셨습니다! 짝짝짝!   오늘의 운동에 추가하세요.")
                         .setView(radioButton)
                         .setPositiveButton("추가", new DialogInterface.OnClickListener() {
                             @Override

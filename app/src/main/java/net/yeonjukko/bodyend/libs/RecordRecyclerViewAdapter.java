@@ -7,6 +7,7 @@ package net.yeonjukko.bodyend.libs;
 
 import android.Manifest;
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -57,6 +58,7 @@ import net.yeonjukko.bodyend.R;
 import net.yeonjukko.bodyend.activity.CameraActivity;
 import net.yeonjukko.bodyend.activity.MainActivity;
 import net.yeonjukko.bodyend.activity.RecordFragment;
+import net.yeonjukko.bodyend.activity.settings.AttendanceMapAcitivity;
 import net.yeonjukko.bodyend.activity.settings.ExerciseSettingActivity;
 import net.yeonjukko.bodyend.activity.settings.WaterSettingActivity;
 import net.yeonjukko.bodyend.model.ExerciseAttendanceInfoModel;
@@ -84,13 +86,17 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     private int VIEW_TYPE_PICTURE = 104;
     private int VIEW_TYPE_ERROR = 105;
     public static final int REQUEST_CAMERA_CODE = 486;
+    public static final int REQUEST_SPOT_NAME = 106;
+
+    private CheckBox mCheckbox;
     private int showDate;
     public static RecyclerView.ViewHolder holderTest;
     private ProgressDialog mProgressDialog;
 
     private LocationRequest mLocationRequest;
     protected GoogleApiClient mGoogleApiClient;
-    ExerciseSpotInfoModel checkModel;
+    private ExerciseSpotInfoModel checkModel;
+    private boolean isLocUpdated=false;
 
     DBmanager dBmanager;
     LayoutInflater inflater;
@@ -103,7 +109,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         this.recordFragemnt = recordFragment;
         //RecordActivity에서 넘어온 표시할 날짜
         this.showDate = showDate;
-        Log.d("MOX","recycler TODAY:"+showDate);
+        Log.d("MOX", "recycler TODAY:" + showDate);
 
         for (int i = 0; i < data.size(); i++) {
             expandState.append(0, true);
@@ -231,9 +237,16 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
             //<--마신 잔 수 나타내기
             int waterRecord = dBmanager.selectUserRecordDB(showDate).getWaterRecord();
-            for (int i = 0; i < waterRecord; i++) {
-                holderWater.gridWaterLayout.getChildAt(i).setBackgroundResource(R.drawable.icon_bottle_checked);
-                holderWater.gridWaterLayout.getChildAt(i).setTag("checked");
+            if (waterRecord > water_cup_count) {
+                for (int i = 0; i < water_cup_count; i++) {
+                    holderWater.gridWaterLayout.getChildAt(i).setBackgroundResource(R.drawable.icon_bottle_checked);
+                    holderWater.gridWaterLayout.getChildAt(i).setTag("checked");
+                }
+            } else {
+                for (int i = 0; i < waterRecord; i++) {
+                    holderWater.gridWaterLayout.getChildAt(i).setBackgroundResource(R.drawable.icon_bottle_checked);
+                    holderWater.gridWaterLayout.getChildAt(i).setTag("checked");
+                }
             }
 
             holderWater.btWaterPlus.setOnClickListener(new View.OnClickListener() {
@@ -280,10 +293,11 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
         } else if (position == 1) {
             final ViewHolderExercise holderExercise = (ViewHolderExercise) holder;
-
+            //체크박스리스너 설정 해제
+            holderExercise.cbAttendance.setOnCheckedChangeListener(null);
             if (showDate < dayCounter.getToday()) {
                 holderExercise.cbAttendance.setEnabled(false);
-                //출석체크를 이미 했을 때
+                //오늘 이전의 날짜에 출석체크를 이미 했을 때
                 if (dBmanager.selectExerciseAttendance(showDate) != null) {
                     holderExercise.cbAttendance.setChecked(false);
                     holderExercise.cbAttendance.setTextColor(resource.getColor(R.color.Divider));
@@ -293,8 +307,9 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                     holderExercise.cbAttendance.setTextColor(resource.getColor(android.R.color.holo_red_light));
                 }
             } else {
+                //오늘 출석체크를 이미 했을 때
                 if (dBmanager.selectExerciseAttendance(showDate) != null) {
-                    holderExercise.cbAttendance.setChecked(false);
+                    holderExercise.cbAttendance.setHighlightColor(resource.getColor(R.color.caldroid_light_red));
                     holderExercise.cbAttendance.setTextColor(resource.getColor(R.color.Divider));
                     holderExercise.cbAttendance.setPaintFlags(holderExercise.cbAttendance.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                     holderExercise.tvSpotName.setText(dBmanager.selectExerciseSpotInfo(dBmanager.selectExerciseAttendance(showDate).getSpotId()).getSpotName() + "");
@@ -344,7 +359,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 }
             });
 
-
+            mCheckbox = holderExercise.cbAttendance;
             holderExercise.cbAttendance.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -355,7 +370,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                             return;
                         }
 
-                        final AlertDialog.Builder builderAttend = new AlertDialog.Builder(context);
+                        final AlertDialog.Builder builderAttend = new AlertDialog.Builder(context, R.style.MyDialog);
                         ArrayList<ExerciseSpotInfoModel> models = dBmanager.selectExerciseSpotsInfo();
                         int size = models.size();
                         String items[] = new String[size];
@@ -386,6 +401,14 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
                                     }
                                 })
+                                .setPositiveButton("추가", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent intent = new Intent(context, AttendanceMapAcitivity.class);
+                                        recordFragemnt.startActivityForResult(intent, REQUEST_SPOT_NAME);
+                                        holderExercise.cbAttendance.setChecked(false);
+                                    }
+                                })
                                 .setCancelable(false)
                                 .setNegativeButton("취소", new DialogInterface.OnClickListener() {
                                     @Override
@@ -406,26 +429,39 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             if (dayCounter.getToday() == showDate) {
                 final ArrayList<ExerciseJoinSortInfoModel> model = dBmanager.selectRecordExerciseSortsInfo(true, showDate, new Int2DayCalculator().getDay(showDate));
                 final ArrayList<YoutubeRecordModel> ytModel = dBmanager.selectYoutubeInfo(showDate);
+                //오늘의 운동기록 체크
                 for (int i = 0; i < model.size(); i++) {
                     final int j = i;
-                    CheckBox mFlam = new CheckBox(context);
+                    final CheckBox mFlam = new CheckBox(context);
                     mFlam.setText(model.get(i).getExerciseName());
                     mFlam.setTextColor(resource.getColor(R.color.Primary_text));
-                    mFlam.setPaintFlags(mFlam.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 
                     if (model.get(i).getRecordDate() != 0) {
+                        //해야할 운동을 했을 때
                         mFlam.setChecked(true);
+                        mFlam.setTextColor(resource.getColor(R.color.Divider));
+                        mFlam.setPaintFlags(mFlam.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+
                     } else {
+                        //해야할 운동을 안 했을 때
                         mFlam.setChecked(false);
                     }
                     mFlam.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                             dBmanager.updateCheckStatus(model.get(j).getSortId(), showDate, isChecked);
+                            if (isChecked) {
+                                mFlam.setTextColor(resource.getColor(R.color.Divider));
+                                mFlam.setPaintFlags(mFlam.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                            } else {
+                                mFlam.setTextColor(resource.getColor(R.color.Primary_text));
+                                mFlam.setPaintFlags(0);
+                            }
                         }
                     });
                     holderExercise.exsortLayout.addView(mFlam, params);
                 }
+                //유투브 운동 기록
                 for (int i = 0; i < ytModel.size(); i++) {
                     CheckBox mFlam = new CheckBox(context);
                     mFlam.setText(ytModel.get(i).getYoutubeTitle());
@@ -435,26 +471,29 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                     mFlam.setEnabled(false);
                     holderExercise.exsortLayout.addView(mFlam, params);
                 }
-
+                //오늘 이전의 날짜
             } else {
                 final ArrayList<ExerciseJoinSortInfoModel> model = dBmanager.selectRecordExerciseSortsInfo(false, showDate, new Int2DayCalculator().getDay(showDate));
                 final ArrayList<YoutubeRecordModel> ytModel = dBmanager.selectYoutubeInfo(showDate);
-
+                //오늘의 운동기록 체크
                 for (int i = 0; i < model.size(); i++) {
                     CheckBox mFlam = new CheckBox(context);
                     mFlam.setText(model.get(i).getExerciseName());
                     if (model.get(i).getRecordDate() != 0) {
+                        //해야할 운동을 했을 때
                         mFlam.setChecked(true);
                         mFlam.setTextColor(resource.getColor(R.color.Divider));
                         mFlam.setPaintFlags(holderExercise.cbAttendance.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 
                     } else {
+                        //해야할 운동을 안 했을 때
                         mFlam.setTextColor(resource.getColor(android.R.color.holo_red_light));
                         mFlam.setChecked(false);
                     }
                     mFlam.setEnabled(false);
                     holderExercise.exsortLayout.addView(mFlam, params);
                 }
+                //유투브 운동 기록
 
                 for (int i = 0; i < ytModel.size(); i++) {
                     CheckBox mFlam = new CheckBox(context);
@@ -858,13 +897,15 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
     @Override
     public void onConnectionSuspended(int i) {
+        Log.d("conn", "connsusp");
+
         mGoogleApiClient.connect();
     }
 
     @Override
     public void onLocationChanged(Location location) {
         //onConnect 다음 실행
-
+        isLocUpdated = true;
         stopLocationUpdates();
         double dbX = checkModel.getSpotX();
         double dbY = checkModel.getSpotY();
@@ -882,15 +923,20 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             notifyDataSetChanged();
         } else {
             Toast.makeText(context, "거리가 멀어서 출석체크할 수 없습니다.", Toast.LENGTH_SHORT).show();
+            //출석체크 업데이트
+            mCheckbox.setChecked(false);
+
         }
-
         mProgressDialog.dismiss();
-
-
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
+        //출석체크 업데이트
+        Log.d("conn", "connfail");
+
+        mCheckbox.setChecked(false);
+        Toast.makeText(context, "출석체크를 할 수 없습니다.", Toast.LENGTH_SHORT).show();
 
     }
 
@@ -907,6 +953,30 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
 
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                try {
+                    sleep(5000);
+                    if(!isLocUpdated){
+                        stopLocationUpdates();
+                        ((Activity)context).runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mProgressDialog.dismiss();
+                                mCheckbox.setChecked(false);
+                                Toast.makeText(context, "출석체크를 할 수 없습니다.", Toast.LENGTH_SHORT).show();
+
+                            }
+                        });
+
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
         Log.d("service", "Attend startLocationUpdates");
     }
 
@@ -914,7 +984,9 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         if (mGoogleApiClient.isConnected()) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
             mGoogleApiClient.disconnect();
+
         }
+
 
     }
 

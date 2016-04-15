@@ -15,7 +15,6 @@ public class MainActivity extends AppCompatActivity {
     int MAX_PAGE = 3;
     private Fragment cur_fragment;
     public Fragment record_fragment;
-    Adapter adapter;
 
 
     @Override
@@ -24,8 +23,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        adapter = new Adapter(getSupportFragmentManager());
-        viewPager.setAdapter(adapter);
+        viewPager.setAdapter(new Adapter(getSupportFragmentManager()));
         Intent intent = getIntent();
         if (intent.getIntExtra("showDate", 0) != 0) {
             viewPager.setCurrentItem(1);

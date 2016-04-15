@@ -29,7 +29,6 @@ public class ExercisesRecyclerViewAdapter extends RecyclerView.Adapter<Exercises
 
     public ExercisesRecyclerViewAdapter(final List<ExerciseSortInfoModel> data) {
         this.data = data;
-
     }
 
     @Override
@@ -50,7 +49,7 @@ public class ExercisesRecyclerViewAdapter extends RecyclerView.Adapter<Exercises
             public boolean onLongClick(View v) {
                 Log.d("mox", model.getExerciseName() + model.getExerciseDay());
 
-                Snackbar.make(v, holder.tvExerciseName.getText() + "을 삭제하시겠습니까?", Snackbar.LENGTH_SHORT)
+                Snackbar mySnackbar = Snackbar.make(v, holder.tvExerciseName.getText() + "을 삭제하시겠습니까?", Snackbar.LENGTH_SHORT)
                         .setAction("삭제", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -60,8 +59,11 @@ public class ExercisesRecyclerViewAdapter extends RecyclerView.Adapter<Exercises
                                 notifyDataSetChanged();
 
                             }
-                        })
-                        .show();
+                        });
+                View tmpView = mySnackbar.getView();
+                TextView tv = (TextView)tmpView.findViewById(android.support.design.R.id.snackbar_text);
+                tv.setTextColor(context.getResources().getColor(R.color.caldroid_white));
+                mySnackbar.show();
                 return false;
             }
         });

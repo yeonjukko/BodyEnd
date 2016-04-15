@@ -1,17 +1,21 @@
 package net.yeonjukko.bodyend.activity.settings;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.ImageView;
 import android.widget.Toast;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -30,15 +34,10 @@ import net.yeonjukko.bodyend.libs.MapApiConst;
  */
 public class AttendanceMapAcitivity extends FragmentActivity implements MapView.MapViewEventListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, MapView.POIItemEventListener {
 
-    private static final String LOG_TAG = "EventsDemoActivity";
-    protected static final String TAG = "SearchGPSActivity";
-
     private MapView mapView;
-    private TextView mTapTextView;
-    private TextView mDragTextView;
-    private TextView mCameraTextView;
     private MapPOIItem mDefaultMarker;
 
+    private ImageView btUpdateGps;
     private LocationRequest mLocationRequest;
     protected GoogleApiClient mGoogleApiClient;
     private String tmpAddr;
@@ -48,40 +47,44 @@ public class AttendanceMapAcitivity extends FragmentActivity implements MapView.
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.mapview_attendance);
+        setContentView(R.layout.activity_mapview_attendance);
+
+        btUpdateGps = (ImageView) findViewById(R.id.bt_update_location);
         mapView = (MapView) findViewById(R.id.daumMapView);
         mapView.setDaumMapApiKey(MapApiConst.DAUM_MAPS_ANDROID_APP_API_KEY);
         mapView.setMapViewEventListener(this);
         mapView.setPOIItemEventListener(this);
-        //mTapTextView = (TextView) findViewById(R.id.tap_text);
-        //mDragTextView = (TextView) findViewById(R.id.drag_text);
-        //mCameraTextView = (TextView) findViewById(R.id.camera_text);
-
         buildGoogleApiClient();
         createLocationRequest();
+        onMapViewInitialized(mapView);
+
+        btUpdateGps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                buildGoogleApiClient();
+                createLocationRequest();
+                onMapViewInitialized(mapView);
+            }
+        });
 
     }
 
     @Override
     public void onMapViewInitialized(MapView mapView) {
         // MapView had loaded. Now, MapView APIs could be called safely.
-        //mapView.setMapCenterPointAndZoomLevel(MapPoint.mapPointWithGeoCoord(33.41, 126.52), 9, true);
 
-        Log.i(LOG_TAG, "onMapViewInitialized");
+        //Log.i(LOG_TAG, "onMapViewInitialized");
     }
 
     @Override
     public void onMapViewCenterPointMoved(MapView mapView, MapPoint mapCenterPoint) {
         MapPoint.GeoCoordinate mapPointGeo = mapCenterPoint.getMapPointGeoCoord();
         //mCameraTextView.setText("camera position{target=" + String.format("lat/lng: (%f,%f), zoomLevel=%d", mapPointGeo.latitude, mapPointGeo.longitude, mapView.getZoomLevel()));
-        Log.i(LOG_TAG, String.format("MapView onMapViewCenterPointMoved (%f,%f)", mapPointGeo.latitude, mapPointGeo.longitude));
     }
 
     @Override
     public void onMapViewZoomLevelChanged(MapView mapView, int zoomLevel) {
         MapPoint.GeoCoordinate mapPointGeo = mapView.getMapCenterPoint().getMapPointGeoCoord();
-        //mCameraTextView.setText("camera position{target=" + String.format("lat/lng: (%f,%f), zoomLevel=%d", mapPointGeo.latitude, mapPointGeo.longitude, mapView.getZoomLevel()));
-        Log.i(LOG_TAG, String.format("MapView onMapViewZoomLevelChanged (%d)", zoomLevel));
     }
 
     @Override
@@ -112,11 +115,6 @@ public class AttendanceMapAcitivity extends FragmentActivity implements MapView.
 
         MapReverseGeoCoder reverseGeoCoder = new MapReverseGeoCoder(MapApiConst.DAUM_MAPS_ANDROID_APP_API_KEY, mapPoint, reverseListener, AttendanceMapAcitivity.this);
         reverseGeoCoder.startFindingAddress();
-
-        //mTapTextView.setText("single tapped, point=" + String.format("lat/lng: (%f,%f) x/y: (%f,%f)", mapPointGeo.latitude, mapPointGeo.longitude, mapPointScreenLocation.x, mapPointScreenLocation.y));
-
-        //mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(latitude, longitude), false);
-        Log.i(LOG_TAG, String.format("MapView onMapViewSingleTapped (%f,%f)", mapPointGeo.latitude, mapPointGeo.longitude));
     }
 
 
@@ -125,7 +123,7 @@ public class AttendanceMapAcitivity extends FragmentActivity implements MapView.
         MapPoint.GeoCoordinate mapPointGeo = mapPoint.getMapPointGeoCoord();
         MapPoint.PlainCoordinate mapPointScreenLocation = mapPoint.getMapPointScreenLocation();
         //mTapTextView.setText("double tapped, point=" + String.format("lat/lng: (%f,%f) x/y: (%f,%f)", mapPointGeo.latitude, mapPointGeo.longitude, mapPointScreenLocation.x, mapPointScreenLocation.y));
-        Log.i(LOG_TAG, String.format(String.format("MapView onMapViewDoubleTapped (%f,%f)", mapPointGeo.latitude, mapPointGeo.longitude)));
+        //Log.i(LOG_TAG, String.format(String.format("MapView onMapViewDoubleTapped (%f,%f)", mapPointGeo.latitude, mapPointGeo.longitude)));
     }
 
     @Override
@@ -133,7 +131,7 @@ public class AttendanceMapAcitivity extends FragmentActivity implements MapView.
         MapPoint.GeoCoordinate mapPointGeo = mapPoint.getMapPointGeoCoord();
         MapPoint.PlainCoordinate mapPointScreenLocation = mapPoint.getMapPointScreenLocation();
         //mTapTextView.setText("long pressed, point=" + String.format("lat/lng: (%f,%f) x/y: (%f,%f)", mapPointGeo.latitude, mapPointGeo.longitude, mapPointScreenLocation.x, mapPointScreenLocation.y));
-        Log.i(LOG_TAG, String.format(String.format("MapView onMapViewLongPressed (%f,%f)", mapPointGeo.latitude, mapPointGeo.longitude)));
+        //Log.i(LOG_TAG, String.format(String.format("MapView onMapViewLongPressed (%f,%f)", mapPointGeo.latitude, mapPointGeo.longitude)));
     }
 
     @Override
@@ -141,7 +139,7 @@ public class AttendanceMapAcitivity extends FragmentActivity implements MapView.
         MapPoint.GeoCoordinate mapPointGeo = mapPoint.getMapPointGeoCoord();
         MapPoint.PlainCoordinate mapPointScreenLocation = mapPoint.getMapPointScreenLocation();
         //mDragTextView.setText("drag started, point=" + String.format("lat/lng: (%f,%f) x/y: (%f,%f)", mapPointGeo.latitude, mapPointGeo.longitude, mapPointScreenLocation.x, mapPointScreenLocation.y));
-        Log.i(LOG_TAG, String.format("MapView onMapViewDragStarted (%f,%f)", mapPointGeo.latitude, mapPointGeo.longitude));
+        //Log.i(LOG_TAG, String.format("MapView onMapViewDragStarted (%f,%f)", mapPointGeo.latitude, mapPointGeo.longitude));
     }
 
     @Override
@@ -149,14 +147,14 @@ public class AttendanceMapAcitivity extends FragmentActivity implements MapView.
         MapPoint.GeoCoordinate mapPointGeo = mapPoint.getMapPointGeoCoord();
         MapPoint.PlainCoordinate mapPointScreenLocation = mapPoint.getMapPointScreenLocation();
         //mDragTextView.setText("drag ended, point=" + String.format("lat/lng: (%f,%f) x/y: (%f,%f)", mapPointGeo.latitude, mapPointGeo.longitude, mapPointScreenLocation.x, mapPointScreenLocation.y));
-        Log.i(LOG_TAG, String.format("MapView onMapViewDragEnded (%f,%f)", mapPointGeo.latitude, mapPointGeo.longitude));
+        //Log.i(LOG_TAG, String.format("MapView onMapViewDragEnded (%f,%f)", mapPointGeo.latitude, mapPointGeo.longitude));
     }
 
     @Override
     public void onMapViewMoveFinished(MapView mapView, MapPoint mapPoint) {
         MapPoint.GeoCoordinate mapPointGeo = mapPoint.getMapPointGeoCoord();
-        Toast.makeText(getBaseContext(), "MapView move finished", Toast.LENGTH_SHORT).show();
-        Log.i(LOG_TAG, String.format("MapView onMapViewMoveFinished (%f,%f)", mapPointGeo.latitude, mapPointGeo.longitude));
+        //Toast.makeText(getBaseContext(), "MapView move finished", Toast.LENGTH_SHORT).show();
+        //Log.i(LOG_TAG, String.format("MapView onMapViewMoveFinished (%f,%f)", mapPointGeo.latitude, mapPointGeo.longitude));
     }
 
     /**
@@ -176,6 +174,7 @@ public class AttendanceMapAcitivity extends FragmentActivity implements MapView.
     public void onLocationChanged(Location location) {
         //onConnect 다음 실행
         Log.d("service", "Attend onLocationChanged");
+
         latitude = location.getLatitude();
         longitude = location.getLongitude();
         mapView.setMapCenterPointAndZoomLevel(MapPoint.mapPointWithGeoCoord(latitude, longitude), 2, true);
@@ -192,6 +191,17 @@ public class AttendanceMapAcitivity extends FragmentActivity implements MapView.
     }
 
     protected void startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.d("service", "permissionNo");
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
 
         Log.d("service", "Attend startLocationUpdates");
@@ -201,7 +211,7 @@ public class AttendanceMapAcitivity extends FragmentActivity implements MapView.
     public void onConnectionFailed(ConnectionResult result) {
         // Refer to the javadoc for ConnectionResult to see what error codes might be returned in
         // onConnectionFailed.
-        Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + result.getErrorCode());
+        Log.d("moxfail", "fail");
     }
 
 
@@ -209,7 +219,6 @@ public class AttendanceMapAcitivity extends FragmentActivity implements MapView.
     public void onConnectionSuspended(int cause) {
         // The connection to Google Play services was lost for some reason. We call connect() to
         // attempt to re-establish the connection.
-        Log.i(TAG, "Connection suspended");
         mGoogleApiClient.connect();
     }
 
@@ -255,16 +264,17 @@ public class AttendanceMapAcitivity extends FragmentActivity implements MapView.
         Toast.makeText(this, "Clicked " + mapPOIItem.getItemName() + " Callout Balloon", Toast.LENGTH_SHORT).show();
 
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.adapter_attendance_map,null);
-        AlertDialog.Builder builder = new AlertDialog.Builder(AttendanceMapAcitivity.this);
-        final EditText etAddr = (EditText)view.findViewById(R.id.et_addr);
+        View view = inflater.inflate(R.layout.adapter_attendance_map, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(AttendanceMapAcitivity.this, R.style.MyDialog);
+        final EditText etAddr = (EditText) view.findViewById(R.id.et_addr);
         etAddr.setText(tmpAddr);
 
-        builder.setTitle("이름을 정해주세요")
+        builder.setTitle("장소 이름을 정해주세요.      ")
                 .setView(view)
                 .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+
                         Intent intent = getIntent();
                         intent.putExtra("latitude", mapPointGeo.latitude);
                         intent.putExtra("longitude", mapPointGeo.longitude);

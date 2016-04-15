@@ -2,6 +2,8 @@ package net.yeonjukko.bodyend.activity.settings;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.GpsStatus;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import net.yeonjukko.bodyend.R;
 import net.yeonjukko.bodyend.libs.DBmanager;
@@ -49,7 +52,14 @@ public class ExerciseSettingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), AttendanceMapAcitivity.class);
-                startActivityForResult(intent, REQUEST_SPOT_NAME);
+                LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+                if (statusOfGPS) {
+                    startActivityForResult(intent, REQUEST_SPOT_NAME);
+                } else {
+                    Toast.makeText(getContext(), "GPS를 켜주세요.", Toast.LENGTH_SHORT).show();
+                    
+                }
             }
         });
 
@@ -90,7 +100,7 @@ public class ExerciseSettingActivity extends AppCompatActivity {
             tvSpots.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    Snackbar.make(v, "삭제하시겠습니까?", Snackbar.LENGTH_SHORT)
+                    Snackbar mySnackbar = Snackbar.make(v, "삭제하시겠습니까?", Snackbar.LENGTH_SHORT)
                             .setAction("삭제", new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -98,8 +108,11 @@ public class ExerciseSettingActivity extends AppCompatActivity {
                                     setSpotList();
                                     Log.d("mox", dBmanager.selectExerciseSpotsInfo().size() + ":size");
                                 }
-                            })
-                            .show();
+                            });
+                    View tmpView = mySnackbar.getView();
+                    TextView tv = (TextView)tmpView.findViewById(android.support.design.R.id.snackbar_text);
+                    tv.setTextColor(getResources().getColor(R.color.caldroid_white));
+                    mySnackbar.show();
                     return false;
                 }
             });

@@ -47,7 +47,8 @@
         <activity
             android:name=".activity.settings.WaterSettingActivity"
             android:label="@string/record_water_setting"
-            android:theme="@style/MySettingTheme" />
+            android:theme="@style/MyNoActionBar" />
+
         <activity
             android:name=".activity.settings.ExerciseSettingActivity"
             android:theme="@style/MyNoActionBar" />
@@ -66,8 +67,13 @@
         <activity
             android:name=".activity.YoutubePlayerActivity"
             android:theme="@style/MyNoActionBar" />
-        <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
-             App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+        <activity
+            android:name=".activity.settings.DefaultSettingActivity"
+            android:theme="@style/MyNoActionBar"/>
+        <!--
+             ATTENTION: This was auto-generated to add Google Play services to your project for
+             App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
+        -->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
