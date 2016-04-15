@@ -61,6 +61,21 @@ public class ToggleExpandLayout extends FrameLayout {
         }
     }
 
+    public void refresh(boolean isOpen) {
+        this.isOpen = !isOpen;
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (ToggleExpandLayout.this.isOpen) {
+                    close();
+                } else {
+                    open();
+                }
+            }
+        }, 300);
+
+    }
+
     public void open() {
         if (!isOpen) {
             isOpen = true;
