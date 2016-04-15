@@ -543,7 +543,6 @@ public class DBmanager {
     }
 
     public UserRecordModel selectDescUserRecordDB(boolean isPrev, int date) {
-        Log.d("ttttt",date+"");
         String SELECT_RECORD_INFO_DESC = "SELECT * FROM " + DATABASE_TABLE_2 + " WHERE RECORD_DATE<=" + date + " ORDER BY RECORD_DATE DESC LIMIT 1";
         String SELECT_RECORD_INFO_ASEN = "SELECT * FROM " + DATABASE_TABLE_2 + " WHERE RECORD_DATE>=" + date + " ORDER BY RECORD_DATE LIMIT 1";
 

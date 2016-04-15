@@ -23,7 +23,7 @@
         android:layout_marginRight="7dp"
         android:layout_marginTop="7dp"
         android:padding="3dp"
-        android:src="@drawable/icon_photos" />
+        android:src="@drawable/icon_picture" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
