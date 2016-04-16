@@ -48,7 +48,6 @@
             android:name=".activity.settings.WaterSettingActivity"
             android:label="@string/record_water_setting"
             android:theme="@style/MyNoActionBar" />
-
         <activity
             android:name=".activity.settings.ExerciseSettingActivity"
             android:theme="@style/MyNoActionBar" />
@@ -81,6 +80,7 @@
             android:value="@integer/google_play_services_version" />
 
         <service android:name=".service.AlarmService" />
+
         <receiver android:name=".service.AlarmService$DeviceStartBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

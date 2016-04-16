@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -37,6 +38,7 @@ public class WaterSettingActivity extends AppCompatActivity {
         final TextView tvStartTime = (TextView) findViewById(R.id.tv_start_time);
         final TextView tvStopTime = (TextView) findViewById(R.id.tv_stop_time);
         final ToggleButton switchButton = (ToggleButton) findViewById(R.id.switch_button);
+        ImageButton ibBack = (ImageButton)findViewById(R.id.ib_back);
         alarmToggleLayout = (ToggleExpandLayout) findViewById(R.id.toogleLayout);
 
         dBmanager = new DBmanager(this);
@@ -46,6 +48,13 @@ public class WaterSettingActivity extends AppCompatActivity {
         final int alarmPeriod = model.getWaterAlarmPeriod();
         int alarmStartTime = model.getAlarmTimezoneStart();
         int alarmStopTime = model.getAlarmTimezoneStop();
+        //뒤로가기 버튼
+        ibBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         //알람 expandlayout 세팅에 따른 on/off 설정
         tvGoal.setText((int) dBmanager.selectUserInfoDB().getUserCurrWeight() * 33 / 300 + "");

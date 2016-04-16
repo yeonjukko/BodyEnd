@@ -1,7 +1,6 @@
-package net.yeonjukko.bodyend.activity;
+package net.yeonjukko.bodyend.fragment;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,13 +11,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.balysv.materialripple.MaterialRippleLayout;
 import com.github.aakira.expandablelayout.Utils;
+import com.github.amlcurran.showcaseview.MaterialShowcaseDrawer;
 
 import net.yeonjukko.bodyend.R;
+import net.yeonjukko.bodyend.activity.CalendarActivity;
+import net.yeonjukko.bodyend.activity.CameraActivity;
 import net.yeonjukko.bodyend.libs.DBmanager;
 import net.yeonjukko.bodyend.libs.DayCounter;
 import net.yeonjukko.bodyend.libs.DividerItemDecoration;
@@ -43,8 +47,8 @@ public class RecordFragment extends Fragment {
     DayCounter dayCounter;
     List<RecordItemModel> data;
     RecyclerView recyclerView;
-    ImageView ivLeft;
-    ImageView ivRight;
+    MaterialRippleLayout ivLeft;
+    MaterialRippleLayout ivRight;
 
     @Nullable
     @Override
@@ -53,8 +57,8 @@ public class RecordFragment extends Fragment {
         dBmanager = new DBmanager(getContext());
         dayCounter = new DayCounter();
 
-        ivLeft = (ImageView) rootView.findViewById(R.id.image_left);
-        ivRight = (ImageView) rootView.findViewById(R.id.image_right);
+        ivLeft = (MaterialRippleLayout) rootView.findViewById(R.id.image_left);
+        ivRight = (MaterialRippleLayout) rootView.findViewById(R.id.image_right);
 
         //record 테이블 초기화 및 날짜 설정 메소드
 
@@ -63,13 +67,12 @@ public class RecordFragment extends Fragment {
         showDate = dayCounter.getToday();
         tmpDate = showDate;
         //캘린더 불러오기
-        ImageView btCalendar = (ImageView) rootView.findViewById(R.id.ic_calendar);
+        MaterialRippleLayout btCalendar = (MaterialRippleLayout) rootView.findViewById(R.id.ic_calendar);
         btCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), CalendarActivity.class);
                 startActivity(intent);
-                getActivity().finish();
             }
         });
 
@@ -138,14 +141,13 @@ public class RecordFragment extends Fragment {
                 long dbDate = format.parse(tmpDate + "").getTime();
                 UserRecordModel model = null;
 
-                if (v == ivLeft) {
+                if (v.getParent() == ivLeft) {
                     dbDate -= 60 * 60 * 24 * 1000;
                     int tmp = dayCounter.convertDate(dbDate);
                     model = dBmanager.selectDescUserRecordDB(true, tmp);
 
-                } else if (v == ivRight) {
+                } else if (v.getParent() == ivRight) {
                     dbDate += 60 * 60 * 24 * 1000;
-
                     int tmp = dayCounter.convertDate(dbDate);
                     model = dBmanager.selectDescUserRecordDB(false, tmp);
                 }
@@ -171,6 +173,10 @@ public class RecordFragment extends Fragment {
 
 
     private void setLayout(int date) {
+        if (date == dayCounter.getToday())
+            ivRight.setVisibility(View.INVISIBLE);
+        else
+            ivRight.setVisibility(View.VISIBLE);
         TextView tvCurrDate = (TextView) rootView.findViewById(R.id.tv_curr_date);
         TextView tvCurrDay = (TextView) rootView.findViewById(R.id.tv_curr_day);
         String mDate = date + "";

@@ -2,18 +2,22 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment2View"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/fragment2View"
     android:background="@color/Background"
-    tools:context=".activity.RecordFragment">
-
-    <ImageView
+    tools:context=".fragment.RecordFragment">
+    <com.balysv.materialripple.MaterialRippleLayout
         android:id="@+id/ic_calendar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:mrl_rippleAlpha="0.05">
+    <ImageView
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_margin="10dp"
         android:src="@drawable/icon_calendar" />
+    </com.balysv.materialripple.MaterialRippleLayout>
 
     <ImageView
         android:id="@+id/ic_photos"
@@ -24,6 +28,28 @@
         android:layout_marginTop="7dp"
         android:padding="3dp"
         android:src="@drawable/icon_picture" />
+    <LinearLayout
+        android:layout_marginTop="10dp"
+        android:layout_width="150dp"
+        android:layout_height="100dp"
+        android:orientation="vertical"
+        android:layout_gravity="center|top">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+
+            android:background="@android:color/black">
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/caldroid_white"
+            android:layout_weight="1">
+
+        </LinearLayout>
+    </LinearLayout>
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -31,10 +57,10 @@
 
         <TextView
             android:id="@+id/tv_curr_date"
-            android:alpha="255"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="36dp"
+            android:alpha="255"
             android:gravity="center"
             android:text="2016/04/13"
             android:textSize="20sp" />
@@ -46,10 +72,10 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/tv_curr_date"
-            android:gravity="center"
             android:alpha="255"
-            android:textSize="30sp"
+            android:gravity="center"
             android:text="수요일"
+            android:textSize="30sp"
             android:textStyle="bold" />
     </RelativeLayout>
 
@@ -58,29 +84,44 @@
         android:layout_height="match_parent"
         android:layout_marginTop="60dp">
 
-        <ImageView
+        <com.balysv.materialripple.MaterialRippleLayout
             android:id="@+id/image_left"
-            android:layout_width="37dp"
-            android:src="@drawable/icon_back"
-            android:layout_height="37dp" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:mrl_rippleAlpha="0.05">
 
-        <ImageView
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentLeft="true"
+                android:scaleType="fitXY"
+                android:src="@drawable/icon_back" />
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+        <com.balysv.materialripple.MaterialRippleLayout
             android:id="@+id/image_right"
-            android:layout_width="37dp"
-            android:layout_height="37dp"
-            android:src="@drawable/icon_forward"
-            android:layout_alignParentRight="true" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            app:mrl_rippleAlpha="0.05">
 
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:scaleType="fitXY"
+                android:src="@drawable/icon_forward" />
+        </com.balysv.materialripple.MaterialRippleLayout>
 
         <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/image_right"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginTop="10dp"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/image_right"
             android:scrollbars="vertical" />
 
 
