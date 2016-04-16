@@ -55,7 +55,9 @@
         <activity
             android:name=".activity.settings.AttendanceMapAcitivity"
             android:theme="@style/BodyEndAppTheme" />
-        <activity android:name=".activity.CalendarActivity" />
+        <activity
+            android:name=".activity.CalendarActivity"
+            android:theme="@style/MyNoActionBar" />
         <activity
             android:name=".activity.settings.ExerciseManagerActivity"
             android:theme="@style/MyNoActionBar" />
@@ -69,7 +71,7 @@
             android:theme="@style/MyNoActionBar" />
         <activity
             android:name=".activity.settings.DefaultSettingActivity"
-            android:theme="@style/MyNoActionBar"/>
+            android:theme="@style/MyNoActionBar" />
         <!--
              ATTENTION: This was auto-generated to add Google Play services to your project for
              App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.

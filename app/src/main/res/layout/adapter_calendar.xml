@@ -2,32 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/background_calendar_nomal"
     android:orientation="vertical">
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_gravity="bottom"
-            android:background="@android:color/black" />
-
-
-        <!--<View-->
-        <!--android:id="@+id/viewLeftLine"-->
-        <!--android:layout_width="0.3dp"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_gravity="start"-->
-        <!--android:background="@android:color/black" />-->
-
-        <!--<View-->
-        <!--android:id="@+id/viewRightLine"-->
-        <!--android:layout_width="0.3dp"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_gravity="end"-->
-        <!--android:background="@android:color/black" />-->
 
 
         <LinearLayout
@@ -41,8 +21,9 @@
                 android:id="@+id/textViewDay"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="3dp" />
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="1dp"
+                android:textSize="10sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"

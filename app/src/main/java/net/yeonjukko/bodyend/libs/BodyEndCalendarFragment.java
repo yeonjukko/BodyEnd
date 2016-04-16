@@ -4,19 +4,29 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidGridAdapter;
+import com.roomorama.caldroid.WeekdayArrayAdapter;
 
 import net.yeonjukko.bodyend.R;
 import net.yeonjukko.bodyend.activity.MainActivity;
 import net.yeonjukko.bodyend.activity.RecordFragment;
+import net.yeonjukko.bodyend.model.UserInfoModel;
 import net.yeonjukko.bodyend.model.UserRecordModel;
 
 import java.util.ArrayList;
@@ -36,6 +46,7 @@ public class BodyEndCalendarFragment extends CaldroidFragment {
     private DBmanager dBmanager;
 
     private HashMap<Integer, UserRecordModel> mRecordItemModels;
+    private UserInfoModel mUserInfoModel;
 
     private View rootView;
 
@@ -44,7 +55,39 @@ public class BodyEndCalendarFragment extends CaldroidFragment {
         rootView = super.onCreateView(inflater, container, savedInstanceState);
         dBmanager = new DBmanager(getContext());
         mRecordItemModels = dBmanager.selectUserRecordDB();
+        mUserInfoModel = dBmanager.selectUserInfoDB();
+        setCalendarLayout();
         return rootView;
+    }
+
+    private void setCalendarLayout() {
+
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) getMonthTitleTextView().getLayoutParams();
+        params.bottomMargin = 0;
+        params.topMargin = 0;
+        LinearLayout titleLayout = (LinearLayout) getMonthTitleTextView().getParent();
+        titleLayout.setPadding(0, 0, 0, 0);
+        titleLayout.setBackgroundColor(getResources().getColor(R.color.Accent));
+        titleLayout.getLayoutParams().height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60, getResources().getDisplayMetrics());
+        titleLayout.setGravity(Gravity.CENTER);
+        getMonthTitleTextView().setTextColor(Color.WHITE);
+        getMonthTitleTextView().setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
+        getLeftArrowButton().setBackgroundResource(R.drawable.icon_back);
+        getRightArrowButton().setBackgroundResource(R.drawable.icon_forward);
+        getLeftArrowButton().getLayoutParams().height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 35, getResources().getDisplayMetrics());
+        getRightArrowButton().getLayoutParams().height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 35, getResources().getDisplayMetrics());
+
+        ((LinearLayout.LayoutParams) getWeekdayGridView().getLayoutParams()).topMargin = 0;
+        getWeekdayGridView().setBackgroundResource(R.color.Divider);
+        getWeekdayGridView().setPadding(0, (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -3, getResources().getDisplayMetrics()), 0, (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -2, getResources().getDisplayMetrics()));
+
+    }
+
+    @Override
+    public WeekdayArrayAdapter getNewWeekdayAdapter(int themeResource) {
+        return new WeekAdapter(
+                getActivity(), android.R.layout.simple_list_item_1,
+                getDaysOfWeek(), themeResource);
     }
 
     @Override
@@ -80,15 +123,15 @@ public class BodyEndCalendarFragment extends CaldroidFragment {
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.adapter_calendar, parent, false);
             }
 
-            if (model != null) {
-                if (model.getWaterRecord() >= model.getWaterVolume()) {
-                    isWater = true;
-                }
-                if (model.getPictureRecord() == null || model.getPictureRecord().equals("")) {
-                    isImage = true;
-                }
-
-            }
+//            if (model != null) {
+//                if (model.getWaterRecord() >= model.getWaterVolume()) {
+//                    isWater = true;
+//                }
+//                if (model.getPictureRecord() == null || model.getPictureRecord().equals("")) {
+//                    isImage = true;
+//                }
+//
+//            }
 
 
             TextView mTextViewDay = (TextView) cellView.findViewById(R.id.textViewDay);
@@ -97,6 +140,8 @@ public class BodyEndCalendarFragment extends CaldroidFragment {
             if (dateTime.getMonth() != month) {
                 mTextViewDay.setTextColor(resources
                         .getColor(com.caldroid.R.color.caldroid_darker_gray));
+            } else if (dateTime.getWeekDay() == 1) {
+                mTextViewDay.setTextColor(Color.RED);
             } else {
                 mTextViewDay.setTextColor(Color.BLACK);
             }
@@ -129,12 +174,10 @@ public class BodyEndCalendarFragment extends CaldroidFragment {
 
         private void setMatchHeight(View cellView) {
             if (cellViewHeightSix == 0 && ((View) getMonthTitleTextView().getParent()).getHeight() != 0 && getWeekdayGridView().getHeight() != 0) {
-
                 float rootViewHeight = rootView.getHeight();
                 float titleViewHeight = ((View) getMonthTitleTextView().getParent()).getHeight() + getWeekdayGridView().getHeight();
                 float cellViewHeight = rootViewHeight - titleViewHeight;
-                cellViewHeightSix = (int) (Math.ceil(cellViewHeight / 6) + 10);
-
+                cellViewHeightSix = (int) Math.ceil(cellViewHeight / 6);
             }
 
             if (cellViewHeightSix == 0) {
@@ -186,5 +229,25 @@ public class BodyEndCalendarFragment extends CaldroidFragment {
         }
 
 
+    }
+
+    private class WeekAdapter extends WeekdayArrayAdapter {
+
+
+        public WeekAdapter(Context context, int textViewResourceId, List<String> objects, int themeResource) {
+            super(context, textViewResourceId, objects, themeResource);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            TextView v = (TextView) super.getView(position, convertView, parent);
+            if (v.getText().toString().contains("일")) {
+                v.setTextColor(Color.RED);
+            } else {
+                v.setTextColor(Color.WHITE);
+
+            }
+            return v;
+        }
     }
 }
