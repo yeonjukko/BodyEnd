@@ -10,6 +10,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import net.yeonjukko.bodyend.R;
+import net.yeonjukko.bodyend.fragment.RecordFragment;
+import net.yeonjukko.bodyend.fragment.StimulusFragment;
+import net.yeonjukko.bodyend.fragment.YoutubeMainFragment;
 
 public class MainActivity extends AppCompatActivity {
     int MAX_PAGE = 3;

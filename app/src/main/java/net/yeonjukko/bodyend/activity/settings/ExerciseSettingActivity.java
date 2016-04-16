@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,14 +25,12 @@ import java.util.ArrayList;
 public class ExerciseSettingActivity extends AppCompatActivity {
 
     private static final int REQUEST_SPOT_NAME = 106;
-    private static final int REQUEST_SORT_NAME = 107;
 
     DBmanager dBmanager;
     LinearLayout spotLayout;
     LinearLayout spotLayout2;
     LinearLayout sortLayout;
     LinearLayout sortLayout2;
-
 
 
     @Override
@@ -43,7 +42,15 @@ public class ExerciseSettingActivity extends AppCompatActivity {
 
         sortLayout = (LinearLayout) findViewById(R.id.layout_exercise);
         sortLayout2 = (LinearLayout) findViewById(R.id.layout_exercise_2);
+        ImageButton ibBack = (ImageButton)findViewById(R.id.ib_back);
 
+        //뒤로가기 버튼
+        ibBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         dBmanager = new DBmanager(getContext());
 
@@ -58,7 +65,7 @@ public class ExerciseSettingActivity extends AppCompatActivity {
                     startActivityForResult(intent, REQUEST_SPOT_NAME);
                 } else {
                     Toast.makeText(getContext(), "GPS를 켜주세요.", Toast.LENGTH_SHORT).show();
-                    
+
                 }
             }
         });
@@ -110,7 +117,7 @@ public class ExerciseSettingActivity extends AppCompatActivity {
                                 }
                             });
                     View tmpView = mySnackbar.getView();
-                    TextView tv = (TextView)tmpView.findViewById(android.support.design.R.id.snackbar_text);
+                    TextView tv = (TextView) tmpView.findViewById(android.support.design.R.id.snackbar_text);
                     tv.setTextColor(getResources().getColor(R.color.caldroid_white));
                     mySnackbar.show();
                     return false;

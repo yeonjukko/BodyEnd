@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:id="@+id/fragment3View"
     android:background="@android:color/white"
-    tools:context=".activity.YoutubeFragmentSub1">
+    tools:context=".fragment.YoutubeFragmentSub1">
 
 
 

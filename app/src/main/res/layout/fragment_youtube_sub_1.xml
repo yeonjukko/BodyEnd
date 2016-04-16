@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".activity.YoutubeFragmentSub1">
+    tools:context=".fragment.YoutubeFragmentSub1">
 
 
     <LinearLayout
@@ -29,13 +29,11 @@
             android:text="유투브 다이어트" />
 
         <ImageButton
-            android:id="@+id/ib_plus_sort"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@null"
             android:layout_weight="3"
-            android:layout_gravity="center"
-            android:src="@drawable/icon_plus"/>
+            android:layout_gravity="center"/>
 
     </LinearLayout>
     <LinearLayout

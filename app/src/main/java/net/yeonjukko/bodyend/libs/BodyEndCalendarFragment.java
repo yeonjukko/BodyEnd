@@ -16,7 +16,6 @@ import com.roomorama.caldroid.CaldroidGridAdapter;
 
 import net.yeonjukko.bodyend.R;
 import net.yeonjukko.bodyend.activity.MainActivity;
-import net.yeonjukko.bodyend.activity.RecordFragment;
 import net.yeonjukko.bodyend.model.UserRecordModel;
 
 import java.util.ArrayList;
