@@ -19,6 +19,11 @@ import android.widget.Toast;
 
 
 import com.balysv.materialripple.MaterialRippleLayout;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
+import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 
 import net.yeonjukko.bodyend.R;
 import net.yeonjukko.bodyend.activity.settings.DefaultSettingActivity;
@@ -31,12 +36,15 @@ import java.io.IOException;
 public class StimulusFragment extends Fragment {
     Bitmap bitmap;
     DBmanager dBmanager;
+    Drawer result;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_stimulus, container, false);
         dBmanager = new DBmanager(rootView.getContext());
+
+
 
         TextView tvDday = (TextView) rootView.findViewById(R.id.tv_d_day);
         TextView tvStimulusWord = (TextView) rootView.findViewById(R.id.tv_stimulus);
