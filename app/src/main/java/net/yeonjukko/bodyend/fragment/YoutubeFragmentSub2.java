@@ -1,4 +1,4 @@
-package net.yeonjukko.bodyend.activity;
+package net.yeonjukko.bodyend.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

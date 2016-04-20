@@ -1,9 +1,10 @@
-package net.yeonjukko.bodyend.activity;
+package net.yeonjukko.bodyend.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,8 +34,8 @@ public class YoutubeFragmentSub1 extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
+                             final Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_youtube_sub_1, container, false);
 
@@ -51,14 +52,18 @@ public class YoutubeFragmentSub1 extends Fragment {
                         if (resultCategory == null) {
                             Toast.makeText(getContext(), "네트워크가 원할하지 않습니다.", Toast.LENGTH_SHORT).show();
                         } else {
-                            Log.d("mox", resultCategory.toJSONString());
+
                             if ((long) resultCategory.get("code") == 0) {
                                 final JSONArray categoryList = (JSONArray) resultCategory.get("contents");
                                 String mCategory[] = new String[categoryList.size()];
                                 for (int i = 0; i < categoryList.size(); i++) {
                                     JSONObject tmp = (JSONObject) categoryList.get(i);
-                                    mCategory[i] = tmp.get("video_category_title") + " (" + tmp.get("video_count") + ")";
+                                    if (i == 8) {
+                                        mCategory[i] = tmp.get("video_category_title")+"";
 
+                                    } else {
+                                        mCategory[i] = tmp.get("video_category_title") + " (" + tmp.get("video_count") + ")";
+                                    }
                                 }
                                 ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, mCategory);
                                 listView.setAdapter(adapter);
@@ -67,12 +72,19 @@ public class YoutubeFragmentSub1 extends Fragment {
                                     @Override
                                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                         FragmentManager fm = getFragmentManager();
-                                        YoutubeFragmentSub2 fragment = new YoutubeFragmentSub2((long) ((JSONObject) categoryList.get(position)).get("video_category_id"),(String) ((JSONObject) categoryList.get(position)).get("video_category_title") );
-                                        fm.beginTransaction()
-                                                .replace(R.id.fragment3View, fragment)
-                                                .addToBackStack(null)
-                                                .commit();
-
+                                        if (position == 8) {
+                                            YoutubeFragmentSub3 fragment = new YoutubeFragmentSub3();
+                                            fm.beginTransaction()
+                                                    .replace(R.id.fragment3View, fragment)
+                                                    .addToBackStack(null)
+                                                    .commit();
+                                        } else {
+                                            YoutubeFragmentSub2 fragment = new YoutubeFragmentSub2((long) ((JSONObject) categoryList.get(position)).get("video_category_id"), (String) ((JSONObject) categoryList.get(position)).get("video_category_title"));
+                                            fm.beginTransaction()
+                                                    .replace(R.id.fragment3View, fragment)
+                                                    .addToBackStack(null)
+                                                    .commit();
+                                        }
                                     }
                                 });
 

@@ -36,7 +36,7 @@ public class DBmanager {
     private static final String DATABASE_TABLE_7 = "EXERCISE_SORT_INFO";
     private static final String DATABASE_TABLE_8 = "EXERCISE_SORT_INFO_CLONE";
     private static final String DATABASE_TABLE_9 = "EXERCISE_YOUTUBE_RECORD";
-
+    private static final String DATABASE_TABLE_10 = "MY_YOUTUBE_INFO";
 
     private static final int DATABASE_VERSION = 2;
 
@@ -76,6 +76,9 @@ public class DBmanager {
     private static final String DATABASE_CREATE_9 = "CREATE TABLE " + DATABASE_TABLE_9 +
             " (YOUTUBE_TITLE TEXT , YOUTUBE_ID TEXT, EXERCISE_DATE INTEGER)";
 
+    private static final String DATABASE_CREATE_10 = "CREATE TABLE " + DATABASE_TABLE_10 +
+            " (YOUTUBE_ID TEXT)";
+
     // 부가적인 객체들
     private Context context;
 
@@ -84,7 +87,6 @@ public class DBmanager {
         this.context = context;
         this.mDbHelper = new DatabaseHelper(context);
         mDb = mDbHelper.getWritableDatabase();
-
 
     }
 
@@ -107,6 +109,8 @@ public class DBmanager {
             db.execSQL(DATABASE_CREATE_7);
             db.execSQL(DATABASE_CREATE_8);
             db.execSQL(DATABASE_CREATE_9);
+            db.execSQL(DATABASE_CREATE_10);
+
 
         }
 
@@ -132,6 +136,15 @@ public class DBmanager {
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(DELETE_SPOT);
+        db.close();
+    }
+
+    public void insertMyYoutube(String youtubeId) {
+        String INSERT_YOUTUBE_ID = "INSERT INTO " + DATABASE_TABLE_10 + " VALUES" + " ('" +youtubeId+ "')";
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        db.execSQL(INSERT_YOUTUBE_ID);
+        mDbHelper.close();
         db.close();
     }
 
@@ -373,6 +386,22 @@ public class DBmanager {
         PrintData();
         db.close();
 
+    }
+
+    public ArrayList<String> selectMyYoutube() {
+        String SELECT_YOUTUBE_INFO = "SELECT * FROM " + DATABASE_TABLE_10 ;
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        Cursor result = db.rawQuery(SELECT_YOUTUBE_INFO, null);
+        ArrayList<String> youtubeList = new ArrayList<>();
+        // result(Cursor 객체)가 비어 있으면 false 리턴
+        while (result.moveToNext()) {
+            youtubeList.add(result.getString(0));
+        }
+        result.close();
+        db.close();
+        mDbHelper.close();
+        return youtubeList;
     }
 
     public ArrayList<YoutubeRecordModel> selectYoutubeInfo(int date) {
@@ -668,6 +697,8 @@ public class DBmanager {
             waterAlarmInfoModel.setAlarmTimezoneStop(result.getInt(3));
         }
         result.close();
+        db.close();
+        mDbHelper.close();
         return waterAlarmInfoModel;
     }
 

@@ -1,4 +1,4 @@
-package net.yeonjukko.bodyend.activity;
+package net.yeonjukko.bodyend.fragment;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -17,6 +17,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+import com.balysv.materialripple.MaterialRippleLayout;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
+import com.mikepenz.materialdrawer.model.SectionDrawerItem;
+
 import net.yeonjukko.bodyend.R;
 import net.yeonjukko.bodyend.activity.settings.DefaultSettingActivity;
 import net.yeonjukko.bodyend.libs.DBmanager;
@@ -28,6 +36,7 @@ import java.io.IOException;
 public class StimulusFragment extends Fragment {
     Bitmap bitmap;
     DBmanager dBmanager;
+    Drawer result;
 
     @Nullable
     @Override
@@ -35,10 +44,12 @@ public class StimulusFragment extends Fragment {
         final View rootView = inflater.inflate(R.layout.fragment_stimulus, container, false);
         dBmanager = new DBmanager(rootView.getContext());
 
+
+
         TextView tvDday = (TextView) rootView.findViewById(R.id.tv_d_day);
         TextView tvStimulusWord = (TextView) rootView.findViewById(R.id.tv_stimulus);
-        ImageView btSetting = (ImageView) rootView.findViewById(R.id.bt_setting);
-        btSetting.setOnClickListener(new View.OnClickListener() {
+        MaterialRippleLayout rippleView = (MaterialRippleLayout) rootView.findViewById(R.id.rp_setting);
+        rippleView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), DefaultSettingActivity.class);
