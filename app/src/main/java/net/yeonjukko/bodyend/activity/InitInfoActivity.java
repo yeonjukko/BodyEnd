@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import net.yeonjukko.bodyend.R;
+import net.yeonjukko.bodyend.fragment.MainFragment;
 import net.yeonjukko.bodyend.libs.CheckableButton;
 import net.yeonjukko.bodyend.libs.DBmanager;
 import net.yeonjukko.bodyend.model.UserInfoModel;
@@ -37,7 +38,7 @@ public class InitInfoActivity extends AppCompatActivity {
             userInfoModel = new UserInfoModel();
         }
         if (dBmanager.selectUserInfoDB() != null) {
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, MaterialActivity.class);
             startActivity(intent);
             finish();
         }

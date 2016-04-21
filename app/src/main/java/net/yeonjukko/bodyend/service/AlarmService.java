@@ -11,10 +11,10 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import net.yeonjukko.bodyend.R;
-import net.yeonjukko.bodyend.activity.MainActivity;
+import net.yeonjukko.bodyend.activity.MaterialActivity;
+import net.yeonjukko.bodyend.fragment.MainFragment;
 import net.yeonjukko.bodyend.libs.DBmanager;
 import net.yeonjukko.bodyend.model.WaterAlarmInfoModel;
 
@@ -70,7 +70,7 @@ public class AlarmService extends Service {
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentText("Hello World!")
                         .setAutoCancel(true)
-                        .setContentIntent(PendingIntent.getActivity(getContext(), CALL_MAIN_ACTIVITY_CODE, new Intent(getContext(), MainActivity.class), PendingIntent.FLAG_UPDATE_CURRENT))
+                        .setContentIntent(PendingIntent.getActivity(getContext(), CALL_MAIN_ACTIVITY_CODE, new Intent(getContext(), MaterialActivity.class), PendingIntent.FLAG_UPDATE_CURRENT))
                         .setDefaults(Notification.DEFAULT_ALL);
                 ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).notify(ALARM_CODE, mBuilder.build());
 

@@ -19,7 +19,8 @@ import com.roomorama.caldroid.CaldroidGridAdapter;
 import com.roomorama.caldroid.WeekdayArrayAdapter;
 
 import net.yeonjukko.bodyend.R;
-import net.yeonjukko.bodyend.activity.MainActivity;
+import net.yeonjukko.bodyend.activity.MaterialActivity;
+import net.yeonjukko.bodyend.fragment.MainFragment;
 import net.yeonjukko.bodyend.model.UserInfoModel;
 import net.yeonjukko.bodyend.model.UserRecordModel;
 
@@ -154,7 +155,7 @@ public class BodyEndCalendarFragment extends CaldroidFragment {
                 @Override
                 public void onClick(View v) {
                     if (model != null) {
-                        Intent intent = new Intent(getContext(), MainActivity.class);
+                        Intent intent = new Intent(getContext(), MaterialActivity.class);
                         intent.putExtra("showDate", getDate(dateTime));
                         startActivity(intent);
                     } else {
