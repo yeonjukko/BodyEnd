@@ -68,7 +68,7 @@ public class RecordFragment extends Fragment {
         showDate = dayCounter.getToday();
         tmpDate = showDate;
         //캘린더 불러오기
-        ImageView btCalendar = (ImageView) rootView.findViewById(R.id.ic_calendar);
+        MaterialRippleLayout btCalendar = (MaterialRippleLayout) rootView.findViewById(R.id.ic_calendar);
         btCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

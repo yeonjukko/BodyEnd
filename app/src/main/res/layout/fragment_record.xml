@@ -9,7 +9,6 @@
     tools:context=".fragment.RecordFragment">
 
 
-
     <ImageView
         android:id="@+id/ic_photos"
         android:layout_width="37dp"
@@ -21,45 +20,55 @@
         android:src="@drawable/icon_picture" />
 
 
-
-
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_height="wrap_content">
+        android:orientation="vertical">
 
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:id="@+id/ic_calendar"
-            android:src="@drawable/icon_calendar"
-            android:layout_centerVertical="true"
-            android:layout_toEndOf="@+id/tv_curr_date" />
-        <TextView
-            android:id="@+id/tv_curr_date"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginTop="36dp"
-            android:gravity="center_horizontal"
-            android:alpha="255"
-            android:text="2016/04/13"
-            android:textSize="20sp"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true" />
+            android:orientation="horizontal">
+
+            <com.balysv.materialripple.MaterialRippleLayout
+                android:id="@+id/ic_calendar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                app:mrl_rippleAlpha="0.05">
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/icon_calendar" />
+            </com.balysv.materialripple.MaterialRippleLayout>
+
+            <TextView
+                android:id="@+id/tv_curr_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:layout_gravity="center_vertical"
+                android:alpha="255"
+                android:gravity="center_horizontal"
+                android:text="2016/04/13"
+                android:textSize="20sp" />
+
+
+        </LinearLayout>
+
 
         <TextView
             android:id="@+id/tv_curr_day"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/tv_curr_date"
             android:alpha="255"
             android:gravity="center"
             android:text="수요일"
             android:textSize="30sp"
             android:textStyle="bold" />
-    </RelativeLayout>
+    </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
