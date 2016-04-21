@@ -55,7 +55,8 @@ import com.google.android.gms.location.LocationServices;
 
 import net.yeonjukko.bodyend.R;
 import net.yeonjukko.bodyend.activity.CameraActivity;
-import net.yeonjukko.bodyend.activity.MainActivity;
+import net.yeonjukko.bodyend.activity.MaterialActivity;
+import net.yeonjukko.bodyend.fragment.MainFragment;
 import net.yeonjukko.bodyend.fragment.RecordFragment;
 import net.yeonjukko.bodyend.activity.settings.AttendanceMapAcitivity;
 import net.yeonjukko.bodyend.activity.settings.ExerciseSettingActivity;
@@ -124,7 +125,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     public RecyclerView.ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
         this.context = parent.getContext();
         dBmanager = new DBmanager(context);
-        inflater = ((MainActivity) context).getLayoutInflater();
+        inflater = ((MaterialActivity) context).getLayoutInflater();
         dayCounter = new DayCounter();
 
         if (viewType == VIEW_TYPE_WATER) {

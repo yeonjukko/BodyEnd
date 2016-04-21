@@ -2,79 +2,57 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/background_calendar_nomal"
     android:orientation="vertical">
 
-    <FrameLayout
+    <com.balysv.materialripple.MaterialRippleLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/layoutCalendarCellMain"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:mrl_rippleAlpha="0.05">
 
-
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:orientation="vertical"
-            android:padding="1dp">
-
-            <TextView
-                android:id="@+id/textViewDay"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_marginTop="1dp"
-                android:textSize="10sp" />
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1">
+                android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/imageViewIcon0"
+
+                <TextView
+                    android:id="@+id/textViewDay"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="1dp"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginTop="1dp"
+                    android:textSize="10sp" />
+
+                <LinearLayout
+                    android:id="@+id/layoutContents"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:scaleType="fitCenter"
-                    android:src="@android:drawable/ic_menu_add" />
+                    android:layout_gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/imageViewIcon1"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:scaleType="fitCenter"
-                    android:src="@android:drawable/ic_menu_agenda" />
+                </LinearLayout>
+
 
             </LinearLayout>
 
+            <ImageView
+                android:id="@+id/imageViewAttendance"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="right"
+                android:src="@drawable/icon_attendance" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1">
-
-                <ImageView
-                    android:id="@+id/imageViewIcon2"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:scaleType="fitCenter"
-                    android:src="@android:drawable/ic_menu_always_landscape_portrait" />
-
-                <ImageView
-                    android:id="@+id/imageViewIcon3"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:scaleType="fitCenter"
-                    android:src="@android:drawable/ic_menu_camera" />
-            </LinearLayout>
-
-        </LinearLayout>
+        </FrameLayout>
 
 
-    </FrameLayout>
+    </com.balysv.materialripple.MaterialRippleLayout>
 
 
 </LinearLayout>

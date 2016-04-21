@@ -60,11 +60,7 @@
         <activity
             android:name=".activity.settings.ExerciseManagerActivity"
             android:theme="@style/MyNoActionBar" />
-        <activity
-            android:name=".activity.MainActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden"
-            android:screenOrientation="nosensor"
-            android:theme="@style/MyNoActionBar" />
+
         <activity
             android:name=".activity.YoutubePlayerActivity"
             android:theme="@style/MyNoActionBar" />
@@ -91,6 +87,13 @@
             </intent-filter>
         </receiver>
 
+        <activity
+            android:name=".activity.MaterialActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="nosensor"
+            android:theme="@style/MyNoActionBar">
+
+        </activity>
     </application>
 
 </manifest>

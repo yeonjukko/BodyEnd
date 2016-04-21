@@ -19,11 +19,13 @@ import com.roomorama.caldroid.CaldroidGridAdapter;
 import com.roomorama.caldroid.WeekdayArrayAdapter;
 
 import net.yeonjukko.bodyend.R;
-import net.yeonjukko.bodyend.activity.MainActivity;
+import net.yeonjukko.bodyend.model.CalendarContentsModel;
+import net.yeonjukko.bodyend.model.ExerciseAttendanceInfoModel;
+import net.yeonjukko.bodyend.activity.MaterialActivity;
+import net.yeonjukko.bodyend.fragment.MainFragment;
 import net.yeonjukko.bodyend.model.UserInfoModel;
 import net.yeonjukko.bodyend.model.UserRecordModel;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,11 +37,10 @@ import hirondelle.date4j.DateTime;
  */
 public class BodyEndCalendarFragment extends CaldroidFragment {
 
-    private int[] imageViewIds = {R.id.imageViewIcon0, R.id.imageViewIcon1, R.id.imageViewIcon2, R.id.imageViewIcon3};
     private int[] iconImageIds = {android.R.drawable.ic_input_get, android.R.drawable.ic_dialog_email, android.R.drawable.ic_dialog_info, android.R.drawable.ic_dialog_alert};
     private DBmanager dBmanager;
 
-    private HashMap<Integer, UserRecordModel> mRecordItemModels;
+    private HashMap<Integer, CalendarContentsModel> mCalendarContentsModel;
     private UserInfoModel mUserInfoModel;
 
     private View rootView;
@@ -48,7 +49,7 @@ public class BodyEndCalendarFragment extends CaldroidFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = super.onCreateView(inflater, container, savedInstanceState);
         dBmanager = new DBmanager(getContext());
-        mRecordItemModels = dBmanager.selectUserRecordDB();
+        mCalendarContentsModel = dBmanager.selectCalendarContents();
         mUserInfoModel = dBmanager.selectUserInfoDB();
         setCalendarLayout();
         return rootView;
@@ -92,11 +93,13 @@ public class BodyEndCalendarFragment extends CaldroidFragment {
 
 
     private class CalendarAdapter extends CaldroidGridAdapter {
+        private int today;
 
         public CalendarAdapter(Context context, int month, int year,
                                Map<String, Object> caldroidData,
                                Map<String, Object> extraData) {
             super(context, month, year, caldroidData, extraData);
+            this.today = new DayCounter().getToday();
 
         }
 
@@ -104,11 +107,10 @@ public class BodyEndCalendarFragment extends CaldroidFragment {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
+
             final DateTime dateTime = this.datetimeList.get(position);
-            final UserRecordModel model = mRecordItemModels.get(getDate(dateTime));
-
-            boolean isWeight = false, isWater = false, isImage = false, isAttendance = false;
-
+            final int parseDate = getDate(dateTime);
+            final CalendarContentsModel model = mCalendarContentsModel.get(parseDate);
 
             View cellView = convertView;
 
@@ -117,15 +119,8 @@ public class BodyEndCalendarFragment extends CaldroidFragment {
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.adapter_calendar, parent, false);
             }
 
-//            if (model != null) {
-//                if (model.getWaterRecord() >= model.getWaterVolume()) {
-//                    isWater = true;
-//                }
-//                if (model.getPictureRecord() == null || model.getPictureRecord().equals("")) {
-//                    isImage = true;
-//                }
-//
-//            }
+
+            setContents(cellView, model);
 
 
             TextView mTextViewDay = (TextView) cellView.findViewById(R.id.textViewDay);
@@ -140,21 +135,20 @@ public class BodyEndCalendarFragment extends CaldroidFragment {
                 mTextViewDay.setTextColor(Color.BLACK);
             }
 
+            if (parseDate == today) {
+                cellView.findViewById(R.id.layoutCalendarCellMain).setBackgroundResource(R.drawable.background_calendar_today);
+            } else {
+                cellView.findViewById(R.id.layoutCalendarCellMain).setBackgroundResource(R.drawable.background_calendar_nomal);
+            }
+
             mTextViewDay.setText(Integer.toString(dateTime.getDay()));
-            List<Integer> mListImageIds = getIconList(isWeight, isWater, isImage, isAttendance);
-            for (int i = 0; i < mListImageIds.size(); i++) {
-                ((ImageView) cellView.findViewById(imageViewIds[i])).setImageResource(mListImageIds.get(i));
-            }
-            for (int i = imageViewIds.length; i > mListImageIds.size(); i--) {
-                ((ImageView) cellView.findViewById(imageViewIds[i - 1])).setImageDrawable(null);
-            }
             setMatchHeight(cellView);
 
-            cellView.setOnClickListener(new View.OnClickListener() {
+            cellView.findViewById(R.id.layoutCalendarCellMain).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (model != null) {
-                        Intent intent = new Intent(getContext(), MainActivity.class);
+                        Intent intent = new Intent(getContext(), MaterialActivity.class);
                         intent.putExtra("showDate", getDate(dateTime));
                         startActivity(intent);
                     } else {
@@ -165,6 +159,29 @@ public class BodyEndCalendarFragment extends CaldroidFragment {
 
             return cellView;
         }
+
+        private void setContents(View cellView, CalendarContentsModel mCalendarContentsModel) {
+            ViewGroup mLayoutContents = (ViewGroup) cellView.findViewById(R.id.layoutContents);
+            mLayoutContents.removeAllViews();
+            cellView.findViewById(R.id.imageViewAttendance).setVisibility(View.GONE);
+
+            if (mCalendarContentsModel == null) {
+                return;
+            }
+
+
+            if (mCalendarContentsModel.getWaterCount() != 0)
+                mLayoutContents.addView(new CalendarContentsView(getContext(), mCalendarContentsModel.getWaterCount() + "", CalendarContentsView.FLAG_WATER));
+            if (mCalendarContentsModel.getMyExerciseCount() != 0)
+                mLayoutContents.addView(new CalendarContentsView(getContext(), mCalendarContentsModel.getMyExerciseCount() + "", CalendarContentsView.FLAG_MY_EXERCISE));
+            if (mCalendarContentsModel.getYoutubeExerciseCount() != 0)
+                mLayoutContents.addView(new CalendarContentsView(getContext(), mCalendarContentsModel.getYoutubeExerciseCount() + "", CalendarContentsView.FLAG_YOUTUBE_EXERCISE));
+            if (mCalendarContentsModel.isAttendance()) {
+                cellView.findViewById(R.id.imageViewAttendance).setVisibility(View.VISIBLE);
+            }
+
+        }
+
 
         private void setMatchHeight(View cellView) {
             if (cellViewHeightSix == 0 && ((View) getMonthTitleTextView().getParent()).getHeight() != 0 && getWeekdayGridView().getHeight() != 0) {
@@ -179,27 +196,6 @@ public class BodyEndCalendarFragment extends CaldroidFragment {
             } else {
                 cellView.getLayoutParams().height = cellViewHeightSix;
             }
-        }
-
-
-        private List<Integer> getIconList(boolean isWeight, boolean isWater, boolean isImage, boolean isAttendance) {
-            ArrayList<Integer> mListImageIds = new ArrayList<>();
-
-            if (isWeight) {
-                mListImageIds.add(iconImageIds[0]);
-            }
-            if (isWater) {
-                mListImageIds.add(iconImageIds[1]);
-            }
-            if (isImage) {
-                mListImageIds.add(iconImageIds[2]);
-            }
-            if (isAttendance) {
-                mListImageIds.add(iconImageIds[3]);
-            }
-
-            return mListImageIds;
-
         }
 
         private int getDate(DateTime time) {
@@ -243,5 +239,60 @@ public class BodyEndCalendarFragment extends CaldroidFragment {
             }
             return v;
         }
+    }
+
+    private class CalendarContentsView extends LinearLayout {
+
+        private final static int FLAG_WATER = 0;
+        private final static int FLAG_ATTENDANCE = 1;
+        private final static int FLAG_YOUTUBE_EXERCISE = 2;
+        private final static int FLAG_MY_EXERCISE = 3;
+
+        private Context context;
+        private String contents;
+        private int flag;
+
+        public CalendarContentsView(Context context, String contents, int flag) {
+            super(context);
+            setOrientation(HORIZONTAL);
+            setGravity(Gravity.CENTER_VERTICAL);
+            this.contents = contents;
+            this.context = context;
+            this.flag = flag;
+            setLayout();
+        }
+
+        private void setLayout() {
+            View split = new View(context);
+            LinearLayout.LayoutParams params = new LayoutParams((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 3, getResources().getDisplayMetrics()), ViewGroup.LayoutParams.MATCH_PARENT);
+            split.setLayoutParams(params);
+            ImageView mImageViewSort = new ImageView(getContext());
+            mImageViewSort.setLayoutParams(new LinearLayout.LayoutParams((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 15, getResources().getDisplayMetrics()), (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 15, getResources().getDisplayMetrics())));
+
+            switch (flag) {
+                case FLAG_WATER:
+                    split.setBackgroundResource(R.color.WaterSplit);
+                    mImageViewSort.setImageResource(R.drawable.icon_bottle_10);
+                    break;
+                case FLAG_ATTENDANCE:
+                    split.setBackgroundResource(R.color.AttendanceSplit);
+                    break;
+                case FLAG_YOUTUBE_EXERCISE:
+                    split.setBackgroundResource(R.color.YoutubeSplit);
+                    mImageViewSort.setImageResource(R.drawable.icon_youtube);
+                    break;
+                case FLAG_MY_EXERCISE:
+                    split.setBackgroundResource(R.color.ExerciseSplit);
+                    mImageViewSort.setImageResource(R.drawable.icon_exercise);
+                    break;
+            }
+            addView(split);
+            addView(mImageViewSort);
+            TextView mTextViewContents = new TextView(getContext());
+            mTextViewContents.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 13);
+            mTextViewContents.setText(contents);
+            addView(mTextViewContents);
+        }
+
     }
 }

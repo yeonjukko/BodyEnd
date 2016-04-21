@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.yalantis.ucrop.UCrop;
 
 import net.yeonjukko.bodyend.R;
+import net.yeonjukko.bodyend.fragment.MainFragment;
 import net.yeonjukko.bodyend.libs.DBmanager;
 import net.yeonjukko.bodyend.libs.DayCounter;
 import net.yeonjukko.bodyend.model.WaterAlarmInfoModel;
@@ -153,7 +154,7 @@ public class InitTargetActivity extends InitInfoActivity {
                 Log.d("mox", "target" + dbManager.PrintData());
                 dbManager.selectUserInfoDB();
 
-                Intent intent = new Intent(getContext(), MainActivity.class);
+                Intent intent = new Intent(getContext(), MaterialActivity.class);
                 startActivity(intent);
                 finish();
             }
