@@ -1,33 +1,41 @@
-package net.yeonjukko.bodyend.activity;
+package net.yeonjukko.bodyend.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import net.yeonjukko.bodyend.R;
 import net.yeonjukko.bodyend.fragment.RecordFragment;
 import net.yeonjukko.bodyend.fragment.StimulusFragment;
-import net.yeonjukko.bodyend.fragment.YoutubeMainFragment;
+import net.yeonjukko.bodyend.libs.DBmanager;
+import net.yeonjukko.bodyend.model.UserInfoModel;
 
-public class MainActivity extends AppCompatActivity {
-    int MAX_PAGE = 3;
+import it.neokree.materialnavigationdrawer.elements.MaterialAccount;
+
+public class MainFragment extends Fragment {
+    int MAX_PAGE = 2;
     private Fragment cur_fragment;
     public Fragment record_fragment;
+    private MaterialAccount account;
+    UserInfoModel userInfoModel;
+    View rootView;
 
-
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-        viewPager.setAdapter(new Adapter(getSupportFragmentManager()));
-        Intent intent = getIntent();
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        rootView = inflater.inflate(R.layout.activity_main, null, false);
+        final ViewPager viewPager = (ViewPager) rootView.findViewById(R.id.viewpager);
+        viewPager.setAdapter(new Adapter(getActivity().getSupportFragmentManager()));
+        userInfoModel = new DBmanager(getContext()).selectUserInfoDB();
+        Intent intent = getActivity().getIntent();
         if (intent.getIntExtra("showDate", 0) != 0) {
             viewPager.setCurrentItem(1);
         }
@@ -44,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
                     if (((RecordFragment) record_fragment).adapter != null) {
                         Log.d("mox", "onPageSelected");
                         ((RecordFragment) record_fragment).adapter.notifyDataSetChanged();
-                    } else{
+                    } else {
                         Log.d("mox", "null");
 
                     }
@@ -53,13 +61,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
             }
         });
 
-
+        return rootView;
     }
-
 
     private class Adapter extends FragmentPagerAdapter {
         public Adapter(FragmentManager fm) {
@@ -80,8 +86,7 @@ public class MainActivity extends AppCompatActivity {
                     cur_fragment = new RecordFragment();
                     record_fragment = cur_fragment;
                     break;
-                case 2:
-                    cur_fragment = new YoutubeMainFragment();
+
 
             }
 

@@ -5,9 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -15,8 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 
 import com.balysv.materialripple.MaterialRippleLayout;
 
@@ -24,9 +20,6 @@ import net.yeonjukko.bodyend.R;
 import net.yeonjukko.bodyend.activity.settings.DefaultSettingActivity;
 import net.yeonjukko.bodyend.libs.DBmanager;
 import net.yeonjukko.bodyend.libs.DayCounter;
-
-import java.io.File;
-import java.io.IOException;
 
 public class StimulusFragment extends Fragment {
     Bitmap bitmap;
@@ -37,6 +30,8 @@ public class StimulusFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_stimulus, container, false);
         dBmanager = new DBmanager(rootView.getContext());
+
+
 
         TextView tvDday = (TextView) rootView.findViewById(R.id.tv_d_day);
         TextView tvStimulusWord = (TextView) rootView.findViewById(R.id.tv_stimulus);
