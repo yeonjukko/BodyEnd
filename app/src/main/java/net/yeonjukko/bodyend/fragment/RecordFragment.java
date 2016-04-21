@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import com.github.amlcurran.showcaseview.MaterialShowcaseDrawer;
 import net.yeonjukko.bodyend.R;
 import net.yeonjukko.bodyend.activity.CalendarActivity;
 import net.yeonjukko.bodyend.activity.CameraActivity;
+import net.yeonjukko.bodyend.activity.GalleryActivity;
 import net.yeonjukko.bodyend.libs.DBmanager;
 import net.yeonjukko.bodyend.libs.DayCounter;
 import net.yeonjukko.bodyend.libs.DividerItemDecoration;
@@ -128,7 +130,7 @@ public class RecordFragment extends Fragment {
         recyclerView.setAdapter(adapter);
 
 
-        rootView.findViewById(R.id.ic_setting).setOnClickListener(new View.OnClickListener() {
+        rootView.findViewById(R.id.ic_photos).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getContext(), GalleryActivity.class));
