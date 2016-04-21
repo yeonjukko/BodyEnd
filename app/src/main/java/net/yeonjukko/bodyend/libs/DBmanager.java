@@ -1,6 +1,7 @@
 package net.yeonjukko.bodyend.libs;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
@@ -8,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
 import android.util.Log;
 
+import net.yeonjukko.bodyend.model.CalendarContentsModel;
 import net.yeonjukko.bodyend.model.ExerciseAttendanceInfoModel;
 import net.yeonjukko.bodyend.model.ExerciseJoinSortInfoModel;
 import net.yeonjukko.bodyend.model.ExerciseSortInfoModel;
@@ -140,7 +142,7 @@ public class DBmanager {
     }
 
     public void insertMyYoutube(String youtubeId) {
-        String INSERT_YOUTUBE_ID = "INSERT INTO " + DATABASE_TABLE_10 + " VALUES" + " ('" +youtubeId+ "')";
+        String INSERT_YOUTUBE_ID = "INSERT INTO " + DATABASE_TABLE_10 + " VALUES" + " ('" + youtubeId + "')";
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(INSERT_YOUTUBE_ID);
@@ -389,7 +391,7 @@ public class DBmanager {
     }
 
     public ArrayList<String> selectMyYoutube() {
-        String SELECT_YOUTUBE_INFO = "SELECT * FROM " + DATABASE_TABLE_10 ;
+        String SELECT_YOUTUBE_INFO = "SELECT * FROM " + DATABASE_TABLE_10;
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
         Cursor result = db.rawQuery(SELECT_YOUTUBE_INFO, null);
@@ -628,30 +630,34 @@ public class DBmanager {
         return userRecordModel;
     }
 
-    public HashMap<Integer, UserRecordModel> selectUserRecordDB() {
-        String SELECT_RECORD_INFO_ALL = "SELECT * FROM " + DATABASE_TABLE_2;
-
-        HashMap<Integer, UserRecordModel> mUserRecordModels = new HashMap<>();
-        this.mDbHelper = new DatabaseHelper(context);
+    public HashMap<Integer, CalendarContentsModel> selectCalendarContents() {
+        HashMap<Integer, CalendarContentsModel> mCalendarContentsModels = new HashMap<>();
+        String query = "SELECT (SELECT COUNT(*) FROM EXERCISE_SORT_RECORD WHERE EXERCISE_SORT_RECORD.RECORD_DATE = USER_RECORD.RECORD_DATE) AS MY_EXERCISE_COUNT, (SELECT COUNT(*) FROM EXERCISE_YOUTUBE_RECORD WHERE EXERCISE_YOUTUBE_RECORD.EXERCISE_DATE=USER_RECORD.RECORD_DATE) AS YOUTUBE_EXERCISE_COUNT, (SELECT COUNT(*) FROM EXERCISE_SPOT_RECORD WHERE EXERCISE_SPOT_RECORD.RECORD_DATE=USER_RECORD.RECORD_DATE) AS ATTENDANCE,USER_RECORD.WATER_RECORD,USER_RECORD.RECORD_DATE FROM USER_RECORD";
+        mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
-        Cursor result = db.rawQuery(SELECT_RECORD_INFO_ALL, null);
+        Cursor result = db.rawQuery(query, null);
 
         while (result.moveToNext()) {
-            UserRecordModel userRecordModel = new UserRecordModel();
-            userRecordModel.setRecordDate(result.getInt(0));
-            userRecordModel.setPictureRecord(result.getString(1));
-            userRecordModel.setWeightRecord(result.getFloat(2));
-            userRecordModel.setWaterRecord(result.getInt(3));
-            userRecordModel.setWaterVolume(result.getInt(4));
-            userRecordModel.setMealBreakfast(result.getString(5));
-            userRecordModel.setMealLunch(result.getString(6));
-            userRecordModel.setMealDinner(result.getString(7));
-            userRecordModel.setMealRefreshments(result.getString(8));
-            mUserRecordModels.put(userRecordModel.getRecordDate(), userRecordModel);
+
+            CalendarContentsModel mCalendarContentsModel = new CalendarContentsModel();
+            mCalendarContentsModel.setMyExerciseCount(result.getInt(0));
+            mCalendarContentsModel.setYoutubeExerciseCount(result.getInt(1));
+            if (result.getInt(2) > 0) {
+                mCalendarContentsModel.setAttendance(true);
+            } else {
+                mCalendarContentsModel.setAttendance(false);
+            }
+            mCalendarContentsModel.setWaterCount(result.getInt(3));
+            mCalendarContentsModel.setRecordDate(result.getInt(4));
+            mCalendarContentsModels.put(mCalendarContentsModel.getRecordDate(), mCalendarContentsModel);
         }
+
         result.close();
-        return mUserRecordModels;
+        db.close();
+        mDbHelper.close();
+        return mCalendarContentsModels;
     }
+
 
     public WaterAlarmInfoModel selectWaterAlarmInfoDB() {
         String SELECT_WATER_ALARM_INFO = "SELECT * FROM " + DATABASE_TABLE_5;
