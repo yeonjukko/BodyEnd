@@ -14,6 +14,7 @@
         android:textColor="@color/caldroid_white" />
 
     <FrameLayout
+        android:id="@+id/layoutImageCompare"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -33,7 +34,7 @@
                     android:id="@+id/imageViewCompare0"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="fitCenter" />
+                    android:scaleType="centerCrop" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -57,7 +58,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="bottom|center"
-                    android:scaleType="fitCenter" />
+                    android:scaleType="centerCrop" />
 
                 <TextView
                     android:layout_width="wrap_content"
