@@ -1,37 +1,27 @@
 package net.yeonjukko.bodyend.activity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.RectF;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MotionEvent;
+import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ImageButton;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.Toast;
-
-import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
-import com.github.amlcurran.showcaseview.ShowcaseDrawer;
-import com.github.amlcurran.showcaseview.ShowcaseView;
-import com.github.amlcurran.showcaseview.SimpleShowcaseEventListener;
-import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
-import com.github.amlcurran.showcaseview.targets.ViewTarget;
 
 import net.yeonjukko.bodyend.R;
 
@@ -49,76 +39,47 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     public static final String FLAG_FILE_PATH = "result_file_path";
     private int mCameraFace = Camera.CameraInfo.CAMERA_FACING_BACK;
     private Camera mCamera;
+    private SharedPreferences mShPf;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_camera);
-        ImageButton mImageButtonChangeCamera = (ImageButton) findViewById(R.id.imageButtonChangeCamera);
-        if (Camera.getNumberOfCameras() > 1) {
-            mImageButtonChangeCamera.setVisibility(View.VISIBLE);
-            mImageButtonChangeCamera.setOnClickListener(this);
-        } else {
-            mImageButtonChangeCamera.setVisibility(View.GONE);
-        }
+
         findViewById(R.id.buttonTakePicture).setOnClickListener(this);
-        showShowCaseCamera();
-    }
 
-    private void showShowCaseCamera() {
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_camera_alert, null, false);
+        final CheckBox vCheckbox = (CheckBox) view.findViewById(R.id.cb_preference);
 
-        ShowcaseView view = new ShowcaseView.Builder(this)
-                .setTarget(new ViewTarget(findViewById(R.id.imageViewCameraPosition)))
-                .withNewStyleShowcase()
-                .setStyle(R.style.CustomShowcaseTheme)
-                .setContentTitle("다음")
-                .setContentText("카메라를 그림과 같이 위치시켜 주세요.")
-                .hideOnTouchOutside()
-                .setShowcaseEventListener(new SimpleShowcaseEventListener() {
-                    @Override
-                    public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
-                        findViewById(R.id.imageViewCameraPosition).setVisibility(View.GONE);
-                        showShowCaseManLine();
-                    }
-                })
-                .build();
 
-    }
+        //다시보기 sharedpreference 가져오기
+        mShPf = getSharedPreferences("setting",MODE_PRIVATE);
 
-    private void showShowCaseManLine() {
 
-        new ShowcaseView.Builder(this)
-                .setTarget(new ViewTarget(findViewById(R.id.viewHumanLine)))
-                .withNewStyleShowcase()
-                .setStyle(R.style.CustomShowcaseTheme)
-                .setContentTitle("다음")
-                .setContentText("그림에 맞춰 거울에 서주세요.")
-                .hideOnTouchOutside()
-                .setShowcaseEventListener(new SimpleShowcaseEventListener() {
-                    @Override
-                    public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
-                        findViewById(R.id.buttonTakePicture).setVisibility(View.VISIBLE);
-                        showShowCaseTakePicture();
+        //mShPf 다시보기 설정 default: true true-> 띄워줌 false->안띄워줌
 
-                    }
-                })
-                .build();
+        if(mShPf.getBoolean("review",true)){
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.MyDialog);
+            builder.setView(view)
+                    .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            if(vCheckbox.isChecked()){
+                                mShPf.edit().putBoolean("review",false)
+                                        .apply();
+
+                            }
+                            dialog.dismiss();
+                        }
+                    }).show();
+        }
 
     }
 
-    private void showShowCaseTakePicture() {
-
-        new ShowcaseView.Builder(this)
-                .setTarget(new ViewTarget(findViewById(R.id.buttonTakePicture)))
-                .withNewStyleShowcase()
-                .setStyle(R.style.CustomShowcaseTheme)
-                .setContentTitle("확인")
-                .setContentText("버튼을 눌러 사진을 촬영합니다.")
-                .hideOnTouchOutside()
-                .build();
-
-    }
 
     @Override
     protected void onResume() {
@@ -148,16 +109,6 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    private void changeCamera() {
-        onStartCameraReady();
-        mCameraFace = mCameraFace == Camera.CameraInfo.CAMERA_FACING_BACK ? Camera.CameraInfo.CAMERA_FACING_FRONT : Camera.CameraInfo.CAMERA_FACING_BACK;
-        try {
-            mCamera = Camera.open(mCameraFace);
-            setCameraView();
-        } catch (Exception e) {
-            mCameraFace = mCameraFace == Camera.CameraInfo.CAMERA_FACING_BACK ? Camera.CameraInfo.CAMERA_FACING_FRONT : Camera.CameraInfo.CAMERA_FACING_BACK;
-        }
-    }
 
     private void setCameraView() {
         ViewGroup mLayoutCamera = (ViewGroup) findViewById(R.id.layoutCamera);
@@ -165,14 +116,6 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
             mLayoutCamera.removeAllViews();
             mLayoutCamera.addView(new BodyEndCameraSurfaceView(getContext(), mCamera));
         }
-    }
-
-    private void onFinishCameraReady() {
-        findViewById(R.id.imageButtonChangeCamera).setEnabled(true);
-    }
-
-    private void onStartCameraReady() {
-        findViewById(R.id.imageButtonChangeCamera).setEnabled(false);
     }
 
 
@@ -218,9 +161,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
                 });
                 break;
 
-            case R.id.imageButtonChangeCamera:
-                changeCamera();
-                break;
+
         }
 
     }
@@ -290,7 +231,6 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
                 //에러시 처리
                 e.printStackTrace();
             }
-            onFinishCameraReady();
         }
 
         @Override
