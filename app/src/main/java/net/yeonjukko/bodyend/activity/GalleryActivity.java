@@ -9,9 +9,10 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import net.yeonjukko.bodyend.R;
+import net.yeonjukko.bodyend.fragment.GalleryModeFragment0;
+import net.yeonjukko.bodyend.fragment.GalleryModeFragment1;
 import net.yeonjukko.bodyend.model.UserRecordModel;
 
 /**

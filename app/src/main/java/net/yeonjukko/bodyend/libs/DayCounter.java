@@ -35,7 +35,6 @@ public class DayCounter {
     }
 
 
-
     public int convertDate(long day) {
         //<--오늘 날짜 구하기 ex)144300000->20160317
         Calendar mCalendar = Calendar.getInstance();
@@ -59,6 +58,16 @@ public class DayCounter {
         String today = year + strMonth + strDate;
         Log.d("mox", "today:" + today);
         return Integer.parseInt(today);
+    }
+
+    public String convertDate2String(int day) {
+        //<--오늘 날짜 구하기 ex)20160428->2016년 4월 28일
+        String tmp = day + "";
+        String year = tmp.substring(0, 4);
+        String month = (Integer.parseInt(tmp.substring(4, 6))) + "";
+        String date = tmp.substring(6, 8);
+
+        return year + "년 " + month + "월 " + date + "일";
     }
 
     public int getToday() {

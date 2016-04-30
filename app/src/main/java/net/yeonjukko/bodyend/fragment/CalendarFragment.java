@@ -1,4 +1,4 @@
-package net.yeonjukko.bodyend.libs;
+package net.yeonjukko.bodyend.fragment;
 
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +19,8 @@ import com.roomorama.caldroid.CaldroidGridAdapter;
 import com.roomorama.caldroid.WeekdayArrayAdapter;
 
 import net.yeonjukko.bodyend.R;
+import net.yeonjukko.bodyend.libs.DBmanager;
+import net.yeonjukko.bodyend.libs.DayCounter;
 import net.yeonjukko.bodyend.model.CalendarContentsModel;
 import net.yeonjukko.bodyend.model.ExerciseAttendanceInfoModel;
 import net.yeonjukko.bodyend.activity.MaterialActivity;
@@ -35,7 +37,7 @@ import hirondelle.date4j.DateTime;
 /**
  * Created by MoonJongRak on 2016. 3. 12..
  */
-public class BodyEndCalendarFragment extends CaldroidFragment {
+public class CalendarFragment extends CaldroidFragment {
 
     private int[] iconImageIds = {android.R.drawable.ic_input_get, android.R.drawable.ic_dialog_email, android.R.drawable.ic_dialog_info, android.R.drawable.ic_dialog_alert};
     private DBmanager dBmanager;
@@ -290,7 +292,7 @@ public class BodyEndCalendarFragment extends CaldroidFragment {
             addView(mImageViewSort);
             TextView mTextViewContents = new TextView(getContext());
             mTextViewContents.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 13);
-            mTextViewContents.setText(contents);
+            mTextViewContents.setText(" "+contents);
             addView(mTextViewContents);
         }
 

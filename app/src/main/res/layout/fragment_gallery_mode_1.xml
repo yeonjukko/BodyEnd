@@ -2,61 +2,133 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal">
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:background="@color/DividerText"
+        android:gravity="center"
+        android:text="운동 결과가 만족스러우신가요? \n비포애프터샷을 저장하고 친구들과 공유해보세요!"
+        android:textColor="@color/caldroid_white" />
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:background="@color/DividerText">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/imageViewCompare0"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitCenter" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+
+                    android:background="@drawable/layout_round_all_padding_bgr"
+                    android:text="Before"
+                    android:textColor="@color/caldroid_white"
+                    android:textSize="12sp" />
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/imageViewCompare1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="bottom|center"
+                    android:scaleType="fitCenter" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/layout_round_all_padding_bgr"
+                    android:gravity="center"
+                    android:text="After"
+                    android:textColor="@color/caldroid_white"
+                    android:textSize="12sp" />
+            </FrameLayout>
+
+
+        </LinearLayout>
 
 
         <ImageView
-            android:id="@+id/imageViewCompare0"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/caldroid_555"
-            android:text="Before" />
-
-        <TextView
-            android:id="@+id/textViewBeforeDay"
-            android:layout_width="match_parent"
-
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:background="@color/caldroid_555" />
-
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="bottom|right"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/ic_logo" />
     </FrameLayout>
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_weight="2"
+        android:orientation="horizontal">
 
-
-        <ImageView
-            android:id="@+id/imageViewCompare1"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop" />
+            android:layout_weight="1"
+            android:background="@color/DividerText">
 
-        <TextView
+
+            <TextView
+                android:id="@+id/textViewBeforeDay"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="bottom|center"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/layout_round_all_padding"
+                android:gravity="center"
+                android:textColor="@color/caldroid_white" />
+
+
+        </FrameLayout>
+
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/caldroid_555"
-            android:text="After" />
-
-        <TextView
-            android:id="@+id/textViewAfterDay"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:background="@color/caldroid_555" />
-    </FrameLayout>
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/DividerText">
 
 
+            <TextView
+                android:id="@+id/textViewAfterDay"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="bottom|center"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/layout_round_all_padding"
+                android:gravity="center"
+                android:textColor="@color/caldroid_white" />
+
+
+        </FrameLayout>
+
+
+    </LinearLayout>
 </LinearLayout>

@@ -72,13 +72,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="@color/Divider">
+                android:background="@color/Divider2">
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="3dp"
                     android:layout_marginStart="7dp"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/DividerText"
                     android:text="출석기록"/>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -90,12 +90,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
                         android:textColor="@android:color/black"
+                        android:layout_weight="2"
                         android:text="출석체크"/>
                     <TextView
                         android:id="@+id/tv_spot_name"
+                        android:layout_weight="1"
                         android:gravity="center_vertical|right"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
+                        android:textSize="13sp"
                         android:paddingRight="10dp" />
                 </LinearLayout>
             </LinearLayout>
@@ -103,13 +106,13 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/Divider">
+                android:background="@color/Divider2">
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="3dp"
                     android:layout_marginStart="7dp"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/DividerText"
                     android:text="오늘의 운동 기록"/>
             </LinearLayout>
             <LinearLayout

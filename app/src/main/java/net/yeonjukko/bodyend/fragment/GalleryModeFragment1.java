@@ -1,4 +1,4 @@
-package net.yeonjukko.bodyend.activity;
+package net.yeonjukko.bodyend.fragment;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import net.yeonjukko.bodyend.R;
+import net.yeonjukko.bodyend.libs.DayCounter;
 import net.yeonjukko.bodyend.model.UserRecordModel;
 
 import org.w3c.dom.Text;
@@ -22,7 +23,7 @@ import org.w3c.dom.Text;
 public class GalleryModeFragment1 extends Fragment {
 
     UserRecordModel[] data;
-
+    DayCounter dayCounter;
     Bitmap image0, image1;
 
     public GalleryModeFragment1(UserRecordModel[] data) {
@@ -40,8 +41,10 @@ public class GalleryModeFragment1 extends Fragment {
         ((ImageView) rootView.findViewById(R.id.imageViewCompare0)).setImageBitmap(image0);
         ((ImageView) rootView.findViewById(R.id.imageViewCompare1)).setImageBitmap(image1);
 
-        ((TextView) rootView.findViewById(R.id.textViewBeforeDay)).setText(data[0].getRecordDate() + "");
-        ((TextView) rootView.findViewById(R.id.textViewAfterDay)).setText(data[1].getRecordDate() + "");
+        dayCounter = new DayCounter();
+
+        ((TextView) rootView.findViewById(R.id.textViewBeforeDay)).setText(dayCounter.convertDate2String(data[0].getRecordDate()));
+        ((TextView) rootView.findViewById(R.id.textViewAfterDay)).setText(dayCounter.convertDate2String(data[1].getRecordDate()));
 
         return rootView;
     }

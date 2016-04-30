@@ -11,24 +11,23 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.balysv.materialripple.MaterialRippleLayout;
 import com.github.aakira.expandablelayout.Utils;
-import com.github.amlcurran.showcaseview.MaterialShowcaseDrawer;
 
 import net.yeonjukko.bodyend.R;
 import net.yeonjukko.bodyend.activity.CalendarActivity;
 import net.yeonjukko.bodyend.activity.CameraActivity;
 import net.yeonjukko.bodyend.activity.GalleryActivity;
+import net.yeonjukko.bodyend.activity.MaterialActivity;
 import net.yeonjukko.bodyend.libs.DBmanager;
 import net.yeonjukko.bodyend.libs.DayCounter;
 import net.yeonjukko.bodyend.libs.DividerItemDecoration;
-import net.yeonjukko.bodyend.libs.RecordItemModel;
-import net.yeonjukko.bodyend.libs.RecordRecyclerViewAdapter;
+import net.yeonjukko.bodyend.libs.RecordFragmentItemModel;
+import net.yeonjukko.bodyend.adapter.RecordRecyclerViewAdapter;
 import net.yeonjukko.bodyend.model.ExerciseSpotInfoModel;
 import net.yeonjukko.bodyend.model.UserRecordModel;
 
@@ -42,14 +41,15 @@ import java.util.List;
 public class RecordFragment extends Fragment {
     public DBmanager dBmanager;
     public int showDate;
-    public int tmpDate;
     View rootView;
     public RecordRecyclerViewAdapter adapter;
     DayCounter dayCounter;
-    List<RecordItemModel> data;
+    List<RecordFragmentItemModel> data;
     RecyclerView recyclerView;
     MaterialRippleLayout ivLeft;
     MaterialRippleLayout ivRight;
+    MaterialRippleLayout ivMenu;
+
 
     @Nullable
     @Override
@@ -60,13 +60,12 @@ public class RecordFragment extends Fragment {
 
         ivLeft = (MaterialRippleLayout) rootView.findViewById(R.id.image_left);
         ivRight = (MaterialRippleLayout) rootView.findViewById(R.id.image_right);
-
+        ivMenu = (MaterialRippleLayout) rootView.findViewById(R.id.ic_menu);
         //record 테이블 초기화 및 날짜 설정 메소드
 
         //정각에만 실행
         insertUserRecord();
         showDate = dayCounter.getToday();
-        tmpDate = showDate;
         //캘린더 불러오기
         MaterialRippleLayout btCalendar = (MaterialRippleLayout) rootView.findViewById(R.id.ic_calendar);
         btCalendar.setOnClickListener(new View.OnClickListener() {
@@ -81,10 +80,12 @@ public class RecordFragment extends Fragment {
         //날짜바꾸기 버튼
         ivLeft.setOnClickListener(changeDate);
         ivRight.setOnClickListener(changeDate);
-
-
-        //비포 애프터 사진 모음
-        ImageView btGallery = (ImageView) rootView.findViewById(R.id.ic_photos);
+        ivMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MaterialActivity) getActivity()).openDrawer();
+            }
+        });
 
 
         //CalendarActivity에서 넘어올 때
@@ -100,27 +101,27 @@ public class RecordFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         data = new ArrayList<>();
-        data.add(new RecordItemModel(
+        data.add(new RecordFragmentItemModel(
                 getString(R.string.record_water),
                 R.color.Primary,
                 R.color.Icons,
                 Utils.createInterpolator(Utils.ACCELERATE_DECELERATE_INTERPOLATOR)));
-        data.add(new RecordItemModel(
+        data.add(new RecordFragmentItemModel(
                 getString(R.string.record_exercise),
                 R.color.Primary,
                 R.color.Icons,
                 Utils.createInterpolator(Utils.ACCELERATE_DECELERATE_INTERPOLATOR)));
-        data.add(new RecordItemModel(
+        data.add(new RecordFragmentItemModel(
                 getString(R.string.record_weight),
                 R.color.Primary,
                 R.color.Icons,
                 Utils.createInterpolator(Utils.ACCELERATE_DECELERATE_INTERPOLATOR)));
-        data.add(new RecordItemModel(
+        data.add(new RecordFragmentItemModel(
                 getString(R.string.record_meal),
                 R.color.Primary,
                 R.color.Icons,
                 Utils.createInterpolator(Utils.ACCELERATE_DECELERATE_INTERPOLATOR)));
-        data.add(new RecordItemModel(
+        data.add(new RecordFragmentItemModel(
                 getString(R.string.record_picture),
                 R.color.Primary,
                 R.color.Icons,
@@ -129,13 +130,6 @@ public class RecordFragment extends Fragment {
         adapter = new RecordRecyclerViewAdapter(data, showDate, this);
         recyclerView.setAdapter(adapter);
 
-
-        rootView.findViewById(R.id.ic_photos).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getContext(), GalleryActivity.class));
-            }
-        });
 
         return rootView;
     }
@@ -147,7 +141,7 @@ public class RecordFragment extends Fragment {
             SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
             try {
                 //오늘 날짜
-                long dbDate = format.parse(tmpDate + "").getTime();
+                long dbDate = format.parse(showDate + "").getTime();
                 UserRecordModel model = null;
 
                 if (v.getParent() == ivLeft) {
@@ -161,16 +155,15 @@ public class RecordFragment extends Fragment {
                     model = dBmanager.selectDescUserRecordDB(false, tmp);
                 }
 
+
                 if (model != null) {
                     setLayout(model.getRecordDate());
-                    tmpDate = model.getRecordDate();
-                    adapter = new RecordRecyclerViewAdapter(data, tmpDate, RecordFragment.this);
+                    showDate = model.getRecordDate();
+                    adapter = new RecordRecyclerViewAdapter(data, showDate, RecordFragment.this);
                     recyclerView.setAdapter(adapter);
 
                 } else {
-                    if (tmpDate != showDate) {
-                        Toast.makeText(getContext(), "이전의 데이터가 없습니다.", Toast.LENGTH_SHORT).show();
-                    }
+                    Toast.makeText(getContext(), "이전의 데이터가 없습니다.", Toast.LENGTH_SHORT).show();
                 }
 
 
@@ -186,6 +179,8 @@ public class RecordFragment extends Fragment {
             ivRight.setVisibility(View.INVISIBLE);
         else
             ivRight.setVisibility(View.VISIBLE);
+
+
         TextView tvCurrDate = (TextView) rootView.findViewById(R.id.tv_curr_date);
         TextView tvCurrDay = (TextView) rootView.findViewById(R.id.tv_curr_day);
         String mDate = date + "";
@@ -244,7 +239,6 @@ public class RecordFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-            Log.d("mox", resultCode + "");
 
             if (requestCode == RecordRecyclerViewAdapter.REQUEST_SPOT_NAME) {
                 Log.d("mox", "spot" + data.getDoubleExtra("longitude", 0));

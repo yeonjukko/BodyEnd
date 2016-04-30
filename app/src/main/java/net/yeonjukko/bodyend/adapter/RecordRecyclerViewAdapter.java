@@ -1,4 +1,4 @@
-package net.yeonjukko.bodyend.libs;
+package net.yeonjukko.bodyend.adapter;
 
 /**
  * Created by yeonjukko on 16. 3. 16..
@@ -55,12 +55,16 @@ import com.google.android.gms.location.LocationServices;
 
 import net.yeonjukko.bodyend.R;
 import net.yeonjukko.bodyend.activity.CameraActivity;
+import net.yeonjukko.bodyend.activity.GalleryActivity;
 import net.yeonjukko.bodyend.activity.MaterialActivity;
-import net.yeonjukko.bodyend.fragment.MainFragment;
 import net.yeonjukko.bodyend.fragment.RecordFragment;
 import net.yeonjukko.bodyend.activity.settings.AttendanceMapAcitivity;
 import net.yeonjukko.bodyend.activity.settings.ExerciseSettingActivity;
 import net.yeonjukko.bodyend.activity.settings.WaterSettingActivity;
+import net.yeonjukko.bodyend.libs.DBmanager;
+import net.yeonjukko.bodyend.libs.DayCounter;
+import net.yeonjukko.bodyend.libs.Int2DayCalculator;
+import net.yeonjukko.bodyend.libs.RecordFragmentItemModel;
 import net.yeonjukko.bodyend.model.ExerciseAttendanceInfoModel;
 import net.yeonjukko.bodyend.model.ExerciseJoinSortInfoModel;
 import net.yeonjukko.bodyend.model.ExerciseSpotInfoModel;
@@ -76,7 +80,7 @@ import static net.yeonjukko.bodyend.R.drawable.layout_round_bottom;
 
 public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
-    private final List<RecordItemModel> data;
+    private final List<RecordFragmentItemModel> data;
     private Context context;
     private SparseBooleanArray expandState = new SparseBooleanArray();
     private int VIEW_TYPE_WATER = 100;
@@ -96,7 +100,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     private LocationRequest mLocationRequest;
     protected GoogleApiClient mGoogleApiClient;
     private ExerciseSpotInfoModel checkModel;
-    private boolean isLocUpdated=false;
+    private boolean isLocUpdated = false;
 
     DBmanager dBmanager;
     LayoutInflater inflater;
@@ -104,7 +108,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     DayCounter dayCounter;
 
     //layout 순서 정하기
-    public RecordRecyclerViewAdapter(final List<RecordItemModel> data, int showDate, RecordFragment recordFragment) {
+    public RecordRecyclerViewAdapter(final List<RecordFragmentItemModel> data, int showDate, RecordFragment recordFragment) {
         this.data = data;
         this.recordFragemnt = recordFragment;
         //RecordActivity에서 넘어온 표시할 날짜
@@ -167,7 +171,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
-        final RecordItemModel item = data.get(position);
+        final RecordFragmentItemModel item = data.get(position);
         final Resources resource = context.getResources();
         holderTest = holder;
 
@@ -302,6 +306,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                     holderExercise.cbAttendance.setChecked(false);
                     holderExercise.cbAttendance.setTextColor(resource.getColor(R.color.Divider));
                     holderExercise.cbAttendance.setPaintFlags(holderExercise.cbAttendance.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    holderExercise.tvSpotName.setTextColor(resource.getColor(R.color.Divider));
                     holderExercise.tvSpotName.setText(dBmanager.selectExerciseSpotInfo(dBmanager.selectExerciseAttendance(showDate).getSpotId()).getSpotName() + "");
                 } else {
                     holderExercise.cbAttendance.setTextColor(resource.getColor(android.R.color.holo_red_light));
@@ -312,7 +317,9 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                     holderExercise.cbAttendance.setHighlightColor(resource.getColor(R.color.caldroid_light_red));
                     holderExercise.cbAttendance.setTextColor(resource.getColor(R.color.Divider));
                     holderExercise.cbAttendance.setPaintFlags(holderExercise.cbAttendance.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                    holderExercise.tvSpotName.setText(dBmanager.selectExerciseSpotInfo(dBmanager.selectExerciseAttendance(showDate).getSpotId()).getSpotName() + "");
+                    holderExercise.tvSpotName.setText("in " + dBmanager.selectExerciseSpotInfo(dBmanager.selectExerciseAttendance(showDate).getSpotId()).getSpotName() + "");
+                    holderExercise.tvSpotName.setTextColor(resource.getColor(R.color.Divider));
+                    Log.d("mox", dBmanager.selectExerciseSpotInfo(dBmanager.selectExerciseAttendance(showDate).getSpotId()).getSpotName() + "");
                     holderExercise.cbAttendance.setChecked(true);
                     holderExercise.cbAttendance.setEnabled(false);
                 }
@@ -731,7 +738,13 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 }
             });
             holderPicture.buttonLayout.setRotation(expandState.get(position) ? 180f : 0f);
-
+            holderPicture.btGallery.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, GalleryActivity.class);
+                    recordFragemnt.startActivity(intent);
+                }
+            });
             holderPicture.btCamera.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -866,6 +879,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         public RelativeLayout buttonLayout;
         public ExpandableRelativeLayout expandableLayout;
         public ImageView imageTodayPic;
+        public ImageButton btGallery;
         public ImageButton btCamera;
 
         public ViewHolderPicture(View v) {
@@ -875,7 +889,9 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             expandableLayout = (ExpandableRelativeLayout) v.findViewById(R.id.layout_picture);
             imageTodayPic = (ImageView) v.findViewById(R.id.image_today_picture);
             btCamera = (ImageButton) v.findViewById(R.id.bt_camera);
+            btGallery = (ImageButton) v.findViewById(R.id.bt_picture_setting);
         }
+
 
     }
 
@@ -959,9 +975,9 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 super.run();
                 try {
                     sleep(5000);
-                    if(!isLocUpdated){
+                    if (!isLocUpdated) {
                         stopLocationUpdates();
-                        ((Activity)context).runOnUiThread(new Runnable() {
+                        ((Activity) context).runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 mProgressDialog.dismiss();

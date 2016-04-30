@@ -124,11 +124,11 @@ public class DBmanager {
     }
 
     public void deleteSort(String id) {
-        String DELETE_SORT = "DELETE FROM " + DATABASE_TABLE_7 + " WHERE SORT_ID=" + id;
+        String DELETE_SORT = "DELETE FROM " + DATABASE_TABLE_7 + " WHERE SORT_ID='" + id + "'";
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(DELETE_SORT);
-
+        mDbHelper.close();
         db.close();
     }
 
@@ -694,8 +694,9 @@ public class DBmanager {
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
         Cursor result = db.rawQuery(SELECT_WATER_ALARM_INFO, null);
 
-        WaterAlarmInfoModel waterAlarmInfoModel = new WaterAlarmInfoModel();
-        if (result.moveToFirst()) {
+        WaterAlarmInfoModel waterAlarmInfoModel = null;
+        if (result.moveToNext()) {
+            waterAlarmInfoModel = new WaterAlarmInfoModel();
             waterAlarmInfoModel.setWaterAlarmStatus(result.getInt(0));
             waterAlarmInfoModel.setWaterAlarmPeriod(result.getInt(1));
             waterAlarmInfoModel.setAlarmTimezoneStart(result.getInt(2));

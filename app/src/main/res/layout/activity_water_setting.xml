@@ -7,7 +7,7 @@
     android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="55dp"
         android:background="@color/Primary"
         android:orientation="horizontal">
 
@@ -26,8 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textColor="@android:color/white"
-            android:textSize="25sp"
-            android:textStyle="bold"
+            android:textSize="20sp"
             android:text="물 마시기 설정" />
 
         <ImageButton
@@ -41,7 +40,7 @@
     <LinearLayout
         android:id="@+id/layout_water_volume"
         android:layout_width="match_parent"
-        android:layout_height="75dp"
+        android:layout_height="60dp"
         android:background="@android:color/white"
         android:orientation="horizontal">
 
@@ -51,7 +50,7 @@
             android:layout_gravity="start|center_vertical"
             android:layout_marginStart="15dp"
             android:layout_weight="1"
-            android:textSize="18sp"
+            android:textSize="15sp"
             android:text="@string/water_goal_volume" />
 
         <LinearLayout
@@ -62,8 +61,8 @@
             android:gravity="center_vertical|right">
 
             <ImageView
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:src="@drawable/icon_bottle_10" />
 
             <TextView
@@ -102,7 +101,7 @@
             <LinearLayout
                 android:id="@+id/id2"
                 android:layout_width="match_parent"
-                android:layout_height="75dp"
+                android:layout_height="60dp"
                 android:background="#ffffff"
                 android:elevation="2dp"
                 android:outlineProvider="bounds">
@@ -141,7 +140,7 @@
             <LinearLayout
                 android:id="@+id/id3"
                 android:layout_width="match_parent"
-                android:layout_height="75dp"
+                android:layout_height="60dp"
                 android:background="#ffffff"
                 android:elevation="3dp"
                 android:orientation="horizontal"
@@ -185,7 +184,7 @@
             <LinearLayout
                 android:id="@+id/id4"
                 android:layout_width="match_parent"
-                android:layout_height="75dp"
+                android:layout_height="60dp"
                 android:background="#ffffff"
                 android:elevation="4dp"
                 android:outlineProvider="bounds">
@@ -201,16 +200,16 @@
                         android:layout_centerVertical="true"
                         android:layout_gravity="left|center_vertical"
                         android:layout_marginLeft="15dp"
-                        android:textSize="18sp"
+                        android:textSize="15sp"
                         android:text="@string/water_alarm_setting" />
 
 
                     <com.zcw.togglebutton.ToggleButton
                         android:id="@+id/switch_button"
-                        android:layout_width="54dp"
-                        android:layout_height="30dp"
+                        android:layout_width="40dp"
+                        android:layout_height="25dp"
                         android:layout_gravity="right|center_vertical"
-                        android:layout_marginRight="10dp"
+                        android:layout_marginRight="20dp"
                         android:padding="16dp"
                         toggle:fli_borderWidth="0.45dp"
                         toggle:fli_offBorderColor="#ddd"

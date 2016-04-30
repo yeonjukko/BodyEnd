@@ -17,20 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right">
 
-        <com.balysv.materialripple.MaterialRippleLayout
-            android:id="@+id/rp_setting"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:mrl_rippleAlpha="0.05"
-            android:padding="10dp">
 
-            <ImageView
-
-                android:id="@+id/bt_setting"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:src="@drawable/icon_settings" />
-        </com.balysv.materialripple.MaterialRippleLayout>
 
     </LinearLayout>
 

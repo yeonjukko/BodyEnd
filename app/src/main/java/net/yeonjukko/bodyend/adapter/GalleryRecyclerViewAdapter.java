@@ -1,10 +1,9 @@
-package net.yeonjukko.bodyend.libs;
+package net.yeonjukko.bodyend.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,8 @@ import android.widget.ImageView;
 
 import net.yeonjukko.bodyend.R;
 import net.yeonjukko.bodyend.activity.GalleryActivity;
-import net.yeonjukko.bodyend.activity.GalleryModeFragment0;
+import net.yeonjukko.bodyend.fragment.GalleryModeFragment0;
+import net.yeonjukko.bodyend.libs.DBmanager;
 import net.yeonjukko.bodyend.model.UserRecordModel;
 
 import java.io.File;
@@ -45,25 +45,7 @@ public class GalleryRecyclerViewAdapter extends RecyclerView.Adapter<GalleryRecy
         this.mSelectedQueue = new LinkedList<>();
         mDBmanager = new DBmanager(mContext);
         mUserRecordModels = mDBmanager.selectUserRecordImage();
-        mUserRecordModels.addAll(mDBmanager.selectUserRecordImage());
-        mUserRecordModels.addAll(mDBmanager.selectUserRecordImage());
-        mUserRecordModels.addAll(mDBmanager.selectUserRecordImage());
-        mUserRecordModels.addAll(mDBmanager.selectUserRecordImage());
-        mUserRecordModels.addAll(mDBmanager.selectUserRecordImage());
-        mUserRecordModels.addAll(mDBmanager.selectUserRecordImage());
-        mUserRecordModels.addAll(mDBmanager.selectUserRecordImage());
-        mUserRecordModels.addAll(mDBmanager.selectUserRecordImage());
-        mUserRecordModels.addAll(mDBmanager.selectUserRecordImage());
-        mUserRecordModels.addAll(mDBmanager.selectUserRecordImage());
-        mUserRecordModels.addAll(mDBmanager.selectUserRecordImage());
-        mUserRecordModels.addAll(mDBmanager.selectUserRecordImage());
-        mUserRecordModels.addAll(mDBmanager.selectUserRecordImage());
-        mUserRecordModels.addAll(mDBmanager.selectUserRecordImage());
-        mUserRecordModels.addAll(mDBmanager.selectUserRecordImage());
-        mUserRecordModels.addAll(mDBmanager.selectUserRecordImage());
-        mUserRecordModels.addAll(mDBmanager.selectUserRecordImage());
-        mUserRecordModels.addAll(mDBmanager.selectUserRecordImage());
-        mUserRecordModels.addAll(mDBmanager.selectUserRecordImage());
+        
         bitmapOptions = new BitmapFactory.Options();
         bitmapOptions.inSampleSize = 4;
     }

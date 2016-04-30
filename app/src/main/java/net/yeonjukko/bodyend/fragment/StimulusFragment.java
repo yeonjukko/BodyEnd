@@ -31,19 +31,8 @@ public class StimulusFragment extends Fragment {
         final View rootView = inflater.inflate(R.layout.fragment_stimulus, container, false);
         dBmanager = new DBmanager(rootView.getContext());
 
-
-
         TextView tvDday = (TextView) rootView.findViewById(R.id.tv_d_day);
         TextView tvStimulusWord = (TextView) rootView.findViewById(R.id.tv_stimulus);
-        MaterialRippleLayout rippleView = (MaterialRippleLayout) rootView.findViewById(R.id.rp_setting);
-        rippleView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getContext(), DefaultSettingActivity.class);
-                startActivity(intent);
-                getActivity().finish();
-            }
-        });
 
         //레이아웃 데이터 설정
         DayCounter counter = new DayCounter();

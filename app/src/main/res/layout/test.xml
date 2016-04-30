@@ -1,25 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal">
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <CheckBox
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+
+        <ImageView
+            android:id="@+id/imageViewCompare0"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:textColor="@android:color/black"
-            android:text="출석체크"/>
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
+
         <TextView
-            android:gravity="center_vertical|right"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:paddingRight="10dp"
-            android:text="서울시 강동구 성내동 " />
+            android:layout_height="40dp"
+            android:background="@color/caldroid_555"
+            android:gravity="center"
+            android:text="Before" />
+
+        <TextView
+            android:id="@+id/textViewBeforeDay"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_gravity="bottom"
+            android:gravity="center"
+            android:background="@color/caldroid_555" />
 
     </FrameLayout>
 
-</RelativeLayout>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+
+        <ImageView
+            android:id="@+id/imageViewCompare1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@color/caldroid_555"
+            android:gravity="center"
+            android:text="After" />
+
+        <TextView
+            android:id="@+id/textViewAfterDay"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_gravity="bottom"
+            android:gravity="center"
+            android:background="@color/caldroid_555" />
+    </FrameLayout>
+
+
+</LinearLayout>

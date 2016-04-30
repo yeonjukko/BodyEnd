@@ -1,5 +1,6 @@
 package net.yeonjukko.bodyend.activity.settings;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -50,6 +51,9 @@ public class DefaultSettingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_default_setting);
         ImageButton ibBack = (ImageButton) findViewById(R.id.ib_exit);
+
+        ImageButton ibMenu = (ImageButton) findViewById(R.id.ib_menu);
+
         LinearLayout dayLayout = (LinearLayout) findViewById(R.id.layout_default_day);
         LinearLayout weightLayout = (LinearLayout) findViewById(R.id.layout_default_weight);
         LinearLayout pictureLayout = (LinearLayout) findViewById(R.id.layout_default_picture);
@@ -66,6 +70,12 @@ public class DefaultSettingActivity extends AppCompatActivity {
             }
         });
 
+        ibMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //menu 클릭
+            }
+        });
         //목표 날짜 설정
         dayLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,14 +124,14 @@ public class DefaultSettingActivity extends AppCompatActivity {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
                 View view = inflater.inflate(R.layout.dialog_setting_weight, null, false);
                 final EditText etGoalWeight = (EditText) view.findViewById(R.id.et_addr);
-                etGoalWeight.setText(model.getUserGoalWeight()+"");
-                etGoalWeight.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                etGoalWeight.setText(model.getUserGoalWeight() + "");
+                etGoalWeight.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
                 builder.setTitle("목표 체중을 입력해주세요.")
                         .setView(view)
                         .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                dBmanager.updateGoalWeight(Float.parseFloat(etGoalWeight.getText().toString()),counter.getToday());
+                                dBmanager.updateGoalWeight(Float.parseFloat(etGoalWeight.getText().toString()), counter.getToday());
                                 Toast.makeText(getContext(), "목표 체중이 변경되었습니다.", Toast.LENGTH_SHORT).show();
                             }
                         }).show();
@@ -138,6 +148,7 @@ public class DefaultSettingActivity extends AppCompatActivity {
         });
 
     }
+
     //<--Start of Pick Image
     public void pickImage() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -189,17 +200,6 @@ public class DefaultSettingActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        startMainActivity();
-        super.onBackPressed();
-    }
-
-    private void startMainActivity() {
-        Intent intent = new Intent(getContext(), MaterialActivity.class);
-        startActivity(intent);
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK && requestCode == UCrop.REQUEST_CROP) {
             mDestinationUri = UCrop.getOutput(data);
@@ -215,7 +215,7 @@ public class DefaultSettingActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-        }else if (resultCode == RESULT_OK && requestCode == PICK_PHOTO_FOR_AVATAR) {
+        } else if (resultCode == RESULT_OK && requestCode == PICK_PHOTO_FOR_AVATAR) {
             UCrop.of(data.getData(), mDestinationUri)
                     .withAspectRatio(9, 16)
                     .withMaxResultSize(1080, 1920)
@@ -226,5 +226,12 @@ public class DefaultSettingActivity extends AppCompatActivity {
             Log.d("mox", "croperror" + cropError.toString());
 
         }
+    }
+
+    @Override
+    public void finish() {
+        Intent intent = new Intent(this, MaterialActivity.class);
+        startActivity(intent);
+        super.finish();
     }
 }

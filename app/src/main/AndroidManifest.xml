@@ -27,11 +27,7 @@
         <activity
             android:name=".activity.TestActvity"
             android:theme="@style/MySettingTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".activity.InitTargetActivity"
@@ -60,7 +56,9 @@
         <activity
             android:name=".activity.settings.ExerciseManagerActivity"
             android:theme="@style/MyNoActionBar" />
-
+        <activity
+            android:name=".fragment.YoutubeMainActivity"
+            android:theme="@style/MyNoActionBar" />
         <activity
             android:name=".activity.YoutubePlayerActivity"
             android:theme="@style/MyNoActionBar" />
@@ -91,9 +89,15 @@
             android:name=".activity.MaterialActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="nosensor"
-            android:theme="@style/MyNoActionBar">
+            android:theme="@style/MyNavigationDrawerTheme"/>
+        <activity android:name=".activity.IntroActivity" android:theme="@style/MyNoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

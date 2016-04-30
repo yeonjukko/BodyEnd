@@ -3,33 +3,27 @@ package net.yeonjukko.bodyend.activity.settings;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
-import com.github.aakira.expandablelayout.Utils;
-
 import net.yeonjukko.bodyend.R;
+import net.yeonjukko.bodyend.activity.MaterialActivity;
 import net.yeonjukko.bodyend.libs.CheckableButton;
 import net.yeonjukko.bodyend.libs.DBmanager;
-import net.yeonjukko.bodyend.libs.DividerItemDecoration;
-import net.yeonjukko.bodyend.libs.ExercisesRecyclerViewAdapter;
-import net.yeonjukko.bodyend.libs.RecordItemModel;
-import net.yeonjukko.bodyend.libs.RecordRecyclerViewAdapter;
+import net.yeonjukko.bodyend.adapter.ExercisesRecyclerViewAdapter;
 import net.yeonjukko.bodyend.model.ExerciseSortInfoModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.UUID;
 
 public class ExerciseManagerActivity extends AppCompatActivity {
@@ -178,5 +172,12 @@ public class ExerciseManagerActivity extends AppCompatActivity {
 
     public Context getContext() {
         return this;
+    }
+
+    @Override
+    public void finish() {
+        Intent intent = new Intent(this, MaterialActivity.class);
+        startActivity(intent);
+        super.finish();
     }
 }

@@ -13,8 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import net.yeonjukko.bodyend.R;
-import net.yeonjukko.bodyend.fragment.RecordFragment;
-import net.yeonjukko.bodyend.fragment.StimulusFragment;
 import net.yeonjukko.bodyend.libs.DBmanager;
 import net.yeonjukko.bodyend.model.UserInfoModel;
 
@@ -22,8 +20,9 @@ import it.neokree.materialnavigationdrawer.elements.MaterialAccount;
 
 public class MainFragment extends Fragment {
     int MAX_PAGE = 2;
-    private Fragment cur_fragment;
-    public Fragment record_fragment;
+    private StimulusFragment mStimulusFragment;
+    private RecordFragment mRecordFragment;
+    private Fragment curFragment;
     private MaterialAccount account;
     UserInfoModel userInfoModel;
     View rootView;
@@ -33,36 +32,21 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.activity_main, null, false);
         final ViewPager viewPager = (ViewPager) rootView.findViewById(R.id.viewpager);
-        viewPager.setAdapter(new Adapter(getActivity().getSupportFragmentManager()));
         userInfoModel = new DBmanager(getContext()).selectUserInfoDB();
+
+        //null adapter 방지를 위해 fragment객체를 미리 생성
+        mStimulusFragment = new StimulusFragment();
+        mRecordFragment = new RecordFragment();
+
+        viewPager.setAdapter(new Adapter(getActivity().getSupportFragmentManager()));
+
+        //캘린더를 통해 접근한 경우는 1페이지로 바로 접근
         Intent intent = getActivity().getIntent();
         if (intent.getIntExtra("showDate", 0) != 0) {
             viewPager.setCurrentItem(1);
         }
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                if (position == 1) {
-
-                    if (((RecordFragment) record_fragment).adapter != null) {
-                        Log.d("mox", "onPageSelected");
-                        ((RecordFragment) record_fragment).adapter.notifyDataSetChanged();
-                    } else {
-                        Log.d("mox", "null");
-
-                    }
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-        });
+       
 
         return rootView;
     }
@@ -80,17 +64,11 @@ public class MainFragment extends Fragment {
             switch (position) {
 
                 case 0:
-                    cur_fragment = new StimulusFragment();
-                    break;
+                    return mStimulusFragment;
                 case 1:
-                    cur_fragment = new RecordFragment();
-                    record_fragment = cur_fragment;
-                    break;
-
-
+                    return mRecordFragment;
             }
-
-            return cur_fragment;
+            return null;
         }
 
         @Override

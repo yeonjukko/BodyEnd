@@ -1,4 +1,4 @@
-package net.yeonjukko.bodyend.libs;
+package net.yeonjukko.bodyend.adapter;
 /**
  * Created by yeonjukko on 16. 3. 16..
  */
@@ -16,6 +16,8 @@ import android.widget.TextView;
 
 import net.yeonjukko.bodyend.R;
 import net.yeonjukko.bodyend.activity.settings.ExerciseManagerActivity;
+import net.yeonjukko.bodyend.libs.CheckableButton;
+import net.yeonjukko.bodyend.libs.DBmanager;
 import net.yeonjukko.bodyend.model.ExerciseSortInfoModel;
 
 import java.util.List;

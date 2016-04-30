@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.roomorama.caldroid.CaldroidFragment;
 
 import net.yeonjukko.bodyend.R;
-import net.yeonjukko.bodyend.libs.BodyEndCalendarFragment;
+import net.yeonjukko.bodyend.fragment.CalendarFragment;
 
 import java.util.Calendar;
 
@@ -19,7 +19,7 @@ public class CalendarActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
 
-        fg = new BodyEndCalendarFragment();
+        fg = new CalendarFragment();
 
         Bundle args = new Bundle();
         Calendar cal = Calendar.getInstance();

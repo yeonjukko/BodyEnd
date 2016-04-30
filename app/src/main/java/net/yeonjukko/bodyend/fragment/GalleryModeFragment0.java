@@ -1,4 +1,4 @@
-package net.yeonjukko.bodyend.activity;
+package net.yeonjukko.bodyend.fragment;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import net.yeonjukko.bodyend.R;
-import net.yeonjukko.bodyend.libs.GalleryRecyclerViewAdapter;
+import net.yeonjukko.bodyend.adapter.GalleryRecyclerViewAdapter;
 import net.yeonjukko.bodyend.model.UserRecordModel;
 
 /**

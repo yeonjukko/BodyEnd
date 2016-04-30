@@ -13,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import net.yeonjukko.bodyend.R;
-import net.yeonjukko.bodyend.libs.VideoListRecyclerViewAdapter;
+import net.yeonjukko.bodyend.adapter.VideoListRecyclerViewAdapter;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

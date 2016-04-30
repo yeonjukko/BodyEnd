@@ -6,16 +6,19 @@
     android:background="@color/Background"
     android:orientation="vertical"
     tools:context="net.yeonjukko.bodyend.activity.settings.ExerciseSettingActivity">
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="55dp"
                 android:background="@color/Primary"
                 android:orientation="horizontal">
 
@@ -23,54 +26,53 @@
                     android:id="@+id/ib_back"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@null"
+                    android:layout_gravity="center"
                     android:layout_weight="3"
-                    android:src="@drawable/icon_back"
-                    android:layout_gravity="center"/>
+                    android:background="@null"
+                    android:src="@drawable/icon_back" />
 
                 <TextView
-                    android:layout_gravity="center"
-                    android:gravity="center"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="운동 설정"
                     android:textColor="@android:color/white"
-                    android:textSize="25sp"
-                    android:textStyle="bold"
-                    android:text="운동 설정" />
+                    android:textSize="20sp" />
 
                 <ImageButton
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@null"
+                    android:layout_gravity="center"
                     android:layout_weight="3"
-                    android:layout_gravity="center"/>
+                    android:background="@null" />
 
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/layout_exercise"
                 android:layout_width="match_parent"
-                android:orientation="horizontal"
+                android:layout_height="wrap_content"
                 android:background="@android:color/white"
-                android:layout_height="wrap_content">
+                android:orientation="horizontal">
 
                 <ImageView
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:layout_gravity="center_vertical|right"
-                    android:layout_marginStart="15dp"
                     android:layout_marginRight="10dp"
+                    android:layout_marginStart="15dp"
                     android:src="@drawable/icon_exercise" />
 
                 <TextView
                     android:id="@+id/tv_my_exercise"
                     android:layout_width="match_parent"
-                    android:layout_height="75dp"
+                    android:layout_height="60dp"
                     android:layout_marginLeft="10dp"
-                    android:textSize="18sp"
                     android:gravity="center_vertical"
-                    android:text="나만의 운동 만들기" />
+                    android:text="My 운동 설정"
+                    android:textSize="15sp" />
 
                 <View
                     android:layout_width="match_parent"
@@ -78,33 +80,35 @@
                     android:background="@color/Divider" />
 
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/Divider" />
+                android:layout_height="0.7dp"
+                android:background="@color/Divider2" />
+
             <LinearLayout
                 android:id="@+id/layout_attendance_spot"
                 android:layout_width="match_parent"
-                android:orientation="horizontal"
+                android:layout_height="wrap_content"
                 android:background="@android:color/white"
-                android:layout_height="wrap_content">
+                android:orientation="horizontal">
 
                 <ImageView
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     android:layout_gravity="center_vertical|right"
-                    android:layout_marginStart="15dp"
                     android:layout_marginRight="10dp"
+                    android:layout_marginStart="15dp"
                     android:src="@drawable/icon_map" />
 
                 <TextView
                     android:id="@+id/tv_attendance_spot"
                     android:layout_width="match_parent"
-                    android:layout_height="75dp"
+                    android:layout_height="60dp"
                     android:layout_marginLeft="10dp"
-                    android:textSize="18sp"
                     android:gravity="center_vertical"
-                    android:text="출석 체크 장소 설정" />
+                    android:text="출석 체크 장소 설정"
+                    android:textSize="15sp" />
 
                 <View
                     android:id="@+id/myView"
@@ -113,18 +117,21 @@
                     android:background="@color/Divider" />
 
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/Divider">
+                android:layout_height="40dp"
+                android:background="@color/Divider2">
                 <TextView
+                    android:padding="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="3dp"
-                    android:layout_marginStart="7dp"
-                    android:textColor="@android:color/white"
+                    android:layout_marginStart="15dp"
+                    android:textColor="@color/DividerText"
+                    android:layout_gravity="center_vertical"
                     android:text="저장된 출석 체크 장소"/>
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/layout_attendance_spot_2"
                 android:layout_width="match_parent"
@@ -149,8 +156,8 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:background="@color/Divider" />
+                    android:layout_height="0.7dp"
+                    android:background="@color/Divider2" />
 
             </LinearLayout>
 

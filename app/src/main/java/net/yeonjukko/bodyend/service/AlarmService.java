@@ -67,7 +67,7 @@ public class AlarmService extends Service {
             if (nowHour >= mWaterAlarmInfoModel.getAlarmTimezoneStart() && nowHour < mWaterAlarmInfoModel.getAlarmTimezoneStop()) {
                 NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getContext())
                         .setContentTitle("물 마실 시간입니다.")
-                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setSmallIcon(R.drawable.ic_stat_name)
                         .setContentText("Hello World!")
                         .setAutoCancel(true)
                         .setContentIntent(PendingIntent.getActivity(getContext(), CALL_MAIN_ACTIVITY_CODE, new Intent(getContext(), MaterialActivity.class), PendingIntent.FLAG_UPDATE_CURRENT))

@@ -1,4 +1,4 @@
-package net.yeonjukko.bodyend.libs;
+package net.yeonjukko.bodyend.adapter;
 /**
  * Created by yeonjukko on 16. 3. 16..
  */
@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +16,7 @@ import android.widget.TextView;
 
 import net.yeonjukko.bodyend.R;
 import net.yeonjukko.bodyend.activity.YoutubePlayerActivity;
+import net.yeonjukko.bodyend.libs.AndroidImage2Bitmap;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
