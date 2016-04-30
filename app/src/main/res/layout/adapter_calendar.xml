@@ -49,6 +49,15 @@
                 android:layout_gravity="right"
                 android:src="@drawable/icon_attendance" />
 
+            <TextView
+                android:id="@+id/textViewDDay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="D-Day"
+                android:textColor="@android:color/white"
+                android:textSize="16dp"
+                android:visibility="gone" />
         </FrameLayout>
 
 

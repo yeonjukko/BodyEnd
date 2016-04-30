@@ -137,8 +137,13 @@ public class CalendarFragment extends CaldroidFragment {
                 mTextViewDay.setTextColor(Color.BLACK);
             }
 
+            cellView.findViewById(R.id.textViewDDay).setVisibility(View.GONE);
+
             if (parseDate == today) {
                 cellView.findViewById(R.id.layoutCalendarCellMain).setBackgroundResource(R.drawable.background_calendar_today);
+            } else if (parseDate == mUserInfoModel.getGoalDate()) {
+                cellView.findViewById(R.id.layoutCalendarCellMain).setBackgroundResource(R.color.Primary);
+                cellView.findViewById(R.id.textViewDDay).setVisibility(View.VISIBLE);
             } else {
                 cellView.findViewById(R.id.layoutCalendarCellMain).setBackgroundResource(R.drawable.background_calendar_nomal);
             }
@@ -292,7 +297,7 @@ public class CalendarFragment extends CaldroidFragment {
             addView(mImageViewSort);
             TextView mTextViewContents = new TextView(getContext());
             mTextViewContents.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 13);
-            mTextViewContents.setText(" "+contents);
+            mTextViewContents.setText(" " + contents);
             addView(mTextViewContents);
         }
 

@@ -45,7 +45,7 @@ public class GalleryRecyclerViewAdapter extends RecyclerView.Adapter<GalleryRecy
         this.mSelectedQueue = new LinkedList<>();
         mDBmanager = new DBmanager(mContext);
         mUserRecordModels = mDBmanager.selectUserRecordImage();
-        
+
         bitmapOptions = new BitmapFactory.Options();
         bitmapOptions.inSampleSize = 4;
     }
@@ -56,54 +56,67 @@ public class GalleryRecyclerViewAdapter extends RecyclerView.Adapter<GalleryRecy
     }
 
     @Override
-    public void onBindViewHolder(final ImageViewHolder holder, final int position) {
+    public void onBindViewHolder(final ImageViewHolder holder, int position) {
 
         if (isSelectMode) {
+            holder.mLayoutSelected.setVisibility(View.GONE);
             for (int selected : mSelectedQueue) {
-                if (selected == position) {
+                if (selected == holder.getAdapterPosition()) {
                     holder.mLayoutSelected.setVisibility(View.VISIBLE);
                     break;
-                } else {
-                    holder.mLayoutSelected.setVisibility(View.GONE);
                 }
             }
         } else {
             holder.mLayoutSelected.setVisibility(View.GONE);
         }
 
-        new ImageLoadThread(holder.mImageViewBody, mUserRecordModels.get(position).getPictureRecord()).start();
+        new ImageLoadThread(holder.mImageViewBody, mUserRecordModels.get(holder.getAdapterPosition()).getPictureRecord()).start();
         holder.mImageViewBody.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UserRecordModel data = mUserRecordModels.get(position);
+                UserRecordModel data = mUserRecordModels.get(holder.getAdapterPosition());
                 if (isSelectMode) {
                     if (holder.mLayoutSelected.getVisibility() == View.VISIBLE) {
                         for (int i = 0; i < mSelectedQueue.size(); i++) {
-                            if (((LinkedList<Integer>) mSelectedQueue).get(i) == position) {
+                            if (((LinkedList<Integer>) mSelectedQueue).get(i) == holder.getAdapterPosition()) {
                                 ((LinkedList<Integer>) mSelectedQueue).remove(i);
+                                break;
                             }
                         }
                     } else {
-                        if (mSelectedQueue.size() >= 2) {
+                        if (mSelectedQueue.size() == 2) {
                             notifyItemChanged(mSelectedQueue.poll());
                         }
-                        mSelectedQueue.add(position);
+                        mSelectedQueue.add(holder.getAdapterPosition());
                     }
-                    notifyItemChanged(position);
+                    notifyItemChanged(holder.getAdapterPosition());
                     changeTitle();
                 } else {
                     mGalleryModeFragment0.showBigImage(data.getPictureRecord());
+                    GalleryActivity activity = (GalleryActivity) mContext;
+                    activity.changeTitleSaveNormal(data.getPictureRecord());
                 }
             }
         });
+        if (!isSelectMode) {
+            holder.mImageViewBody.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    isSelectMode = true;
+                    mSelectedQueue.add(holder.getAdapterPosition());
+                    changeTitle();
+                    notifyDataSetChanged();
+                    return true;
+                }
+            });
+        }
     }
 
     private void changeTitle() {
         GalleryActivity activity = (GalleryActivity) mContext;
         activity.changeTitle(mSelectedQueue.size());
-        ((GalleryActivity) mContext).imageButtonStyleChange(mSelectedQueue.size());
-
     }
+
 
     @Override
     public int getItemCount() {
