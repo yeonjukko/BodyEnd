@@ -658,6 +658,33 @@ public class DBmanager {
         return mCalendarContentsModels;
     }
 
+    public ArrayList<UserRecordModel> selectGraphData() {
+        String SELECT_RECORD_INFO_ALL = "SELECT * FROM " + DATABASE_TABLE_2;
+
+        ArrayList<UserRecordModel> mUserRecordModels = new ArrayList<>();
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        Cursor result = db.rawQuery(SELECT_RECORD_INFO_ALL, null);
+
+        while (result.moveToNext()) {
+            String imagePath = result.getString(1);
+            UserRecordModel userRecordModel = new UserRecordModel();
+            userRecordModel.setRecordDate(result.getInt(0));
+            userRecordModel.setPictureRecord(imagePath);
+            userRecordModel.setWeightRecord(result.getFloat(2));
+            userRecordModel.setWaterRecord(result.getInt(3));
+            userRecordModel.setWaterVolume(result.getInt(4));
+            userRecordModel.setMealBreakfast(result.getString(5));
+            userRecordModel.setMealLunch(result.getString(6));
+            userRecordModel.setMealDinner(result.getString(7));
+            userRecordModel.setMealRefreshments(result.getString(8));
+            mUserRecordModels.add(userRecordModel);
+        }
+        result.close();
+        db.close();
+        return mUserRecordModels;
+    }
+
     public ArrayList<UserRecordModel> selectUserRecordImage() {
         String SELECT_RECORD_INFO_ALL = "SELECT * FROM " + DATABASE_TABLE_2;
 
