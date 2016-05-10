@@ -88,7 +88,10 @@ public class GalleryActivity extends AppCompatActivity implements View.OnClickLi
                     if (selected == null) {
                         throw new IndexOutOfBoundsException("2개 이상 선택 안됐음.");
                     }
-                    mGalleryModeFragment1 = new GalleryModeFragment1(selected);
+                    mGalleryModeFragment1 = new GalleryModeFragment1();
+                    Bundle data = new Bundle();
+                    data.putSerializable("data", selected);
+                    mGalleryModeFragment1.setArguments(data);
                     getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.layoutGalleryMain, mGalleryModeFragment1).commit();
                 } else if (mImageButtonStyleChange.getTag().equals(TAG_STYLE_SAVE_COMPARE)) {
                     if (mGalleryModeFragment1.saveImage()) {

@@ -1,11 +1,12 @@
 package net.yeonjukko.bodyend.model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 /**
  * Created by yeonjukko on 16. 3. 17..
  */
-public class UserRecordModel {
+public class UserRecordModel implements Serializable {
     private int recordDate;
     private String pictureRecord;
     private float weightRecord;
