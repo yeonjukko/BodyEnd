@@ -10,6 +10,8 @@
     <color name="Primary_light">#B2EBF2</color>
     <color name="Accent">#FF9AA4</color>
     <color name="AccentAlpha">#CCFF9AA4</color>
+    <color name="AccentAlpha2">#CCffff00</color>
+
 
     <color name="Layout">#FFB1AC</color>
 

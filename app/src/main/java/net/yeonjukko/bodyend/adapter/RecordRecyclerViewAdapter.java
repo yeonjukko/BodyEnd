@@ -389,7 +389,11 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                                 .setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-
+                                    }
+                                })
+                                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
                                         LocationManager manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
                                         boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
                                         if (statusOfGPS) {
@@ -405,21 +409,20 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                                             Toast.makeText(context, "GPS을 켜고 출석체크하세요.", Toast.LENGTH_SHORT).show();
                                             holderExercise.cbAttendance.setChecked(false);
                                         }
-
-                                    }
-                                })
-                                .setPositiveButton("추가", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        Intent intent = new Intent(context, AttendanceMapAcitivity.class);
-                                        recordFragemnt.startActivityForResult(intent, REQUEST_SPOT_NAME);
-                                        holderExercise.cbAttendance.setChecked(false);
                                     }
                                 })
                                 .setCancelable(false)
                                 .setNegativeButton("취소", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
+                                        holderExercise.cbAttendance.setChecked(false);
+                                    }
+                                })
+                                .setNeutralButton("추가", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent intent = new Intent(context, AttendanceMapAcitivity.class);
+                                        recordFragemnt.startActivityForResult(intent, REQUEST_SPOT_NAME);
                                         holderExercise.cbAttendance.setChecked(false);
                                     }
                                 })

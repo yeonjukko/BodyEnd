@@ -98,7 +98,7 @@ public class MaterialActivity extends MaterialNavigationDrawer {
         });
         addSection(calendarSection);
 
-        MaterialSection youtubeSection = newSection("유투브다이어트", R.drawable.icon_youtube_2, new MaterialSectionListener() {
+        MaterialSection youtubeSection = newSection("유투브 다이어트", R.drawable.icon_youtube_2, new MaterialSectionListener() {
             @Override
             public void onClick(MaterialSection section) {
                 Intent intent = new Intent(MaterialActivity.this, YoutubeMainActivity.class);
@@ -108,7 +108,7 @@ public class MaterialActivity extends MaterialNavigationDrawer {
         });
         addSection(youtubeSection);
 
-        MaterialSection gallerySection = newSection("비포&애프터", R.drawable.icon_before_after, new MaterialSectionListener() {
+        MaterialSection gallerySection = newSection("비포 & 애프터", R.drawable.icon_before_after, new MaterialSectionListener() {
             @Override
             public void onClick(MaterialSection section) {
                 Intent intent = new Intent(MaterialActivity.this, GalleryActivity.class);
@@ -116,6 +116,26 @@ public class MaterialActivity extends MaterialNavigationDrawer {
             }
         });
         addSection(gallerySection);
+
+        MaterialSection graphSection = newSection("통계", R.drawable.icon_graph, new MaterialSectionListener() {
+            @Override
+            public void onClick(MaterialSection section) {
+                Intent intent = new Intent(MaterialActivity.this, GraphActivity.class);
+                startActivity(intent);
+            }
+        });
+        addSection(graphSection);
+
+        MaterialSection betaSection = newSection("고객센터", R.mipmap.ic_launcher, new MaterialSectionListener() {
+            @Override
+            public void onClick(MaterialSection section) {
+                Intent intent = new Intent(MaterialActivity.this, BetaActivity.class);
+                startActivity(intent);
+            }
+        });
+        addSection(betaSection);
+
+
         addDivisor();
         MaterialSection settingSection = newSection("기본 설정", R.drawable.icon_setting, new MaterialSectionListener() {
             @Override

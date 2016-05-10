@@ -107,7 +107,6 @@ public class YoutubeFragmentSub3 extends Fragment {
             }
         });
 
-        //TODO:서버연동
 
 
         return rootView;
