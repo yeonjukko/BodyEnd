@@ -128,12 +128,17 @@ public class DBmanager {
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-            //version 4
-            db.execSQL(DATABASE_ALTER_1_1);
-            db.execSQL(DATABASE_ALTER_1_2);
-            db.execSQL(DATABASE_ALTER_1_3);
-            db.execSQL(DATABASE_ALTER_1_4);
+            if (oldVersion < 4) {
+                try {
+                    //version 4
+                    db.execSQL(DATABASE_ALTER_1_1);
+                    db.execSQL(DATABASE_ALTER_1_2);
+                    db.execSQL(DATABASE_ALTER_1_3);
+                    db.execSQL(DATABASE_ALTER_1_4);
+                } catch (Exception e) {
 
+                }
+            }
         }
 
     }
