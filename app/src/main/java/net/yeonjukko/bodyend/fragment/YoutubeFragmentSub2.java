@@ -31,12 +31,16 @@ public class YoutubeFragmentSub2 extends Fragment {
     public long id;
     public String title;
 
-    public YoutubeFragmentSub2(long selectId,String selectTitle) {
-        super();
-        id = selectId;
-        title = selectTitle;
+    public YoutubeFragmentSub2() {
+
     }
 
+    @Override
+    public void setArguments(Bundle args) {
+        super.setArguments(args);
+        id = args.getLong("selectId");
+        title = args.getString("selectTitle");
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

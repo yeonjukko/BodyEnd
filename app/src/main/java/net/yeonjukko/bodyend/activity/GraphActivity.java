@@ -2,6 +2,7 @@ package net.yeonjukko.bodyend.activity;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.FloatRange;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -166,12 +167,12 @@ public class GraphActivity extends AppCompatActivity {
         TextView tvChanged = (TextView) findViewById(R.id.tv_changed);
         float changed = startWeight - currWeight;
         if (changed > 0) {
-            tvChanged.setText("-" + changed + "kg");
+            tvChanged.setText("-" + String.format("%.1f",changed) + "kg");
             tvChanged.setTextColor(getResources().getColor(R.color.caldroid_holo_blue_dark));
         } else if (changed == 0) {
             tvChanged.setText("-");
         } else if (changed < 0) {
-            tvChanged.setText("+" + changed + "kg");
+            tvChanged.setText("+" + String.format("%.1f",changed) + "kg");
             tvChanged.setTextColor(getResources().getColor(R.color.material_red_A700));
         }
 
