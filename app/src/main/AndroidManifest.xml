@@ -59,6 +59,7 @@
             android:theme="@style/MyNoActionBar" />
         <activity
             android:name=".activity.YoutubePlayerActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|layoutDirection"
             android:theme="@style/MyNoActionBar" />
         <activity
             android:name=".activity.settings.DefaultSettingActivity"
