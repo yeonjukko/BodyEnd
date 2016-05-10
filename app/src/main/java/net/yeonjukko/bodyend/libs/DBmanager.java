@@ -44,7 +44,7 @@ public class DBmanager {
     private static final String DATABASE_TABLE_9 = "EXERCISE_YOUTUBE_RECORD";
     private static final String DATABASE_TABLE_10 = "MY_YOUTUBE_INFO";
 
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
 
     // DB관련 객체 선언
     private DatabaseHelper mDbHelper;
@@ -128,17 +128,22 @@ public class DBmanager {
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-            if (oldVersion < 4) {
-                try {
-                    //version 4
-                    db.execSQL(DATABASE_ALTER_1_1);
-                    db.execSQL(DATABASE_ALTER_1_2);
-                    db.execSQL(DATABASE_ALTER_1_3);
-                    db.execSQL(DATABASE_ALTER_1_4);
-                } catch (Exception e) {
-
-                }
+            switch (oldVersion) {
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                    try {
+                        db.execSQL(DATABASE_CREATE_10);
+                        db.execSQL(DATABASE_ALTER_1_1);
+                        db.execSQL(DATABASE_ALTER_1_2);
+                        db.execSQL(DATABASE_ALTER_1_3);
+                        db.execSQL(DATABASE_ALTER_1_4);
+                    } catch (Exception ignored) {
+                    }
             }
+
         }
 
     }
