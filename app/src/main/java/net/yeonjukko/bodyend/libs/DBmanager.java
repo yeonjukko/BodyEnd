@@ -14,10 +14,14 @@ import net.yeonjukko.bodyend.model.ExerciseAttendanceInfoModel;
 import net.yeonjukko.bodyend.model.ExerciseJoinSortInfoModel;
 import net.yeonjukko.bodyend.model.ExerciseSortInfoModel;
 import net.yeonjukko.bodyend.model.ExerciseSpotInfoModel;
+import net.yeonjukko.bodyend.model.MyYoutubeInfoModel;
 import net.yeonjukko.bodyend.model.UserInfoModel;
 import net.yeonjukko.bodyend.model.UserRecordModel;
 import net.yeonjukko.bodyend.model.WaterAlarmInfoModel;
 import net.yeonjukko.bodyend.model.YoutubeRecordModel;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +44,7 @@ public class DBmanager {
     private static final String DATABASE_TABLE_9 = "EXERCISE_YOUTUBE_RECORD";
     private static final String DATABASE_TABLE_10 = "MY_YOUTUBE_INFO";
 
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 5;
 
     // DB관련 객체 선언
     private DatabaseHelper mDbHelper;
@@ -79,7 +83,13 @@ public class DBmanager {
             " (YOUTUBE_TITLE TEXT , YOUTUBE_ID TEXT, EXERCISE_DATE INTEGER)";
 
     private static final String DATABASE_CREATE_10 = "CREATE TABLE " + DATABASE_TABLE_10 +
-            " (YOUTUBE_ID TEXT)";
+            " (YOUTUBE_ID TEXT, YOUTUBE_TITLE TEXT, VIDEO_DURA INTEGER , VIDEO_THUMBS TEXT, VIDEO_VIEW_COUNT INTEGER)";
+
+    private static final String DATABASE_ALTER_1_1 = "ALTER TABLE " + DATABASE_TABLE_10 + " ADD COLUMN YOUTUBE_TITLE TEXT";
+    private static final String DATABASE_ALTER_1_2 = "ALTER TABLE " + DATABASE_TABLE_10 + " ADD COLUMN VIDEO_DURA INTEGER";
+    private static final String DATABASE_ALTER_1_3 = "ALTER TABLE " + DATABASE_TABLE_10 + " ADD COLUMN VIDEO_THUMBS TEXT";
+    private static final String DATABASE_ALTER_1_4 = "ALTER TABLE " + DATABASE_TABLE_10 + " ADD COLUMN VIDEO_VIEW_COUNT INTEGER";
+
 
     // 부가적인 객체들
     private Context context;
@@ -113,11 +123,26 @@ public class DBmanager {
             db.execSQL(DATABASE_CREATE_9);
             db.execSQL(DATABASE_CREATE_10);
 
-
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+            switch (oldVersion) {
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                    try {
+                        db.execSQL(DATABASE_CREATE_10);
+                        db.execSQL(DATABASE_ALTER_1_1);
+                        db.execSQL(DATABASE_ALTER_1_2);
+                        db.execSQL(DATABASE_ALTER_1_3);
+                        db.execSQL(DATABASE_ALTER_1_4);
+                    } catch (Exception ignored) {
+                    }
+            }
 
         }
 
@@ -139,15 +164,21 @@ public class DBmanager {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(DELETE_SPOT);
         db.close();
+        mDbHelper.close();
+
     }
 
-    public void insertMyYoutube(String youtubeId) {
-        String INSERT_YOUTUBE_ID = "INSERT INTO " + DATABASE_TABLE_10 + " VALUES" + " ('" + youtubeId + "')";
+    public void insertMyYoutube(MyYoutubeInfoModel model) {
+
+        String INSERT_YOUTUBE_ID = "INSERT INTO " + DATABASE_TABLE_10 + " VALUES" + " ('" + model.getYtId() + "','"
+                + model.getYtTitle() + "'," + model.getYtDuration() + ",'"
+                + model.getYtThumbs() + "'," + model.getYtViewCount() + ")";
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(INSERT_YOUTUBE_ID);
         mDbHelper.close();
         db.close();
+
     }
 
     public void insertVideoCheck(YoutubeRecordModel model) {
@@ -155,8 +186,9 @@ public class DBmanager {
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(INSERT_YOUTUBE_RECORD);
-
         db.close();
+        mDbHelper.close();
+
     }
 
     public void updateCheckStatus(String id, int date, boolean isChecked) {
@@ -173,6 +205,8 @@ public class DBmanager {
             Log.d("mox", "delete");
         }
         db.close();
+        mDbHelper.close();
+
     }
 
     public void updatePictureRecord(String imgPath, int date) {
@@ -182,6 +216,8 @@ public class DBmanager {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(UPDATE_IMAGE);
         db.close();
+        mDbHelper.close();
+
     }
 
     public void updateBreakfast(String breakfast, int date) {
@@ -191,6 +227,8 @@ public class DBmanager {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(UPDATE_MEAL_BREAKFAST);
         db.close();
+        mDbHelper.close();
+
     }
 
     public void updateLunch(String lunch, int date) {
@@ -199,6 +237,8 @@ public class DBmanager {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(UPDATE_MEAL_LUNCH);
         db.close();
+        mDbHelper.close();
+
     }
 
     public void updateDinner(String dinner, int date) {
@@ -209,6 +249,8 @@ public class DBmanager {
         db.execSQL(UPDATE_MEAL_DINNER);
 
         db.close();
+        mDbHelper.close();
+
     }
 
     public void updateRefreshment(String refreshment, int date) {
@@ -219,6 +261,8 @@ public class DBmanager {
         db.execSQL(UPDATE_MEAL_REFRESHMENT);
 
         db.close();
+        mDbHelper.close();
+
     }
 
     public void updateStimulusPic(String pic) {
@@ -227,6 +271,8 @@ public class DBmanager {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(UPDATE_STIMULUS_PICTURE);
         db.close();
+        mDbHelper.close();
+
     }
 
     public void updateStimulusWord(String word) {
@@ -235,6 +281,8 @@ public class DBmanager {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(UPDATE_STIMULUS_WORD);
         db.close();
+        mDbHelper.close();
+
     }
 
     public void updateGoalWeight(float weight, int date) {
@@ -246,6 +294,8 @@ public class DBmanager {
         db.execSQL(UPDATE_GOAL_WEIGHT);
         db.execSQL(UPDATE_WEIGHT_RECORD);
         db.close();
+        mDbHelper.close();
+
     }
 
     public void updateGoalDate(int date) {
@@ -254,6 +304,8 @@ public class DBmanager {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(UPDATE_GOAL_DATE);
         db.close();
+        mDbHelper.close();
+
     }
 
     public void updateCurrWeight(float weight, int date) {
@@ -264,6 +316,8 @@ public class DBmanager {
         db.execSQL(UPDATE_CURR_WEIGHT_RECORD);
         db.execSQL(UPDATE_TODAY_WEIGHT_RECORD);
         db.close();
+        mDbHelper.close();
+
     }
 
     public void updateWaterAlarmTime(int start, int stop) {
@@ -272,6 +326,8 @@ public class DBmanager {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(UPDATE_WATER_TIME);
         db.close();
+        mDbHelper.close();
+
     }
 
     public void updateWaterAlarmPeriod(int period) {
@@ -280,6 +336,8 @@ public class DBmanager {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(UPDATE_WATER_PERIOD);
         db.close();
+        mDbHelper.close();
+
     }
 
     /**
@@ -292,6 +350,8 @@ public class DBmanager {
         db.execSQL(UPDATE_WATER_STATUS);
         PrintData();
         db.close();
+        mDbHelper.close();
+
     }
 
     public void updateWaterRecord(int drinkWater, int date) {
@@ -300,7 +360,10 @@ public class DBmanager {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(UPDATE_WATER_RECORD);
         PrintData();
+
         db.close();
+        mDbHelper.close();
+
     }
 
     //1:유산소 0:무산소 2:유투브
@@ -315,6 +378,7 @@ public class DBmanager {
         db.execSQL(INSERT_EXERCISE_SORT);
         db.execSQL(INSERT_EXERCISE_SORT_CLONE);
 
+        mDbHelper.close();
         db.close();
     }
 
@@ -328,6 +392,7 @@ public class DBmanager {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(INSERT_EXERCISE_SPOT);
         db.close();
+        mDbHelper.close();
     }
 
     public void insertExerciseSpotAttendance(ExerciseAttendanceInfoModel model) {
@@ -339,6 +404,7 @@ public class DBmanager {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(INSERT_EXERCISE_ATTEND);
         db.close();
+        mDbHelper.close();
     }
 
     public void insertWaterAlarmInfoDB(WaterAlarmInfoModel model) {
@@ -349,8 +415,8 @@ public class DBmanager {
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL(INSERT_WATER_ALARM_INFO);
-        PrintData();
         db.close();
+        mDbHelper.close();
     }
 
     public void insertUserInfoDB(UserInfoModel model) {
@@ -364,8 +430,8 @@ public class DBmanager {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         //db.execSQL("delete from " + DATABASE_TABLE_1);
         db.execSQL(INSERT_BODY_INFO);
-        PrintData();
         db.close();
+        mDbHelper.close();
     }
 
     public void insertUserRecordDB(UserRecordModel model) {
@@ -386,24 +452,31 @@ public class DBmanager {
         }
 
         PrintData();
+        mDbHelper.close();
         db.close();
 
     }
 
-    public ArrayList<String> selectMyYoutube() {
+    public JSONArray selectMyYoutube() {
         String SELECT_YOUTUBE_INFO = "SELECT * FROM " + DATABASE_TABLE_10;
         this.mDbHelper = new DatabaseHelper(context);
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
         Cursor result = db.rawQuery(SELECT_YOUTUBE_INFO, null);
-        ArrayList<String> youtubeList = new ArrayList<>();
+        JSONArray youtubeLists = new JSONArray();
         // result(Cursor 객체)가 비어 있으면 false 리턴
         while (result.moveToNext()) {
-            youtubeList.add(result.getString(0));
+            JSONObject data = new JSONObject();
+            data.put("video_id", result.getString(0));
+            data.put("video_title", result.getString(1));
+            data.put("video_duration", result.getLong(2));
+            data.put("video_thumbs", result.getString(3));
+            data.put("video_view_count", result.getLong(4));
+            youtubeLists.add(data);
         }
         result.close();
         db.close();
         mDbHelper.close();
-        return youtubeList;
+        return youtubeLists;
     }
 
     public ArrayList<YoutubeRecordModel> selectYoutubeInfo(int date) {
@@ -419,9 +492,10 @@ public class DBmanager {
             youtubeRecordModel.setYoutubeId(result.getString(1));
             youtubeRecordModel.setExerciseDate(result.getInt(2));
             youtubeRecordModels.add(youtubeRecordModel);
-
         }
         result.close();
+        db.close();
+        mDbHelper.close();
         return youtubeRecordModels;
     }
 
@@ -447,6 +521,8 @@ public class DBmanager {
         }
 
         result.close();
+        db.close();
+        mDbHelper.close();
         return sortInfoModels;
     }
 
@@ -484,6 +560,8 @@ public class DBmanager {
         }
 
         result.close();
+        db.close();
+        mDbHelper.close();
         return sortJoinInfoModels;
     }
 
@@ -504,6 +582,8 @@ public class DBmanager {
             spotInfoModel.setAttendanceDay(result.getInt(4));
         }
         result.close();
+        db.close();
+        mDbHelper.close();
         return spotInfoModel;
     }
 
@@ -527,6 +607,8 @@ public class DBmanager {
         }
 
         result.close();
+        db.close();
+        mDbHelper.close();
         return spotInfoModels;
     }
 
@@ -545,6 +627,8 @@ public class DBmanager {
             attendInfoModel = null;
         }
         result.close();
+        db.close();
+        mDbHelper.close();
         return attendInfoModel;
     }
 
@@ -569,7 +653,8 @@ public class DBmanager {
             userInfoModel.setStimulusPicture(result.getString(7));
         }
         result.close();
-
+        db.close();
+        mDbHelper.close();
         return userInfoModel;
     }
 
@@ -601,6 +686,7 @@ public class DBmanager {
 
         result.close();
         db.close();
+        mDbHelper.close();
         return userRecordModel;
 
     }
@@ -627,6 +713,7 @@ public class DBmanager {
 
         result.close();
         db.close();
+        mDbHelper.close();
         return userRecordModel;
     }
 
@@ -712,6 +799,7 @@ public class DBmanager {
         }
         result.close();
         db.close();
+        mDbHelper.close();
         return mUserRecordModels;
     }
 

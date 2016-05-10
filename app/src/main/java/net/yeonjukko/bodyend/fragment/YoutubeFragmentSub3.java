@@ -1,6 +1,8 @@
 package net.yeonjukko.bodyend.fragment;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,8 +19,17 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import net.yeonjukko.bodyend.R;
+import net.yeonjukko.bodyend.adapter.VideoListRecyclerViewAdapter;
 import net.yeonjukko.bodyend.libs.DBmanager;
+import net.yeonjukko.bodyend.model.MyYoutubeInfoModel;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
+
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 
 
@@ -27,6 +38,8 @@ public class YoutubeFragmentSub3 extends Fragment {
     DBmanager dBmanager;
     LinearLayout ifNodataLayout;
     RecyclerView recyclerViewYoutube;
+    public static final String DEFAULT_URL = "http://yeonjukko.net:7533/getVideoInfo?id=";
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -34,7 +47,6 @@ public class YoutubeFragmentSub3 extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_youtube_sub_3, container, false);
         ImageButton ibBack = (ImageButton) rootView.findViewById(R.id.ib_icon_back);
         ImageButton ibPlus = (ImageButton) rootView.findViewById(R.id.ib_plus_sort);
-        ifNodataLayout = (LinearLayout) rootView.findViewById(R.id.if_no_data);
         recyclerViewYoutube = (RecyclerView) rootView.findViewById(R.id.recyclerViewYoutube);
         recyclerViewYoutube.setLayoutManager(new LinearLayoutManager(getContext()));
         dBmanager = new DBmanager(getContext());
@@ -62,27 +74,75 @@ public class YoutubeFragmentSub3 extends Fragment {
                         .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                dBmanager.insertMyYoutube(etYoutube.getText().toString());
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        JSONObject result = (JSONObject) addMyYoutube(etYoutube.getText().toString());
+                                        if (result != null) {
+                                            JSONObject data = (JSONObject) result.get("contents");
+                                            MyYoutubeInfoModel model = new MyYoutubeInfoModel();
+                                            model.setYtId(data.get("video_id").toString());
+                                            model.setYtTitle(data.get("video_title").toString());
+                                            model.setYtDuration(Integer.parseInt(data.get("video_duration").toString()));
+                                            model.setYtViewCount(Integer.parseInt(data.get("video_view_count").toString()));
+                                            model.setYtThumbs(data.get("video_thumbs").toString());
+                                            dBmanager.insertMyYoutube(model);
+                                            Log.d("mox", "완료");
+                                            getActivity().runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    Toast.makeText(getContext(), "나의 유투브가 추가 되었습니다.", Toast.LENGTH_SHORT).show();
+
+                                                }
+                                            });
+
+                                        }
+                                    }
+                                }).start();
+
+
                                 setLayout();
-                                Toast.makeText(getContext(), "나의 유투브가 추가 되었습니다.", Toast.LENGTH_SHORT).show();
                             }
                         }).show();
             }
         });
 
 
+
         return rootView;
     }
 
+    public Object addMyYoutube(String id) {
+        try {
+            URL url = new URL(DEFAULT_URL + id);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setDoInput(true);
+            connection.setConnectTimeout(3000);
+            connection.connect();
+            return JSONValue.parse(new InputStreamReader(connection.getInputStream()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        // TODO: 16. 5. 1. 삭제기능 추가 및 널 추가 방지 유투브 가로로 봤을때 체크안됨현상
+    }
+
     public void setLayout() {
-        ArrayList<String> youtubeList = dBmanager.selectMyYoutube();
+        JSONArray youtubeList = dBmanager.selectMyYoutube();
         if (youtubeList.size() == 0) {
+            Toast.makeText(getContext(), "추가한 동영상이 없습니다.", Toast.LENGTH_SHORT).show();
         } else {
-            ifNodataLayout.setVisibility(View.GONE);
-            Log.d("mox",youtubeList.get(0).toString());
+            VideoListRecyclerViewAdapter viewAdapter = new VideoListRecyclerViewAdapter(youtubeList);
+            recyclerViewYoutube.setAdapter(viewAdapter);
+
+
+            Log.d("mox", youtubeList.get(0).toString());
 
 
         }
     }
+
 
 }

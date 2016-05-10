@@ -4,12 +4,15 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,7 +40,9 @@ public class YoutubePlayerActivity extends YouTubeBaseActivity implements
     public String title;
     private DBmanager dBmanager;
     YouTubePlayer player;
+    YouTubePlayerView playerView;
     private MyPlaybackEventListener myPlaybackEventListener;
+    private MyPlayerStateChangeListener myPlayerStateChangeListener;
     private static final int RECOVERY_DIALOG_REQUEST = 1;
     Boolean flag_check = false;
     String log = "";
@@ -48,6 +53,7 @@ public class YoutubePlayerActivity extends YouTubeBaseActivity implements
         setContentView(R.layout.activity_youtube_player);
         dBmanager = new DBmanager(this);
         myPlaybackEventListener = new MyPlaybackEventListener();
+        myPlayerStateChangeListener = new MyPlayerStateChangeListener();
 
         Intent intent = getIntent();
         title = intent.getStringExtra("videoTitle");
@@ -62,7 +68,7 @@ public class YoutubePlayerActivity extends YouTubeBaseActivity implements
                 onBackPressed();
             }
         });
-        YouTubePlayerView playerView = (YouTubePlayerView) findViewById(R.id.youtubePlayerView);
+        playerView = (YouTubePlayerView) findViewById(R.id.youtubePlayerView);
         playerView.initialize(getString(R.string.youtube_api_key), this);
 
     }
@@ -90,6 +96,9 @@ public class YoutubePlayerActivity extends YouTubeBaseActivity implements
             // player.setPlayerStyle(PlayerStyle.MINIMAL);
             player.setPlayerStyle(PlayerStyle.DEFAULT);
             player.setPlaybackEventListener(myPlaybackEventListener);
+            player.setPlayerStateChangeListener(myPlayerStateChangeListener);
+            player.setFullscreen(true);
+
 
         }
     }
@@ -105,7 +114,45 @@ public class YoutubePlayerActivity extends YouTubeBaseActivity implements
     private YouTubePlayer.Provider getYouTubePlayerProvider() {
         return (YouTubePlayerView) findViewById(R.id.youtubePlayerView);
     }
+    private final class MyPlayerStateChangeListener implements PlayerStateChangeListener{
 
+        private void updateLog(String prompt){
+            log +=  "MyPlayerStateChangeListener" + "\n" +
+                    prompt + "\n\n=====";
+        };
+
+        @Override
+        public void onAdStarted() {
+            updateLog("onAdStarted()");
+        }
+
+        @Override
+        public void onError(YouTubePlayer.ErrorReason arg0) {
+            updateLog("onError(): " + arg0.toString());
+        }
+
+        @Override
+        public void onLoaded(String arg0) {
+            updateLog("onLoaded(): " + arg0);
+        }
+
+        @Override
+        public void onLoading() {
+            updateLog("onLoading()");
+        }
+
+        @Override
+        public void onVideoEnded() {
+            updateLog("onVideoEnded()");
+            player.setFullscreen(false);
+
+        }
+
+        @Override
+        public void onVideoStarted() {
+            updateLog("onVideoStarted()");
+        }
+    }
 
     private final class MyPlaybackEventListener implements PlaybackEventListener {
         private void updateLog(String prompt) {
@@ -116,6 +163,7 @@ public class YoutubePlayerActivity extends YouTubeBaseActivity implements
 
         @Override
         public void onPlaying() {
+
             updateLog("onPlaying");
         }
 
@@ -128,7 +176,8 @@ public class YoutubePlayerActivity extends YouTubeBaseActivity implements
         @Override
         public void onStopped() {
             updateLog("onStopped");
-            if ((player.getCurrentTimeMillis() == player.getDurationMillis() && player.getCurrentTimeMillis() != 0) && !flag_check) {
+            Log.d("mox","duration:"+player.getDurationMillis()+", current:"+player.getCurrentTimeMillis());
+            if (player.getDurationMillis() == player.getCurrentTimeMillis() && player.getCurrentTimeMillis() != 0 && !flag_check) {
                 flag_check = true;
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext(),R.style.MyDialog);
                 RadioButton radioButton = new RadioButton(getContext());
@@ -148,18 +197,15 @@ public class YoutubePlayerActivity extends YouTubeBaseActivity implements
                                 model.setYoutubeTitle(title);
                                 model.setExerciseDate(new DayCounter().getToday());
                                 dBmanager.insertVideoCheck(model);
-
-
                                 finish();
-
-
-
                             }
                         })
                         .show();
+
             }
 
         }
+
 
         @Override
         public void onBuffering(boolean b) {
@@ -169,10 +215,14 @@ public class YoutubePlayerActivity extends YouTubeBaseActivity implements
 
         @Override
         public void onSeekTo(int i) {
-           // updateLog("onSeekTo");
+            // updateLog("onSeekTo");
 
         }
+
     }
+
+
+
 
     public Context getContext() {
         return this;

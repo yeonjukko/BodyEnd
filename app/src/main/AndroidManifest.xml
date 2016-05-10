@@ -26,9 +26,7 @@
             android:theme="@style/MyNoActionBar" />
         <activity
             android:name=".activity.TestActvity"
-            android:theme="@style/MySettingTheme">
-
-        </activity>
+            android:theme="@style/MySettingTheme"></activity>
         <activity
             android:name=".activity.InitTargetActivity"
             android:label="@string/activity_target"
@@ -61,6 +59,7 @@
             android:theme="@style/MyNoActionBar" />
         <activity
             android:name=".activity.YoutubePlayerActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize|layoutDirection"
             android:theme="@style/MyNoActionBar" />
         <activity
             android:name=".activity.settings.DefaultSettingActivity"
@@ -89,7 +88,8 @@
             android:name=".activity.MaterialActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="nosensor"
-            android:theme="@style/MyNavigationDrawerTheme" />
+            android:theme="@style/MyNavigationDrawerTheme"
+            android:windowSoftInputMode="adjustResize|adjustPan" />
         <activity
             android:name=".activity.IntroActivity"
             android:theme="@style/MyNoActionBar">
@@ -99,9 +99,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".activity.GraphActivity" />
-
+        <activity
+            android:name=".activity.GraphActivity"
+            android:theme="@style/MyNoActionBar" />
+        <activity android:name=".activity.BetaActivity"
+            android:theme="@style/MyNoActionBar"></activity>
     </application>
 
 </manifest>

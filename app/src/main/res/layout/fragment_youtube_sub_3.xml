@@ -61,7 +61,7 @@
         android:id="@+id/my_youtube_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/material_blue_grey_700"
+        android:background="@color/caldroid_white"
         android:orientation="vertical">
 
         <android.support.v7.widget.RecyclerView
@@ -71,30 +71,7 @@
 
         </android.support.v7.widget.RecyclerView>
 
-        <LinearLayout
-            android:id="@+id/if_no_data"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="아직 추가된 동영상이 없습니다!"
-                android:textColor="@android:color/white"
-                android:textSize="20dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:text="추가 버튼을 눌러 동영상을 추가하세요."
-                android:textColor="@android:color/white"
-                android:textSize="20dp" />
-        </LinearLayout>
 
 
     </FrameLayout>

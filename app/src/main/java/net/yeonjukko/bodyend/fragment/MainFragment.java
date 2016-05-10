@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 
 import net.yeonjukko.bodyend.R;
 import net.yeonjukko.bodyend.libs.DBmanager;
@@ -30,6 +31,7 @@ public class MainFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         rootView = inflater.inflate(R.layout.activity_main, null, false);
         final ViewPager viewPager = (ViewPager) rootView.findViewById(R.id.viewpager);
         userInfoModel = new DBmanager(getContext()).selectUserInfoDB();
@@ -46,7 +48,6 @@ public class MainFragment extends Fragment {
             viewPager.setCurrentItem(1);
         }
 
-       
 
         return rootView;
     }

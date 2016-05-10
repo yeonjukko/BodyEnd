@@ -1,8 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/Background"
-    android:layout_height="40dp">
+    android:id="@+id/layout_drawer"
+    android:gravity="bottom"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/tv_stimulus_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="오늘의 다이어트 명언"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/tv_stimulus_word"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="김사랑 - 세 끼 다 먹으면 살쪄요"
+            android:paddingBottom="15dp"
+
+            android:textSize="23sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_gravity="bottom"
+        android:background="@color/caldroid_white"
+        android:gravity="right|center_vertical"
+        android:orientation="horizontal"
+        android:paddingTop="3dp"
+        android:paddingRight="14dp">
+
+        <TextView
+            android:id="@+id/tv_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="김연주" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="님! 오늘도 화이팅이지 말입니다!" />
+
+
+    </LinearLayout>
 
 
 </LinearLayout>

@@ -35,12 +35,17 @@ public class GalleryModeFragment1 extends Fragment {
     private DayCounter dayCounter;
     private Bitmap image0, image1;
 
-    public GalleryModeFragment1(UserRecordModel[] data) {
-        super();
-        this.data = data;
+    public GalleryModeFragment1() {
+    }
+
+    @Override
+    public void setArguments(Bundle args) {
+        super.setArguments(args);
+        this.data = (UserRecordModel[]) args.getSerializable("data");
         image0 = BitmapFactory.decodeFile(data[0].getPictureRecord());
         image1 = BitmapFactory.decodeFile(data[1].getPictureRecord());
     }
+
 
     @Nullable
     @Override

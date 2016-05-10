@@ -79,7 +79,13 @@ public class YoutubeFragmentSub1 extends Fragment {
                                                     .addToBackStack(null)
                                                     .commit();
                                         } else {
-                                            YoutubeFragmentSub2 fragment = new YoutubeFragmentSub2((long) ((JSONObject) categoryList.get(position)).get("video_category_id"), (String) ((JSONObject) categoryList.get(position)).get("video_category_title"));
+
+                                            YoutubeFragmentSub2 fragment = new YoutubeFragmentSub2();
+                                            Bundle data = new Bundle();
+                                            data.putLong("selectId",(long)((JSONObject) categoryList.get(position)).get("video_category_id"));
+                                            data.putString("selectTitle",(String) ((JSONObject) categoryList.get(position)).get("video_category_title"));
+                                            fragment.setArguments(data);
+
                                             fm.beginTransaction()
                                                     .replace(R.id.fragment3View, fragment)
                                                     .addToBackStack(null)
