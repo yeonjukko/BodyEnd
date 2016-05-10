@@ -105,7 +105,7 @@ public class DBmanager {
     // helper
     public static class DatabaseHelper extends SQLiteOpenHelper {
         public DatabaseHelper(Context context) {
-            super(context, Environment.getExternalStorageDirectory().getPath() + "/" + DATABASE_NAME, null, DATABASE_VERSION);
+            super(context, context.getExternalFilesDir(null) + "/" + DATABASE_NAME, null, DATABASE_VERSION);
         }
 
         @Override
