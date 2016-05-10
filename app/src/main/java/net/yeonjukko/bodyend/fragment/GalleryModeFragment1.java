@@ -35,6 +35,8 @@ public class GalleryModeFragment1 extends Fragment {
     private DayCounter dayCounter;
     private Bitmap image0, image1;
 
+    public GalleryModeFragment1(){
+    }
     public GalleryModeFragment1(UserRecordModel[] data) {
         super();
         this.data = data;
