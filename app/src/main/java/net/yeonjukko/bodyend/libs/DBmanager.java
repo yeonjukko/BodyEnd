@@ -142,10 +142,20 @@ public class DBmanager {
                         db.execSQL(DATABASE_ALTER_1_4);
                     } catch (Exception ignored) {
                     }
+
             }
 
         }
 
+    }
+
+    public void deleteYoutube(String id) {
+        String DELETE_YT = "DELETE FROM " + DATABASE_TABLE_10 + " WHERE YOUTUBE_ID='" + id + "'";
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        db.execSQL(DELETE_YT);
+        mDbHelper.close();
+        db.close();
     }
 
     public void deleteSort(String id) {
@@ -454,6 +464,26 @@ public class DBmanager {
         PrintData();
         mDbHelper.close();
         db.close();
+
+    }
+
+    public boolean hasSameYoutubeId(String id) {
+        String SELECT_YOUTUBE_INFO = "SELECT * FROM " + DATABASE_TABLE_10 + " WHERE YOUTUBE_ID ='" + id + "'";
+        this.mDbHelper = new DatabaseHelper(context);
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        Cursor result = db.rawQuery(SELECT_YOUTUBE_INFO, null);
+
+        if (!result.moveToNext()) {     //같은 유투브가 없을때
+            result.close();
+            db.close();
+            mDbHelper.close();
+            return false;
+        } else {
+            result.close();
+            db.close();
+            mDbHelper.close();
+            return true;
+        }
 
     }
 

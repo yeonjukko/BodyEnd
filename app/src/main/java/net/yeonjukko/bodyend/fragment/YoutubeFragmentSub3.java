@@ -2,7 +2,6 @@ package net.yeonjukko.bodyend.fragment;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -30,14 +29,13 @@ import org.json.simple.JSONValue;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 
 
 public class YoutubeFragmentSub3 extends Fragment {
 
     DBmanager dBmanager;
-    LinearLayout ifNodataLayout;
     RecyclerView recyclerViewYoutube;
+    VideoListRecyclerViewAdapter viewAdapter;
     public static final String DEFAULT_URL = "http://yeonjukko.net:7533/getVideoInfo?id=";
 
 
@@ -51,6 +49,7 @@ public class YoutubeFragmentSub3 extends Fragment {
         recyclerViewYoutube.setLayoutManager(new LinearLayoutManager(getContext()));
         dBmanager = new DBmanager(getContext());
         setLayout();
+
 
         //뒤로 가기 버튼
         ibBack.setOnClickListener(new View.OnClickListener() {
@@ -79,23 +78,55 @@ public class YoutubeFragmentSub3 extends Fragment {
                                     public void run() {
                                         JSONObject result = (JSONObject) addMyYoutube(etYoutube.getText().toString());
                                         if (result != null) {
-                                            JSONObject data = (JSONObject) result.get("contents");
-                                            MyYoutubeInfoModel model = new MyYoutubeInfoModel();
-                                            model.setYtId(data.get("video_id").toString());
-                                            model.setYtTitle(data.get("video_title").toString());
-                                            model.setYtDuration(Integer.parseInt(data.get("video_duration").toString()));
-                                            model.setYtViewCount(Integer.parseInt(data.get("video_view_count").toString()));
-                                            model.setYtThumbs(data.get("video_thumbs").toString());
-                                            dBmanager.insertMyYoutube(model);
-                                            Log.d("mox", "완료");
+                                            final JSONObject data = (JSONObject) result.get("contents");
+                                            Log.d("mox",data.toString());
+                                            if (data != null) {
+                                                Log.d("mox", data.get("video_id").toString());
+
+                                                final MyYoutubeInfoModel model = new MyYoutubeInfoModel();
+                                                model.setYtId(data.get("video_id").toString());
+                                                model.setYtTitle(data.get("video_title").toString());
+                                                model.setYtDuration(Integer.parseInt(data.get("video_duration").toString()));
+                                                model.setYtViewCount(Integer.parseInt(data.get("video_view_count").toString()));
+                                                model.setYtThumbs(data.get("video_thumbs").toString());
+                                                if(dBmanager.hasSameYoutubeId(data.get("video_id").toString())){
+                                                    getActivity().runOnUiThread(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            Toast.makeText(getContext(),"이미 등록된 유투브입니다.",Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    });
+                                                }else{
+                                                    dBmanager.insertMyYoutube(model);
+                                                    getActivity().runOnUiThread(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            //바뀐 내용
+                                                            setLayout();
+                                                            Toast.makeText(getContext(), "나의 유투브가 추가 되었습니다.", Toast.LENGTH_SHORT).show();
+
+                                                        }
+                                                    });
+                                                }
+
+
+
+                                            } else {
+                                                getActivity().runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        Toast.makeText(getContext(), "해당 동영상이 존재하지 않습니다. 마지막 11자리가 맞는지 확인하시고 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                            }
+                                        } else {
                                             getActivity().runOnUiThread(new Runnable() {
                                                 @Override
                                                 public void run() {
-                                                    Toast.makeText(getContext(), "나의 유투브가 추가 되었습니다.", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(getContext(), "네트워크가 원할하지 않습니다. 인터넷을 확인해주세요.", Toast.LENGTH_SHORT).show();
 
                                                 }
                                             });
-
                                         }
                                     }
                                 }).start();
@@ -123,7 +154,6 @@ public class YoutubeFragmentSub3 extends Fragment {
             return null;
         }
 
-        // TODO: 16. 5. 1. 삭제기능 추가 및 널 추가 방지 유투브 가로로 봤을때 체크안됨현상
     }
 
     public void setLayout() {
@@ -131,7 +161,7 @@ public class YoutubeFragmentSub3 extends Fragment {
         if (youtubeList.size() == 0) {
             Toast.makeText(getContext(), "추가한 동영상이 없습니다.", Toast.LENGTH_SHORT).show();
         } else {
-            VideoListRecyclerViewAdapter viewAdapter = new VideoListRecyclerViewAdapter(youtubeList);
+            viewAdapter = new VideoListRecyclerViewAdapter(youtubeList,YoutubeFragmentSub3.this);
             recyclerViewYoutube.setAdapter(viewAdapter);
 
 

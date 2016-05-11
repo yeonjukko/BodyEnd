@@ -50,8 +50,8 @@ public class YoutubeFragmentSub2 extends Fragment {
 
         final RecyclerView recyclerViewYoutube = (RecyclerView) rootView.findViewById(R.id.recyclerViewYoutube);
         recyclerViewYoutube.setLayoutManager(new LinearLayoutManager(getContext()));
-        TextView tvSelectTitle = (TextView)rootView.findViewById(R.id.tv_selected_yt_title);
-        ImageButton ibBack = (ImageButton)rootView.findViewById(R.id.ib_icon_back);
+        TextView tvSelectTitle = (TextView) rootView.findViewById(R.id.tv_selected_yt_title);
+        ImageButton ibBack = (ImageButton) rootView.findViewById(R.id.ib_icon_back);
         tvSelectTitle.setText(title);
         ibBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,7 +73,7 @@ public class YoutubeFragmentSub2 extends Fragment {
                         } else {
                             Log.d("mox", result.toJSONString());
                             if ((long) result.get("code") == 0) {
-                                VideoListRecyclerViewAdapter viewAdapter = new VideoListRecyclerViewAdapter((JSONArray) result.get("contents"));
+                                VideoListRecyclerViewAdapter viewAdapter = new VideoListRecyclerViewAdapter((JSONArray) result.get("contents"), YoutubeFragmentSub2.this);
                                 recyclerViewYoutube.setAdapter(viewAdapter);
 
                             } else {
