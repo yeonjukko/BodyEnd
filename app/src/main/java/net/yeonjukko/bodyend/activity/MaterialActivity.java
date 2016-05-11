@@ -70,16 +70,23 @@ public class MaterialActivity extends MaterialNavigationDrawer {
                     drawerTextColor = Color.parseColor("#" + data.get("drawer_text_color").toString());
                     drawerStimulus = data.get("drawer_text").toString();
 
-                    LinearLayout drawerLayout = (LinearLayout) view.findViewById(R.id.layout_drawer);
-                    TextView tvTitle = (TextView) view.findViewById(R.id.tv_stimulus_title);
-                    TextView tvWord = (TextView) view.findViewById(R.id.tv_stimulus_word);
-                    TextView tvUserName = (TextView) view.findViewById(R.id.tv_user_name);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            LinearLayout drawerLayout = (LinearLayout) view.findViewById(R.id.layout_drawer);
+                            TextView tvTitle = (TextView) view.findViewById(R.id.tv_stimulus_title);
+                            TextView tvWord = (TextView) view.findViewById(R.id.tv_stimulus_word);
+                            TextView tvUserName = (TextView) view.findViewById(R.id.tv_user_name);
 
-                    drawerLayout.setBackgroundColor(drawerBgrColor);
-                    tvTitle.setTextColor(drawerTextColor);
-                    tvWord.setTextColor(drawerTextColor);
-                    tvWord.setText(drawerStimulus);
-                    tvUserName.setText(userInfoModel.getUserName());
+
+                            drawerLayout.setBackgroundColor(drawerBgrColor);
+                            tvTitle.setTextColor(drawerTextColor);
+                            tvWord.setTextColor(drawerTextColor);
+                            tvWord.setText(drawerStimulus);
+                            tvUserName.setText(userInfoModel.getUserName());
+                        }
+                    });
+
                 }
             }
         }).start();

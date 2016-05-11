@@ -100,14 +100,11 @@ public class YoutubeFragmentSub3 extends Fragment {
                                     }
                                 }).start();
 
-
                                 setLayout();
                             }
                         }).show();
             }
         });
-
-
 
         return rootView;
     }
