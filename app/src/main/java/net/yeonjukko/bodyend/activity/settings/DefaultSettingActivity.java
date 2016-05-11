@@ -1,18 +1,16 @@
 package net.yeonjukko.bodyend.activity.settings;
 
-import android.app.Activity;
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,17 +21,18 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.yalantis.ucrop.UCrop;
 
 import net.yeonjukko.bodyend.R;
 import net.yeonjukko.bodyend.activity.MaterialActivity;
-import net.yeonjukko.bodyend.fragment.MainFragment;
 import net.yeonjukko.bodyend.libs.DBmanager;
 import net.yeonjukko.bodyend.libs.DayCounter;
 import net.yeonjukko.bodyend.model.UserInfoModel;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Date;
 
 public class DefaultSettingActivity extends AppCompatActivity {
@@ -82,9 +81,9 @@ public class DefaultSettingActivity extends AppCompatActivity {
             public void onClick(View v) {
                 UserInfoModel model = dBmanager.selectUserInfoDB();
                 DatePickerDialog mDialog = createDialog(model.getGoalDate());
-                mDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+                mDialog.setMinDate(Calendar.getInstance());
                 mDialog.setTitle("변경할 날짜를 선택하세요");
-                mDialog.show();
+                mDialog.show(getFragmentManager(), "date");
 
             }
         });
@@ -163,29 +162,22 @@ public class DefaultSettingActivity extends AppCompatActivity {
     public DatePickerDialog createDialog(int goalDay) {
     /* calendar code here */
 
-        int theme;
-        if (isBrokenSamsungDevice()) {
-            theme = android.R.style.Theme_Holo_Light_Dialog;
-
-        } else {
-            theme = R.style.MyDialog;
-        }
 
         String date = goalDay + "";
         int goalYear = Integer.parseInt(date.substring(0, 4));
         int goalMonth = Integer.parseInt(date.substring(4, 6)) - 1;
         int goalDate = Integer.parseInt(date.substring(6, 8));
 
-        return new DatePickerDialog(getContext(), theme, new DatePickerDialog.OnDateSetListener() {
+        return DatePickerDialog.newInstance(new DatePickerDialog.OnDateSetListener() {
             @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+            public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
                 Log.d("mox", "hellp");
-                int convertDate = counter.convertDate(view.getCalendarView().getDate());
+                int convertDate = counter.convertDateInt(year,monthOfYear+1,dayOfMonth);
                 dBmanager.updateGoalDate(convertDate);
                 Toast.makeText(getContext(), "목표 날짜가 변경되었습니다.", Toast.LENGTH_SHORT).show();
-
             }
         }, goalYear, goalMonth, goalDate);
+
     }
 
     private static boolean isBrokenSamsungDevice() {

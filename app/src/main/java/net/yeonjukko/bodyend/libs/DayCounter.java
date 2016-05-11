@@ -60,6 +60,25 @@ public class DayCounter {
         return Integer.parseInt(today);
     }
 
+    public int convertDateInt(int year, int month, int date) {
+        //<--오늘 날짜 구하기 ex)year, month, date->20160317
+        String strMonth = null;
+        String strDate = null;
+
+        if (month < 10)
+            strMonth = "0" + month;
+        else if (month >= 10)
+            strMonth = month + "";
+
+        if (date < 10)
+            strDate = "0" + date;
+        else if (date >= 10)
+            strDate = date + "";
+
+        String today = year + strMonth + strDate;
+        return Integer.parseInt(today);
+    }
+
     public String convertDate2String2(int day){
         //<--오늘 날짜 구하기 ex)20160428->4/17
         String tmp = day + "";

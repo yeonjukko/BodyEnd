@@ -1,6 +1,5 @@
 package net.yeonjukko.bodyend.activity;
 
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -16,10 +15,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.yalantis.ucrop.UCrop;
 
 import net.yeonjukko.bodyend.R;
-import net.yeonjukko.bodyend.fragment.MainFragment;
 import net.yeonjukko.bodyend.libs.DBmanager;
 import net.yeonjukko.bodyend.libs.DayCounter;
 import net.yeonjukko.bodyend.model.WaterAlarmInfoModel;
@@ -69,10 +68,9 @@ public class InitTargetActivity extends InitInfoActivity {
             @Override
             public void onClick(View v) {
                 final Calendar today = Calendar.getInstance();
-                dialog = new DatePickerDialog(getContext(), new DatePickerDialog.OnDateSetListener() {
+                dialog = DatePickerDialog.newInstance(new DatePickerDialog.OnDateSetListener() {
                     @Override
-                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-
+                    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
                         int now = new DayCounter().getToday();
                         int selected = getSelectDay(year, monthOfYear + 1, dayOfMonth);
 
@@ -82,12 +80,10 @@ public class InitTargetActivity extends InitInfoActivity {
                             etGoalDate.setText(selected + "");
                             etGoalDate.setError(null);
                         }
-
-
                     }
                 }, today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE));
 
-                dialog.show();
+                dialog.show(getFragmentManager(), "date");
             }
         });
         //End of DatePicker-->
