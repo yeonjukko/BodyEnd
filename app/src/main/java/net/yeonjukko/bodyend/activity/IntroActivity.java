@@ -3,6 +3,7 @@ package net.yeonjukko.bodyend.activity;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Shader;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;

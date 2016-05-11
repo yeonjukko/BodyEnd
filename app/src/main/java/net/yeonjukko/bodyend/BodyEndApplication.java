@@ -1,6 +1,8 @@
 package net.yeonjukko.bodyend;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 
 import net.yeonjukko.bodyend.libs.DBmanager;
 import net.yeonjukko.bodyend.model.UserRecordModel;
