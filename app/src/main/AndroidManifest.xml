@@ -89,7 +89,7 @@
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="nosensor"
             android:theme="@style/MyNavigationDrawerTheme"
-            android:windowSoftInputMode="adjustResize|adjustPan" />
+            android:windowSoftInputMode="adjustUnspecified|adjustPan|adjustResize" />
         <activity
             android:name=".activity.IntroActivity"
             android:theme="@style/MyNoActionBar">

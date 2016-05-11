@@ -107,17 +107,18 @@ public class RecordFragment extends Fragment {
                 R.color.Icons,
                 Utils.createInterpolator(Utils.ACCELERATE_DECELERATE_INTERPOLATOR)));
         data.add(new RecordFragmentItemModel(
-                getString(R.string.record_exercise),
+                getString(R.string.record_meal),
                 R.color.Primary,
                 R.color.Icons,
                 Utils.createInterpolator(Utils.ACCELERATE_DECELERATE_INTERPOLATOR)));
+
         data.add(new RecordFragmentItemModel(
                 getString(R.string.record_weight),
                 R.color.Primary,
                 R.color.Icons,
                 Utils.createInterpolator(Utils.ACCELERATE_DECELERATE_INTERPOLATOR)));
         data.add(new RecordFragmentItemModel(
-                getString(R.string.record_meal),
+                getString(R.string.record_exercise),
                 R.color.Primary,
                 R.color.Icons,
                 Utils.createInterpolator(Utils.ACCELERATE_DECELERATE_INTERPOLATOR)));

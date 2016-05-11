@@ -21,6 +21,7 @@ import android.graphics.Paint;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -31,6 +32,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -119,7 +121,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             expandState.append(0, true);
             expandState.append(1, true);
             expandState.append(2, true);
-            expandState.append(3, false);
+            expandState.append(3, true);
             expandState.append(4, true);
 
         }
@@ -158,11 +160,13 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         if (position == 0) {
             return VIEW_TYPE_WATER;
         } else if (position == 1) {
-            return VIEW_TYPE_EXERCISE;
+            return VIEW_TYPE_MEAL;
         } else if (position == 2) {
             return VIEW_TYPE_WEIGHT;
+
         } else if (position == 3) {
-            return VIEW_TYPE_MEAL;
+            return VIEW_TYPE_EXERCISE;
+
         } else if (position == 4) {
             return VIEW_TYPE_PICTURE;
         }
@@ -295,7 +299,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             });
 
 
-        } else if (position == 1) {
+        } else if (position == 3) {
             final ViewHolderExercise holderExercise = (ViewHolderExercise) holder;
             //체크박스리스너 설정 해제
             holderExercise.cbAttendance.setOnCheckedChangeListener(null);
@@ -581,7 +585,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             });
 
 
-        } else if (position == 3) {
+        } else if (position == 1) {
             final ViewHolderMeal holderMeal = (ViewHolderMeal) holder;
 
             //오늘보다 이전의 데이터를 가져왔을 때 버튼 enable처리
@@ -637,6 +641,36 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             holderMeal.etLunch.setText(userRecordModel.getMealLunch());
             holderMeal.etDinner.setText(userRecordModel.getMealDinner());
             holderMeal.etRefreshment.setText(userRecordModel.getMealRefreshments());
+            holderMeal.etBreakfast.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    holderMeal.etBreakfast.requestFocus();
+                    Handler mHandler = new Handler();
+
+                    mHandler.postDelayed(new Runnable() {
+                        public void run() {
+                            InputMethodManager mgr = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                            mgr.showSoftInput(holderMeal.etBreakfast, InputMethodManager.SHOW_FORCED);
+                        }
+                    }, 500);
+
+                }
+            });
+            holderMeal.etRefreshment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    holderMeal.etRefreshment.requestFocus();
+                    Handler mHandler = new Handler();
+
+                    mHandler.postDelayed(new Runnable() {
+                        public void run() {
+                            InputMethodManager mgr = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                            mgr.showSoftInput(holderMeal.etRefreshment, InputMethodManager.SHOW_FORCED);
+                        }
+                    }, 500);
+
+                }
+            });
 
             holderMeal.etBreakfast.addTextChangedListener(new TextWatcher() {
                 @Override
