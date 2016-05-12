@@ -19,6 +19,7 @@
         android:label="@string/app_name"
         android:largeHeap="true"
         android:supportsRtl="true"
+
         android:theme="@style/BodyEndAppTheme">
         <activity
             android:name=".activity.InitInfoActivity"
@@ -88,8 +89,7 @@
             android:name=".activity.MaterialActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="nosensor"
-            android:theme="@style/MyNavigationDrawerTheme"
-            android:windowSoftInputMode="adjustUnspecified|adjustPan|adjustResize" />
+            android:theme="@style/MyNavigationDrawerTheme" />
         <activity
             android:name=".activity.IntroActivity"
             android:theme="@style/MyNoActionBar">

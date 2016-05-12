@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.widget.OrientationHelper;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -142,6 +143,8 @@ public class MaterialActivity extends MaterialNavigationDrawer {
         });
         addSection(betaSection);
 
+        // TODO: 16. 5. 11. 버전확인액티비티만들기
+
 
         addDivisor();
         MaterialSection settingSection = newSection("기본 설정", R.drawable.icon_setting, new MaterialSectionListener() {
@@ -196,5 +199,23 @@ public class MaterialActivity extends MaterialNavigationDrawer {
             return null;
         }
     }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(isDrawerOpen()){
+            if ( keyCode == KeyEvent.KEYCODE_MENU ) {
+                closeDrawer();
+                return true;
+            }
+        }else{
+            if ( keyCode == KeyEvent.KEYCODE_MENU ) {
+                openDrawer();
+                return true;
+            }
+        }
+
+        return super.onKeyDown(keyCode, event);
+    }
+
 
 }

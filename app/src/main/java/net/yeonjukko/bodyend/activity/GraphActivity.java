@@ -206,7 +206,7 @@ public class GraphActivity extends AppCompatActivity {
             }
         });
 
-
+// TODO: 16. 5. 12. 변화된 무게 에러 목표진행률도 확인좀 
 
     }
 

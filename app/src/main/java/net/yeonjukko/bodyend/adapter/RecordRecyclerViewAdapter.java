@@ -115,16 +115,13 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         this.recordFragemnt = recordFragment;
         //RecordActivity에서 넘어온 표시할 날짜
         this.showDate = showDate;
-        Log.d("MOX", "recycler TODAY:" + showDate);
 
-        for (int i = 0; i < data.size(); i++) {
-            expandState.append(0, true);
-            expandState.append(1, true);
-            expandState.append(2, true);
-            expandState.append(3, true);
-            expandState.append(4, true);
+        expandState.append(0, true);
+        expandState.append(1, false);
+        expandState.append(2, true);
+        expandState.append(3, true);
+        expandState.append(4, true);
 
-        }
     }
 
     @Override
@@ -199,6 +196,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             holderWater.expandableLayout.setBackground(resource.getDrawable(R.drawable.layout_round_bottom));
             holderWater.expandableLayout.setInterpolator(item.interpolator);
             holderWater.expandableLayout.setExpanded(expandState.get(position));
+
             holderWater.expandableLayout.setListener(new ExpandableLayoutListenerAdapter() {
                 @Override
                 public void onPreOpen() {
@@ -336,7 +334,9 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             holderExercise.itemView.setBackground(resource.getDrawable(layout_round_all));
             holderExercise.expandableLayout.setBackground(resource.getDrawable(R.drawable.layout_round_bottom));
             holderExercise.expandableLayout.setInterpolator(item.interpolator);
-            holderExercise.expandableLayout.setExpanded(expandState.get(position));
+
+            holderExercise.expandableLayout.setExpanded(true);
+            //holderExercise.expandableLayout.setExpanded(expandState.get(position));
             holderExercise.expandableLayout.setListener(new ExpandableLayoutListenerAdapter() {
                 @Override
                 public void onPreOpen() {
@@ -604,7 +604,9 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             holderMeal.itemView.setBackground(resource.getDrawable(layout_round_all));
             holderMeal.expandableLayout.setBackground(resource.getDrawable(layout_round_bottom));
             holderMeal.expandableLayout.setInterpolator(item.interpolator);
-            holderMeal.expandableLayout.setExpanded(expandState.get(position));
+
+            //holderMeal.expandableLayout.setExpanded(expandState.get(position));
+            holderMeal.expandableLayout.setExpanded(false);
             holderMeal.expandableLayout.setListener(new ExpandableLayoutListenerAdapter() {
                 @Override
                 public void onPreOpen() {
