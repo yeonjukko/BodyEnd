@@ -2,18 +2,11 @@ package net.yeonjukko.bodyend.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.OrientationHelper;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -23,12 +16,10 @@ import net.yeonjukko.bodyend.activity.settings.DefaultSettingActivity;
 import net.yeonjukko.bodyend.activity.settings.ExerciseManagerActivity;
 import net.yeonjukko.bodyend.activity.settings.WaterSettingActivity;
 import net.yeonjukko.bodyend.fragment.MainFragment;
-import net.yeonjukko.bodyend.fragment.RecordFragment;
 import net.yeonjukko.bodyend.fragment.YoutubeMainActivity;
 import net.yeonjukko.bodyend.libs.DBmanager;
 import net.yeonjukko.bodyend.model.UserInfoModel;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
@@ -95,7 +86,28 @@ public class MaterialActivity extends MaterialNavigationDrawer {
         setDrawerHeaderCustom(view);
 
 
+
         addSection(newSection("홈", R.drawable.icon_home, new MainFragment()));
+
+        MaterialSection bulletinSection = newSection("공지사항", R.drawable.icon_advertising, new MaterialSectionListener() {
+            @Override
+            public void onClick(MaterialSection section) {
+                Intent intent = new Intent(MaterialActivity.this, BulletinActivity.class);
+                startActivity(intent);
+            }
+        });
+        addSection(bulletinSection);
+
+        MaterialSection betaSection = newSection("고객센터", R.drawable.icon_online_support, new MaterialSectionListener() {
+            @Override
+            public void onClick(MaterialSection section) {
+                Intent intent = new Intent(MaterialActivity.this, OnlineSupportActivity.class);
+                startActivity(intent);
+            }
+        });
+        addSection(betaSection);
+        addDivisor();
+
         MaterialSection calendarSection = newSection("캘린더", R.drawable.icon_calendar_2, new MaterialSectionListener() {
             @Override
             public void onClick(MaterialSection section) {
@@ -134,14 +146,7 @@ public class MaterialActivity extends MaterialNavigationDrawer {
         });
         addSection(graphSection);
 
-        MaterialSection betaSection = newSection("고객센터", R.mipmap.ic_launcher, new MaterialSectionListener() {
-            @Override
-            public void onClick(MaterialSection section) {
-                Intent intent = new Intent(MaterialActivity.this, BetaActivity.class);
-                startActivity(intent);
-            }
-        });
-        addSection(betaSection);
+
 
         // TODO: 16. 5. 11. 버전확인액티비티만들기
 

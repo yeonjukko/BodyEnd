@@ -29,7 +29,7 @@ public class YoutubeFragmentSub2 extends Fragment {
     public JSONObject data = null;
     public static final String DEFAULT_URL = "http://yeonjukko.net:7533/getVideo?category=";
     public long id;
-    public String title;
+    private String title;
 
     public YoutubeFragmentSub2() {
 

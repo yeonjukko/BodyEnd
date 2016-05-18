@@ -75,7 +75,7 @@ public class YoutubeFragmentSub1 extends Fragment {
                                         if (position == 8) {
                                             YoutubeFragmentSub3 fragment = new YoutubeFragmentSub3();
                                             fm.beginTransaction()
-                                                    .replace(R.id.fragment3View, fragment)
+                                                    .replace(R.id.fragmentyoutubeMain, fragment)
                                                     .addToBackStack(null)
                                                     .commit();
                                         } else {
@@ -87,7 +87,7 @@ public class YoutubeFragmentSub1 extends Fragment {
                                             fragment.setArguments(data);
 
                                             fm.beginTransaction()
-                                                    .replace(R.id.fragment3View, fragment)
+                                                    .replace(R.id.fragmentyoutubeMain, fragment)
                                                     .addToBackStack(null)
                                                     .commit();
                                         }

@@ -38,6 +38,7 @@ public class InitInfoActivity extends AppCompatActivity {
             userInfoModel = new UserInfoModel();
         }
         if (dBmanager.selectUserInfoDB() != null) {
+
             Intent intent = new Intent(this, MaterialActivity.class);
             startActivity(intent);
             finish();

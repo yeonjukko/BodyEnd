@@ -1,7 +1,6 @@
 package net.yeonjukko.bodyend.fragment;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import net.yeonjukko.bodyend.R;
@@ -37,7 +35,17 @@ public class YoutubeFragmentSub3 extends Fragment {
     RecyclerView recyclerViewYoutube;
     VideoListRecyclerViewAdapter viewAdapter;
     public static final String DEFAULT_URL = "http://yeonjukko.net:7533/getVideoInfo?id=";
+    private String youtubeId = null;
 
+    public YoutubeFragmentSub3() {
+
+    }
+
+    @Override
+    public void setArguments(Bundle args) {
+        super.setArguments(args);
+        youtubeId = args.getString("youtubeId");
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,6 +57,30 @@ public class YoutubeFragmentSub3 extends Fragment {
         recyclerViewYoutube.setLayoutManager(new LinearLayoutManager(getContext()));
         dBmanager = new DBmanager(getContext());
         setLayout();
+
+        if (youtubeId != null) {
+
+            new AlertDialog.Builder(getContext(), R.style.MyDialog)
+                    .setTitle("유투브 추가하기")
+                    .setMessage(youtubeId)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            youtubeId.replace("https://youtu.be/", "");
+                            youtubeId = youtubeId.substring(17,28);
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    addMyYoutube(youtubeId);
+                                }
+                            }).start();
+                        }
+                    })
+                    .create()
+                    .show();
+
+        }
 
 
         //뒤로 가기 버튼
@@ -67,6 +99,7 @@ public class YoutubeFragmentSub3 extends Fragment {
                 LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
                 View view = inflater.inflate(R.layout.dialog_add_youtube, null, false);
                 final EditText etYoutube = (EditText) view.findViewById(R.id.et_addr);
+
                 builder.setTitle("추가할 유투브 아이디를 입력해주세요.")
                         .setMessage("유투브 아이디는 공유하기에서 찾을 수 있습니다.")
                         .setView(view)
@@ -76,58 +109,7 @@ public class YoutubeFragmentSub3 extends Fragment {
                                 new Thread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        JSONObject result = (JSONObject) addMyYoutube(etYoutube.getText().toString());
-                                        if (result != null) {
-                                            final JSONObject data = (JSONObject) result.get("contents");
-                                            Log.d("mox",data.toString());
-                                            if (data != null) {
-                                                Log.d("mox", data.get("video_id").toString());
-
-                                                final MyYoutubeInfoModel model = new MyYoutubeInfoModel();
-                                                model.setYtId(data.get("video_id").toString());
-                                                model.setYtTitle(data.get("video_title").toString());
-                                                model.setYtDuration(Integer.parseInt(data.get("video_duration").toString()));
-                                                model.setYtViewCount(Integer.parseInt(data.get("video_view_count").toString()));
-                                                model.setYtThumbs(data.get("video_thumbs").toString());
-                                                if(dBmanager.hasSameYoutubeId(data.get("video_id").toString())){
-                                                    getActivity().runOnUiThread(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            Toast.makeText(getContext(),"이미 등록된 유투브입니다.",Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    });
-                                                }else{
-                                                    dBmanager.insertMyYoutube(model);
-                                                    getActivity().runOnUiThread(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            //바뀐 내용
-                                                            setLayout();
-                                                            Toast.makeText(getContext(), "나의 유투브가 추가 되었습니다.", Toast.LENGTH_SHORT).show();
-
-                                                        }
-                                                    });
-                                                }
-
-
-
-                                            } else {
-                                                getActivity().runOnUiThread(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        Toast.makeText(getContext(), "해당 동영상이 존재하지 않습니다. 마지막 11자리가 맞는지 확인하시고 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
-                                                    }
-                                                });
-                                            }
-                                        } else {
-                                            getActivity().runOnUiThread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    Toast.makeText(getContext(), "네트워크가 원할하지 않습니다. 인터넷을 확인해주세요.", Toast.LENGTH_SHORT).show();
-
-                                                }
-                                            });
-                                        }
+                                        addMyYoutube(etYoutube.getText().toString());
                                     }
                                 }).start();
 
@@ -140,7 +122,61 @@ public class YoutubeFragmentSub3 extends Fragment {
         return rootView;
     }
 
-    public Object addMyYoutube(String id) {
+    private void addMyYoutube(String yid) {
+        JSONObject result = (JSONObject) getMyYoutubeInfo(yid);
+        if (result != null) {
+            final JSONObject data = (JSONObject) result.get("contents");
+            Log.d("mox", data.toString());
+            if (data != null) {
+                Log.d("mox", data.get("video_id").toString());
+
+                final MyYoutubeInfoModel model = new MyYoutubeInfoModel();
+                model.setYtId(data.get("video_id").toString());
+                model.setYtTitle(data.get("video_title").toString());
+                model.setYtDuration(Integer.parseInt(data.get("video_duration").toString()));
+                model.setYtViewCount(Integer.parseInt(data.get("video_view_count").toString()));
+                model.setYtThumbs(data.get("video_thumbs").toString());
+                if (dBmanager.hasSameYoutubeId(data.get("video_id").toString())) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getContext(), "이미 등록된 유투브입니다.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    dBmanager.insertMyYoutube(model);
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //바뀐 내용
+                            setLayout();
+                            Toast.makeText(getContext(), "나의 유투브가 추가 되었습니다.", Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
+                }
+
+
+            } else {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getContext(), "해당 동영상이 존재하지 않습니다. 마지막 11자리가 맞는지 확인하시고 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        } else {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getContext(), "네트워크가 원할하지 않습니다. 인터넷을 확인해주세요.", Toast.LENGTH_SHORT).show();
+
+                }
+            });
+        }
+    }
+
+    public Object getMyYoutubeInfo(String id) {
         try {
             URL url = new URL(DEFAULT_URL + id);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -159,9 +195,9 @@ public class YoutubeFragmentSub3 extends Fragment {
     public void setLayout() {
         JSONArray youtubeList = dBmanager.selectMyYoutube();
         if (youtubeList.size() == 0) {
-            Toast.makeText(getContext(), "추가한 동영상이 없습니다.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "나의 동영상도 추가해보세요.", Toast.LENGTH_SHORT).show();
         } else {
-            viewAdapter = new VideoListRecyclerViewAdapter(youtubeList,YoutubeFragmentSub3.this);
+            viewAdapter = new VideoListRecyclerViewAdapter(youtubeList, YoutubeFragmentSub3.this);
             recyclerViewYoutube.setAdapter(viewAdapter);
 
 

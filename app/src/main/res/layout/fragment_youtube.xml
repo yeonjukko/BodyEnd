@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:id="@+id/fragment3View"
+    android:id="@+id/fragmentyoutubeMain"
     android:background="@android:color/white"
     tools:context=".fragment.YoutubeFragmentSub1">
 

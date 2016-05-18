@@ -56,4 +56,5 @@ dependencies {
     compile 'com.wdullaer:materialdatetimepicker:2.3.0'
     compile 'com.android.support:multidex:1.0.1'
     compile project(':TitanicTextLibrary')
+    compile 'org.jsoup:jsoup:1.9.1'
 }

@@ -5,17 +5,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ImageButton;
 
 import net.yeonjukko.bodyend.R;
 
-public class BetaActivity extends AppCompatActivity {
+public class OnlineSupportActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_beta);
+        setContentView(R.layout.activity_online_support);
         setLayout();
 
     }

@@ -47,6 +47,7 @@ public class YoutubePlayerActivity extends YouTubeBaseActivity implements
     Boolean flag_check = false;
     String log = "";
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -147,7 +148,6 @@ public class YoutubePlayerActivity extends YouTubeBaseActivity implements
             player.setFullscreen(false);
 
         }
-
         @Override
         public void onVideoStarted() {
             updateLog("onVideoStarted()");
