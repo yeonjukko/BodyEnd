@@ -393,11 +393,6 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                                 .setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                    }
-                                })
-                                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
                                         LocationManager manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
                                         boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
                                         if (statusOfGPS) {
