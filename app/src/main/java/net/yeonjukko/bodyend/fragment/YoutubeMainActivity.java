@@ -22,16 +22,16 @@ public class YoutubeMainActivity extends AppCompatActivity {
         ((ViewGroup) findViewById(R.id.fragmentyoutubeMain)).removeAllViews();
 
         //유투브를 추가한 상황일 때 youtubeMain -> youtubeFragmentSub3
-        if (getIntent() != null) {
+        if (getIntent().getData() != null) {
+                YoutubeFragmentSub3 fragment = new YoutubeFragmentSub3();
+                Bundle data = new Bundle();
+                data.putString("youtubeId", getIntent().getStringExtra("youtubeId"));
+                fragment.setArguments(data);
 
-            YoutubeFragmentSub3 fragment = new YoutubeFragmentSub3();
-            Bundle data = new Bundle();
-            data.putString("youtubeId", getIntent().getStringExtra("youtubeId"));
-            fragment.setArguments(data);
+                fm.beginTransaction()
+                        .replace(R.id.fragmentyoutubeMain, fragment)
+                        .commit();
 
-            fm.beginTransaction()
-                    .replace(R.id.fragmentyoutubeMain, fragment)
-                    .commit();
 
         } else {    //default
             YoutubeFragmentSub1 fragment = new YoutubeFragmentSub1();
