@@ -153,28 +153,64 @@ public class GraphActivity extends AppCompatActivity {
 
         //목표 진행률 레이아웃
         TextView tvPercent = (TextView) findViewById(R.id.tv_percent);
+        float rate = 0;
+        float wanted = Math.abs(startWeight - goalWeight);
+        float changed = Math.abs(startWeight - currWeight);
 
-        int rate;
-        if (currWeight <= goalWeight) {
-            rate = (int) (1 + (goalWeight - currWeight) / (startWeight - goalWeight)) * 100;
-        } else {
-            rate = (int) (1 - (startWeight - currWeight) / (startWeight - goalWeight)) * 100;
+        if(goalWeight==currWeight){
+            rate = 100;
+        }else{
+            if(goalWeight<startWeight){
+                //감량을 원한다고 가정
+                if(currWeight<=startWeight)
+                    rate = changed / wanted * 100;
+
+            }else{
+                //증량을 원한다고 가정
+                if(currWeight>=startWeight)
+                    rate = changed / wanted * 100;
+            }
         }
-        tvPercent.setText(rate + "%");
+
+        tvPercent.setText(String.format("%.1f",rate)+ "%");
         tvPercent.setTextColor(getResources().getColor(R.color.material_red_A700));
 
         //변화된 무게 레이아웃
         TextView tvChanged = (TextView) findViewById(R.id.tv_changed);
-        float changed = startWeight - currWeight;
-        if (changed > 0) {
-            tvChanged.setText("-" + String.format("%.1f",changed) + "kg");
-            tvChanged.setTextColor(getResources().getColor(R.color.caldroid_holo_blue_dark));
-        } else if (changed == 0) {
-            tvChanged.setText("-");
-        } else if (changed < 0) {
-            tvChanged.setText("+" + String.format("%.1f",changed) + "kg");
-            tvChanged.setTextColor(getResources().getColor(R.color.material_red_A700));
+
+        if(goalWeight==currWeight){
+            tvChanged.setText(String.format("%.1f", changed) + "kg");
+            tvChanged.setTextColor(getResources().getColor(R.color.material_yellow_600));
+
+        }else{
+            if(goalWeight<startWeight){
+                //감량을 원한다고 가정
+                if(currWeight<=startWeight){
+                    tvChanged.setText("-" + String.format("%.1f", changed) + "kg");
+                    tvChanged.setTextColor(getResources().getColor(R.color.caldroid_holo_blue_dark));
+
+                }else{
+                    tvChanged.setText("+" + String.format("%.1f", changed) + "kg");
+                    tvChanged.setTextColor(getResources().getColor(R.color.material_red_A700));
+
+                }
+
+            }else{
+                //증량을 원한다고 가정
+                if(currWeight>startWeight){
+                    tvChanged.setText("+" + String.format("%.1f", changed) + "kg");
+                    tvChanged.setTextColor(getResources().getColor(R.color.caldroid_holo_blue_dark));
+
+                }else{
+                    tvChanged.setText("-" + String.format("%.1f", changed) + "kg");
+                    tvChanged.setTextColor(getResources().getColor(R.color.material_red_A700));
+
+
+                }
+            }
         }
+
+
 
         //평균 물 섭취량
         TextView tvBottles = (TextView) findViewById(R.id.tv_bottles);
@@ -194,11 +230,11 @@ public class GraphActivity extends AppCompatActivity {
                 attend++;
             }
         }
-        tvAttend.setText(attend+"");
-        tvTotal.setText(data.size()+"");
+        tvAttend.setText(attend + "");
+        tvTotal.setText(data.size() + "");
 
         //ib_exit
-        ImageButton ibExit = (ImageButton)findViewById(R.id.ib_exit);
+        ImageButton ibExit = (ImageButton) findViewById(R.id.ib_exit);
         ibExit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -206,9 +242,10 @@ public class GraphActivity extends AppCompatActivity {
             }
         });
 
-// TODO: 16. 5. 12. 변화된 무게 에러 목표진행률도 확인좀 
 
     }
+
+
 
     private Context getContext() {
         return this;
