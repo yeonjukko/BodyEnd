@@ -19,13 +19,13 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="베타버전 v1.03"
+        android:text="베타버전 v1.04"
         android:textSize="25dp"
         android:textColor="@android:color/white"/>
 
     <com.romainpiel.titanic.library.TitanicTextView
         android:id="@+id/titanic_tv"
-        android:text="No pain No gain"
+        android:text="여름이 다가온다"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="70dp"
