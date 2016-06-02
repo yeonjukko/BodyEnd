@@ -1,20 +1,27 @@
 package net.yeonjukko.bodyend.activity;
 
+import android.Manifest;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Shader;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.romainpiel.titanic.library.Titanic;
 import com.romainpiel.titanic.library.TitanicTextView;
 
 import net.yeonjukko.bodyend.R;
+import net.yeonjukko.bodyend.adapter.RecordRecyclerViewAdapter;
 import net.yeonjukko.bodyend.fragment.YoutubeFragmentSub2;
 import net.yeonjukko.bodyend.fragment.YoutubeFragmentSub3;
 import net.yeonjukko.bodyend.fragment.YoutubeMainActivity;
@@ -27,9 +34,16 @@ public class IntroActivity extends AppCompatActivity {
     Handler h;
     Titanic titanic;
     DBmanager dBmanager;
+
     Intent intent;
     String action;
     String type;
+
+    public static final int REQUEST_CAMERA_PERMISSION = 202;
+    public static final int REQUEST_LOCATION_PERMISSION = 203;
+
+    private static final String CAMERA_PERMISSION = Manifest.permission.CAMERA;
+    private static final String LOCATION_PERMISSION = Manifest.permission.ACCESS_FINE_LOCATION;
 
 
     @Override
@@ -69,10 +83,10 @@ public class IntroActivity extends AppCompatActivity {
 
     }
 
-
     Runnable r = new Runnable() {
         @Override
         public void run() {
+
             Intent intent = new Intent(getContext(), InitInfoActivity.class);
             startActivity(intent);
             finish();
@@ -82,4 +96,6 @@ public class IntroActivity extends AppCompatActivity {
     public Context getContext() {
         return this;
     }
+
+
 }

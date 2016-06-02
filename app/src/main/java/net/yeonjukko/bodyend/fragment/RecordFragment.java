@@ -2,7 +2,9 @@ package net.yeonjukko.bodyend.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,6 +28,7 @@ import net.yeonjukko.bodyend.activity.MaterialActivity;
 import net.yeonjukko.bodyend.libs.DBmanager;
 import net.yeonjukko.bodyend.libs.DayCounter;
 import net.yeonjukko.bodyend.libs.DividerItemDecoration;
+import net.yeonjukko.bodyend.libs.PermissionManager;
 import net.yeonjukko.bodyend.libs.RecordFragmentItemModel;
 import net.yeonjukko.bodyend.adapter.RecordRecyclerViewAdapter;
 import net.yeonjukko.bodyend.model.ExerciseSpotInfoModel;
@@ -253,7 +256,6 @@ public class RecordFragment extends Fragment {
                 spotInfoModel.setAttendanceDay(0);
                 dBmanager.insertExerciseSpotInfo(spotInfoModel);
 
-
             } else if (requestCode == RecordRecyclerViewAdapter.REQUEST_CAMERA_CODE) {
 
                 String imagePath = data.getStringExtra(CameraActivity.FLAG_FILE_PATH);
@@ -267,6 +269,49 @@ public class RecordFragment extends Fragment {
                 });
             }
         }
+
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PermissionManager.REQUEST_CAMERA_PERMISSION:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // 권한 허가
+                    // 해당 권한을 사용해서 작업을 진행할 수 있습니다
+
+                    adapter.startActivityCamera();
+
+
+                } else {
+                    // 권한 거부
+                    // 사용자가 해당권한을 거부했을때 해주어야 할 동작을 수행합니다
+                    Toast.makeText(getContext(), "사진 기록을 사용하실 수 없습니다.", Toast.LENGTH_SHORT).show();
+
+                }
+
+                break;
+            case PermissionManager.REQUEST_LOCATION_PERMISSION:
+                Log.d("mox", "location");
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // 권한 허가
+                    adapter.permissionCheckAfter();
+                    // 해당 권한을 사용해서 작업을 진행할 수 있습니다
+
+                } else {
+                    // 권한 거부
+                    // 사용자가 해당권한을 거부했을때 해주어야 할 동작을 수행합니다
+                    adapter.notifyDataSetChanged();
+                    Toast.makeText(getContext(), "위치 기록을 사용하실 수 없습니다.", Toast.LENGTH_SHORT).show();
+                }
+
+
+                break;
+        }
+        return;
+    }
+
 
 }

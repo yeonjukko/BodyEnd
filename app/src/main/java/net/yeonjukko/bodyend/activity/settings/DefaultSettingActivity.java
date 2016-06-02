@@ -3,12 +3,14 @@ package net.yeonjukko.bodyend.activity.settings;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
@@ -28,6 +30,7 @@ import net.yeonjukko.bodyend.R;
 import net.yeonjukko.bodyend.activity.MaterialActivity;
 import net.yeonjukko.bodyend.libs.DBmanager;
 import net.yeonjukko.bodyend.libs.DayCounter;
+import net.yeonjukko.bodyend.libs.PermissionManager;
 import net.yeonjukko.bodyend.model.UserInfoModel;
 
 import java.io.File;
@@ -190,6 +193,7 @@ public class DefaultSettingActivity extends AppCompatActivity {
     private static boolean isBetweenAndroidVersions(int min, int max) {
         return Build.VERSION.SDK_INT >= min && Build.VERSION.SDK_INT <= max;
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

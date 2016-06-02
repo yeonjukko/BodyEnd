@@ -56,7 +56,7 @@
             android:theme="@style/MyNoActionBar" />
         <activity
             android:name=".fragment.YoutubeMainActivity"
-            android:theme="@style/MyNoActionBar"></activity>
+            android:theme="@style/MyNoActionBar" />
         <activity
             android:name=".activity.YoutubePlayerActivity"
             android:configChanges="keyboardHidden|orientation|screenSize|layoutDirection"
@@ -111,8 +111,10 @@
         <activity
             android:name=".activity.OnlineSupportActivity"
             android:theme="@style/MyNoActionBar" />
-        <activity android:name=".activity.BulletinActivity"
-            android:theme="@style/MyNoActionBar"/>
+        <activity
+            android:name=".activity.BulletinActivity"
+            android:theme="@style/MyNoActionBar" />
+        <activity android:name=".activity.settings.BodyendActivity"></activity>
     </application>
 
 </manifest>
