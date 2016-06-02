@@ -3,11 +3,14 @@ package net.yeonjukko.bodyend.activity.settings;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -45,7 +48,7 @@ public class AttendanceMapAcitivity extends FragmentActivity implements MapView.
     private double latitude = 0;
     private double longitude = 0;
 
-    private ProgressDialog.Builder progressBuilder;
+    private ProgressDialog progressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,20 +60,32 @@ public class AttendanceMapAcitivity extends FragmentActivity implements MapView.
         mapView.setDaumMapApiKey(MapApiConst.DAUM_MAPS_ANDROID_APP_API_KEY);
         mapView.setMapViewEventListener(this);
         mapView.setPOIItemEventListener(this);
-        buildGoogleApiClient();
-        createLocationRequest();
         onMapViewInitialized(mapView);
+
+
+        progressDialog = new ProgressDialog(this, R.style.MyDialog);
 
         btUpdateGps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                buildGoogleApiClient();
-                createLocationRequest();
-                onMapViewInitialized(mapView);
+                LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+                if (!statusOfGPS) {
+                    Toast.makeText(AttendanceMapAcitivity.this, "GPS를 켜고 사용하세요.", Toast.LENGTH_SHORT).show();
+                    return;
+                } else {
+                    buildGoogleApiClient();
+                    createLocationRequest();
+                    onMapViewInitialized(mapView);
+                    progressDialog.setMessage("위치를 찾고 있습니다..");
+                    progressDialog.show();
+                }
             }
         });
 
     }
+
+
 
     @Override
     public void onMapViewInitialized(MapView mapView) {
@@ -177,12 +192,13 @@ public class AttendanceMapAcitivity extends FragmentActivity implements MapView.
     public void onLocationChanged(Location location) {
         //onConnect 다음 실행
         Log.d("service", "Attend onLocationChanged");
+        progressDialog.dismiss();
 
         latitude = location.getLatitude();
         longitude = location.getLongitude();
         mapView.setMapCenterPointAndZoomLevel(MapPoint.mapPointWithGeoCoord(latitude, longitude), 2, true);
         stopLocationUpdates();
-        Toast.makeText(this, "onLocationChanged" + location.getLongitude() + " " + location.getLatitude(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "onLocationChanged" + location.getLongitude() + " " + location.getLatitude(), Toast.LENGTH_SHORT).show();
 
     }
 

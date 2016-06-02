@@ -22,17 +22,63 @@ public class PermissionManager {
     public static final int REQUEST_CAMERA_PERMISSION = 202;
     public static final int REQUEST_LOCATION_PERMISSION = 203;
 
-    public PermissionManager(Fragment fragment, String permissionName) {
-        this.fragment = fragment;
-        this.permissionName = permissionName;
+    public PermissionManager() {
+
     }
 
     public boolean isOverMarshmallow() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
     }
 
-    public boolean checkPermission() {
+    public boolean checkPermission(Activity activity, String permissionName) {
+        boolean result = false;
+        if (!isOverMarshmallow()) {
+            result = true;
+            return result;
+        }
 
+        switch (permissionName) {
+            case CAMERA_PERMISSION:
+                if (ContextCompat.checkSelfPermission(activity, CAMERA_PERMISSION) != PackageManager.PERMISSION_GRANTED) {
+                    // 이 권한을 필요한 이유를 설명해야하는가?
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(activity, CAMERA_PERMISSION)) {
+                        // 다이어로그같은것을 띄워서 사용자에게 해당 권한이 필요한 이유에 대해 설명합니다
+                        // 해당 설명이 끝난뒤 requestPermissions()함수를 호출하여 권한허가를 요청해야 합니다
+                        activity.requestPermissions(new String[]{CAMERA_PERMISSION},
+                                REQUEST_CAMERA_PERMISSION);
+
+                    } else {
+                        activity.requestPermissions(new String[]{CAMERA_PERMISSION},
+                                REQUEST_CAMERA_PERMISSION);
+                    }
+                    result = false;
+                    // 필요한 권한과 요청 코드를 넣어서 권한허가요청에 대한 결과를 받아야 합니다
+                } else {
+                    result = true;
+                }
+
+            case LOCATION_PERMISSION:
+                if (ContextCompat.checkSelfPermission(activity, LOCATION_PERMISSION) != PackageManager.PERMISSION_GRANTED) {
+
+                    // 이 권한을 필요한 이유를 설명해야하는가?
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(activity, LOCATION_PERMISSION)) {
+                        activity.requestPermissions(new String[]{LOCATION_PERMISSION},
+                                REQUEST_LOCATION_PERMISSION);
+                    } else {
+                        activity.requestPermissions(new String[]{LOCATION_PERMISSION},
+                                REQUEST_LOCATION_PERMISSION);
+                        // 필요한 권한과 요청 코드를 넣어서 권한허가요청에 대한 결과를 받아야 합니다
+                    }
+
+                    result = false;
+                } else {
+                    result = true;
+                }
+        }
+        return result;
+    }
+
+    public boolean checkPermission(Fragment fragment, String permissionName) {
         boolean result = false;
         if (!isOverMarshmallow()) {
             result = true;
