@@ -384,7 +384,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                         if (dBmanager.selectExerciseAttendance(showDate) != null) {
                             Toast.makeText(context, "이미 출석체크가 완료되었습니다.", Toast.LENGTH_SHORT).show();
                         }
-                        if (new PermissionManager(recordFragemnt, PermissionManager.LOCATION_PERMISSION).checkPermission()) {
+                        if (new PermissionManager().checkPermission(recordFragemnt, PermissionManager.LOCATION_PERMISSION)) {
                             permissionCheckAfter();
 
                         } else {
@@ -984,7 +984,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         lo.setLatitude(dbY);
         float distance = location.distanceTo(lo);
 
-        if (distance <= 50) {
+        if (distance <= 500) {
             ExerciseAttendanceInfoModel model = new ExerciseAttendanceInfoModel();
             model.setRecordDate(showDate);
             model.setSpotId(checkModel.getSpotId());
