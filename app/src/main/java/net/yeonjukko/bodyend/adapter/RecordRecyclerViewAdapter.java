@@ -752,7 +752,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 @Override
                 public void onClick(View v) {
 
-                    if (new PermissionManager(recordFragemnt, PermissionManager.CAMERA_PERMISSION).checkPermission()) {
+                    if (new PermissionManager().checkPermission(recordFragemnt, PermissionManager.CAMERA_PERMISSION)) {
                         startActivityCamera();
                     } else {
                         Toast.makeText(recordFragemnt.getContext(), "카메라 권한을 승인해 주세요.", Toast.LENGTH_LONG).show();
