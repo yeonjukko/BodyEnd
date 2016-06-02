@@ -71,14 +71,13 @@ public class StimulusFragment extends Fragment {
 
 
 
-        // TODO: 16. 5. 11. 베타에만 넣고 빼기
         final SharedPreferences spref = getContext().getSharedPreferences("mNotice1", Context.MODE_PRIVATE);
         //공지사항을 안읽었을 경우우
         if (!spref.getBoolean("mNotice1", false)) {
             final AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.MyDialog);
             builder.setTitle("바디엔드 공지사항")
                     .setIcon(R.mipmap.ic_launcher)
-                    .setMessage("[v1.04 업데이트 사항]\n - 화면 표시 추가 \n\n여러분~ 호옥시 에러가 나더라도 당황하지 않코 침착하게 보고서 누르기를 눌러주세용~\n ")
+                    .setMessage("[v1.0]\n여러분~ 호옥시 에러가 나더라도 당황하지 않코 침착하게 보고서 누르기를 눌러주세용~\n ")
                     .setCancelable(false)
                     .setPositiveButton("네! 보고서 제출하겠습니다", new DialogInterface.OnClickListener() {
                         @Override

@@ -19,7 +19,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="베타버전 v1.04"
+        android:text="v1.0"
         android:textSize="25dp"
         android:textColor="@android:color/white"/>
 

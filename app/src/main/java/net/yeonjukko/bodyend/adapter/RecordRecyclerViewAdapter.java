@@ -23,6 +23,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -66,6 +67,7 @@ import net.yeonjukko.bodyend.activity.settings.WaterSettingActivity;
 import net.yeonjukko.bodyend.libs.DBmanager;
 import net.yeonjukko.bodyend.libs.DayCounter;
 import net.yeonjukko.bodyend.libs.Int2DayCalculator;
+import net.yeonjukko.bodyend.libs.PermissionManager;
 import net.yeonjukko.bodyend.libs.RecordFragmentItemModel;
 import net.yeonjukko.bodyend.model.ExerciseAttendanceInfoModel;
 import net.yeonjukko.bodyend.model.ExerciseJoinSortInfoModel;
@@ -91,8 +93,9 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     private int VIEW_TYPE_MEAL = 103;
     private int VIEW_TYPE_PICTURE = 104;
     private int VIEW_TYPE_ERROR = 105;
-    public static final int REQUEST_CAMERA_CODE = 486;
-    public static final int REQUEST_SPOT_NAME = 106;
+    public static final int REQUEST_CAMERA_CODE = 200;
+    public static final int REQUEST_SPOT_NAME = 201;
+
 
     private CheckBox mCheckbox;
     private int showDate;
@@ -108,6 +111,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
     LayoutInflater inflater;
     RecordFragment recordFragemnt;
     DayCounter dayCounter;
+
 
     //layout 순서 정하기
     public RecordRecyclerViewAdapter(final List<RecordFragmentItemModel> data, int showDate, RecordFragment recordFragment) {
@@ -324,6 +328,8 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                     Log.d("mox", dBmanager.selectExerciseSpotInfo(dBmanager.selectExerciseAttendance(showDate).getSpotId()).getSpotName() + "");
                     holderExercise.cbAttendance.setChecked(true);
                     holderExercise.cbAttendance.setEnabled(false);
+                } else {
+                    holderExercise.cbAttendance.setChecked(false);
                 }
             }
 
@@ -375,57 +381,19 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (isChecked) {
-
                         if (dBmanager.selectExerciseAttendance(showDate) != null) {
                             Toast.makeText(context, "이미 출석체크가 완료되었습니다.", Toast.LENGTH_SHORT).show();
+                        }
+                        if (new PermissionManager(recordFragemnt, PermissionManager.LOCATION_PERMISSION).checkPermission()) {
+                            permissionCheckAfter();
+
+                        } else {
+                            notifyDataSetChanged();
                             return;
                         }
 
-                        final AlertDialog.Builder builderAttend = new AlertDialog.Builder(context, R.style.MyDialog);
-                        ArrayList<ExerciseSpotInfoModel> models = dBmanager.selectExerciseSpotsInfo();
-                        int size = models.size();
-                        String items[] = new String[size];
-                        for (int i = 0; i < dBmanager.selectExerciseSpotsInfo().size(); i++) {
-                            items[i] = models.get(i).getSpotName();
-                        }
+                        // TODO: 16. 6. 2. 출석체크 퍼미션
 
-                        builderAttend.setTitle("출석체크 할 장소를 선택해주세요. ")
-                                .setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        LocationManager manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-                                        boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-                                        if (statusOfGPS) {
-                                            mProgressDialog = ProgressDialog.show(context, "",
-                                                    "잠시만 기다려 주세요.", true);
-                                            //선택한 장소의 정보가져오기
-                                            checkModel = dBmanager.selectExerciseSpotsInfo().get(which);
-                                            buildGoogleApiClient();
-                                            createLocationRequest();
-                                            dialog.dismiss();
-
-                                        } else {
-                                            Toast.makeText(context, "GPS을 켜고 출석체크하세요.", Toast.LENGTH_SHORT).show();
-                                            holderExercise.cbAttendance.setChecked(false);
-                                        }
-                                    }
-                                })
-                                .setCancelable(false)
-                                .setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        holderExercise.cbAttendance.setChecked(false);
-                                    }
-                                })
-                                .setNeutralButton("추가", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        Intent intent = new Intent(context, AttendanceMapAcitivity.class);
-                                        recordFragemnt.startActivityForResult(intent, REQUEST_SPOT_NAME);
-                                        holderExercise.cbAttendance.setChecked(false);
-                                    }
-                                })
-                                .show();
                     }
                 }
             });
@@ -775,6 +743,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             holderPicture.btGallery.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                     Intent intent = new Intent(context, GalleryActivity.class);
                     recordFragemnt.startActivity(intent);
                 }
@@ -782,6 +751,7 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
             holderPicture.btCamera.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                     Intent intent = new Intent(context, CameraActivity.class);
                     recordFragemnt.startActivityForResult(intent, REQUEST_CAMERA_CODE);
 
@@ -801,6 +771,55 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
         }
 
+    }
+
+    public void permissionCheckAfter() {
+        final AlertDialog.Builder builderAttend = new AlertDialog.Builder(context, R.style.MyDialog);
+        ArrayList<ExerciseSpotInfoModel> models = dBmanager.selectExerciseSpotsInfo();
+        int size = models.size();
+        String items[] = new String[size];
+        for (int i = 0; i < dBmanager.selectExerciseSpotsInfo().size(); i++) {
+            items[i] = models.get(i).getSpotName();
+        }
+
+        builderAttend.setTitle("출석체크 할 장소를 선택해주세요. ")
+                .setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        LocationManager manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+                        boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+                        if (statusOfGPS) {
+                            mProgressDialog = ProgressDialog.show(context, "",
+                                    "잠시만 기다려 주세요.", true);
+                            //선택한 장소의 정보가져오기
+                            checkModel = dBmanager.selectExerciseSpotsInfo().get(which);
+                            buildGoogleApiClient();
+                            createLocationRequest();
+                            dialog.dismiss();
+
+                        } else {
+                            Toast.makeText(context, "GPS을 켜고 출석체크하세요.", Toast.LENGTH_SHORT).show();
+                            notifyDataSetChanged();
+                        }
+                    }
+                })
+                .setCancelable(false)
+                .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        notifyDataSetChanged();
+                    }
+                })
+                .setNeutralButton("추가", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(context, AttendanceMapAcitivity.class);
+                        recordFragemnt.startActivityForResult(intent, REQUEST_SPOT_NAME);
+                        notifyDataSetChanged();
+
+                    }
+                })
+                .show();
     }
 
 
@@ -1055,5 +1074,6 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
         mLocationRequest.setInterval(10000000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
     }
+
 
 }

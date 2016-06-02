@@ -2,6 +2,7 @@ package net.yeonjukko.bodyend.activity.settings;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -43,6 +44,8 @@ public class AttendanceMapAcitivity extends FragmentActivity implements MapView.
     private String tmpAddr;
     private double latitude = 0;
     private double longitude = 0;
+
+    private ProgressDialog.Builder progressBuilder;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
