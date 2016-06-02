@@ -752,8 +752,11 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
                 @Override
                 public void onClick(View v) {
 
-                    Intent intent = new Intent(context, CameraActivity.class);
-                    recordFragemnt.startActivityForResult(intent, REQUEST_CAMERA_CODE);
+                    if (new PermissionManager(recordFragemnt, PermissionManager.CAMERA_PERMISSION).checkPermission()) {
+                        startActivityCamera();
+                    } else {
+                        Toast.makeText(recordFragemnt.getContext(), "카메라 권한을 승인해 주세요.", Toast.LENGTH_LONG).show();
+                    }
 
                 }
             });
@@ -771,6 +774,11 @@ public class RecordRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
         }
 
+    }
+
+    public void startActivityCamera() {
+        Intent intent = new Intent(context, CameraActivity.class);
+        recordFragemnt.startActivityForResult(intent, REQUEST_CAMERA_CODE);
     }
 
     public void permissionCheckAfter() {
